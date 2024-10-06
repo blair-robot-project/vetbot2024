@@ -12,7 +12,6 @@ import frc.team449.robot2024.constants.RobotConstants
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.PI
 
-
 class NewControllerBindings(
   private val driveController: CommandXboxController,
   private val mechanismController: CommandXboxController,
@@ -69,41 +68,41 @@ class NewControllerBindings(
   private fun characterizationExample() {
     /** Example
      *
-    val exampleSubsystemRoutine = SysIdRoutine(
-      SysIdRoutine.Config(
-        Volts.of(0.5).per(Seconds.of(1.0)),
-        Volts.of(3.0),
-        Seconds.of(10.0)
-      ) { state -> SignalLogger.writeString("state", state.toString()) },
-      Mechanism(
-        { voltage: Measure<Voltage> ->
-          run { robot.shooter.setVoltage(voltage.`in`(Volts)) }
-        },
-        null,
-        robot.shooter,
-        "shooter"
-      )
-    )
+     val exampleSubsystemRoutine = SysIdRoutine(
+     SysIdRoutine.Config(
+     Volts.of(0.5).per(Seconds.of(1.0)),
+     Volts.of(3.0),
+     Seconds.of(10.0)
+     ) { state -> SignalLogger.writeString("state", state.toString()) },
+     Mechanism(
+     { voltage: Measure<Voltage> ->
+     run { robot.shooter.setVoltage(voltage.`in`(Volts)) }
+     },
+     null,
+     robot.shooter,
+     "shooter"
+     )
+     )
 
-    // Quasistatic Forwards
-    driveController.povUp().onTrue(
-      exampleSubsystemRoutine.quasistatic(SysIdRoutine.Direction.kForward)
-    )
+     // Quasistatic Forwards
+     driveController.povUp().onTrue(
+     exampleSubsystemRoutine.quasistatic(SysIdRoutine.Direction.kForward)
+     )
 
-    // Quasistatic Reverse
-    driveController.povDown().onTrue(
-      exampleSubsystemRoutine.quasistatic(SysIdRoutine.Direction.kReverse)
-    )
+     // Quasistatic Reverse
+     driveController.povDown().onTrue(
+     exampleSubsystemRoutine.quasistatic(SysIdRoutine.Direction.kReverse)
+     )
 
-    // Dynamic Forwards
-    driveController.povRight().onTrue(
-      exampleSubsystemRoutine.dynamic(SysIdRoutine.Direction.kForward)
-    )
+     // Dynamic Forwards
+     driveController.povRight().onTrue(
+     exampleSubsystemRoutine.dynamic(SysIdRoutine.Direction.kForward)
+     )
 
-    // Dynamic Reverse
-    driveController.povLeft().onTrue(
-      exampleSubsystemRoutine.dynamic(SysIdRoutine.Direction.kReverse)
-    )
+     // Dynamic Reverse
+     driveController.povLeft().onTrue(
+     exampleSubsystemRoutine.dynamic(SysIdRoutine.Direction.kReverse)
+     )
      */
   }
 

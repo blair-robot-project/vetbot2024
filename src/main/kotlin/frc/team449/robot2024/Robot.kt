@@ -37,7 +37,7 @@ class Robot : RobotBase(), Logged {
   val light = createLight()
 
   /** Example for using infrared sensors
-  @Log.NT
-  val infrared = DigitalInput(RobotConstants.IR_CHANNEL)
-  */
+   @Log.NT
+   val infrared = DigitalInput(RobotConstants.IR_CHANNEL)
+   */
 }

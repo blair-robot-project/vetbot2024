@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Subsystem
 
 class QuadCalibration(
-  private val subsystem: Subsystem,
+  subsystem: Subsystem,
   private val absolute: AbsoluteEncoder,
   private val encoder: QuadEncoder,
   private val numSamples: Int = 150

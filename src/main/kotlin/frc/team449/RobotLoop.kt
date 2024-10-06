@@ -57,8 +57,8 @@ class RobotLoop : TimedRobot(), Logged {
     }
 
     /** Example Quad Calibration
-    QuadCalibration(robot.pivot).ignoringDisable(true).schedule()
-    */
+     QuadCalibration(robot.pivot).ignoringDisable(true).schedule()
+     */
 
     println("Generating Auto Routines : ${Timer.getFPGATimestamp()}")
     routineMap = routineChooser.routineMap()
