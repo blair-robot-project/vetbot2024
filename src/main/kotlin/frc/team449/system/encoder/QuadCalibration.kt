@@ -1,21 +1,23 @@
-package frc.team449.robot2024.commands
+package frc.team449.system.encoder
 
 import edu.wpi.first.wpilibj2.command.Command
-import frc.team449.robot2024.subsystems.pivot.Pivot
+import edu.wpi.first.wpilibj2.command.Subsystem
 
-class PivotCalibration(
-  private val pivot: Pivot,
+class QuadCalibration(
+  private val subsystem: Subsystem,
+  private val absolute: AbsoluteEncoder,
+  private val encoder: QuadEncoder,
   private val numSamples: Int = 150
 ) : Command() {
 
   init {
-    addRequirements(pivot)
+    addRequirements(subsystem)
   }
 
   private var samples = mutableListOf<Double>()
 
   override fun execute() {
-    samples.add(pivot.motor.position)
+    samples.add(absolute.position)
   }
 
   override fun isFinished(): Boolean {
@@ -25,7 +27,7 @@ class PivotCalibration(
   override fun end(interrupted: Boolean) {
     samples.sort()
     val angle = samples[(samples.size * .9).toInt()]
-    pivot.encoder.resetPosition(angle)
+    encoder.resetPosition(angle)
     println("***** Finished Calibrating Quadrature reading *****")
   }
 }

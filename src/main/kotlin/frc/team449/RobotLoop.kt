@@ -1,5 +1,6 @@
 package frc.team449
 
+import com.ctre.phoenix6.SignalLogger
 import edu.wpi.first.hal.FRCNetComm
 import edu.wpi.first.hal.HAL
 import edu.wpi.first.wpilibj.*
@@ -11,13 +12,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand
 import frc.team449.control.holonomic.SwerveSim
 import frc.team449.robot2024.Robot
 import frc.team449.robot2024.auto.routines.RoutineChooser
-import frc.team449.robot2024.commands.PivotCalibration
 import frc.team449.robot2024.commands.light.BlairChasing
 import frc.team449.robot2024.commands.light.BreatheHue
 import frc.team449.robot2024.commands.light.Rainbow
 import frc.team449.robot2024.constants.field.FieldConstants
 import frc.team449.robot2024.constants.vision.VisionConstants
-import frc.team449.robot2024.subsystems.ControllerBindings
+import frc.team449.robot2024.subsystems.NewControllerBindings
 import monologue.Annotations.Log
 import monologue.Logged
 import monologue.Monologue
@@ -37,11 +37,14 @@ class RobotLoop : TimedRobot(), Logged {
   private val field = robot.field
   private var autoCommand: Command? = null
   private var routineMap = hashMapOf<String, Command>()
-  private val controllerBinder = ControllerBindings(robot.driveController, robot.mechController, robot)
+  private val controllerBinder = NewControllerBindings(robot.driveController, robot.mechController, robot)
 
   override fun robotInit() {
     // Yes this should be a print statement, it's useful to know that robotInit started.
     println("Started robotInit.")
+
+    SignalLogger.setPath("/media/sda1/ctre-logs/")
+    SignalLogger.start()
 
     HAL.report(FRCNetComm.tResourceType.kResourceType_Language, FRCNetComm.tInstances.kLanguage_Kotlin)
 
@@ -53,11 +56,15 @@ class RobotLoop : TimedRobot(), Logged {
 //      instance.startClient4("localhost")
     }
 
-    PivotCalibration(robot.pivot).ignoringDisable(true).schedule()
+    /** Example Quad Calibration
+    QuadCalibration(robot.pivot).ignoringDisable(true).schedule()
+    */
 
     println("Generating Auto Routines : ${Timer.getFPGATimestamp()}")
     routineMap = routineChooser.routineMap()
     println("DONE Generating Auto Routines : ${Timer.getFPGATimestamp()}")
+
+    routineChooser.createOptions()
 
     SmartDashboard.putData("Routine Chooser", routineChooser)
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance())
@@ -72,6 +79,10 @@ class RobotLoop : TimedRobot(), Logged {
     URCL.start()
   }
 
+  override fun driverStationConnected() {
+    Monologue.setFileOnly(DriverStation.isFMSAttached())
+  }
+
   override fun robotPeriodic() {
     CommandScheduler.getInstance().run()
 
@@ -79,13 +90,12 @@ class RobotLoop : TimedRobot(), Logged {
 
     robot.field.getObject("bumpers").pose = robot.drive.pose
 
-    Monologue.setFileOnly(DriverStation.isFMSAttached())
     Monologue.updateAll()
   }
 
   override fun autonomousInit() {
     /** Every time auto starts, we update the chosen auto command. */
-    this.autoCommand = routineMap[routineChooser.selected]
+    this.autoCommand = routineMap[if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) "Red" + routineChooser.selected else "Blue" + routineChooser.selected]
     CommandScheduler.getInstance().schedule(this.autoCommand)
 
     robot.drive.enableVisionFusion = false
@@ -147,9 +157,7 @@ class RobotLoop : TimedRobot(), Logged {
     Rainbow(robot.light).schedule()
   }
 
-  override fun disabledPeriodic() {
-    routineChooser.updateOptions(DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red)
-  }
+  override fun disabledPeriodic() {}
 
   override fun testInit() {
     if (autoCommand != null) {

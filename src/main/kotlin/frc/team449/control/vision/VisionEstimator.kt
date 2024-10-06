@@ -123,8 +123,8 @@ class VisionEstimator(
         )
       )
     } else {
-      println("getting into single tag")
-//      useCenter(result)
+//      println("getting into single tag")
+      lowestAmbiguityStrategy(result)
       Optional.empty()
     }
   }

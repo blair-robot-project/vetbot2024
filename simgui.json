@@ -89,11 +89,11 @@
           "style": "Track"
         },
         "Robot": {
-          "length": 0.6984999775886536
+          "length": 0.7620000243186951
         },
         "bottom": 1476,
         "bumpers": {
-          "length": 0.8636000156402588,
+          "length": 0.9271000027656555,
           "width": 0.8508999943733215
         },
         "height": 8.210550308227539,
@@ -106,6 +106,7 @@
             1.0,
             255.0
           ],
+          "length": 0.7620000243186951,
           "style": "Box/Image"
         },
         "right": 2961,
@@ -127,7 +128,10 @@
         "left": 150,
         "right": 2961,
         "top": 79,
-        "width": 16.541748046875
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
       },
       "/SmartDashboard/Routine Chooser": {
         "window": {
@@ -181,7 +185,10 @@
           "selectable": false,
           "style": "Hidden"
         },
-        "width": 16.541748046875
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
       }
     }
   },
