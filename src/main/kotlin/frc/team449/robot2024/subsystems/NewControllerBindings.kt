@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj2.command.ConditionalCommand
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.team449.control.holonomic.SwerveSim
+import frc.team449.control.holonomic.swerve.SwerveSim
 import frc.team449.robot2024.Robot
 import frc.team449.robot2024.constants.RobotConstants
 import kotlin.jvm.optionals.getOrNull

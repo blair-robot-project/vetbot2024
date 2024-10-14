@@ -1,5 +1,9 @@
-package frc.team449.control.holonomic
+package frc.team449.control.holonomic.swerve
 
+import com.ctre.phoenix6.StatusCode
+import com.ctre.phoenix6.configs.TalonFXConfiguration
+import com.ctre.phoenix6.hardware.TalonFX
+import com.ctre.phoenix6.signals.InvertedValue
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.controller.SimpleMotorFeedforward
@@ -18,9 +22,11 @@ import edu.wpi.first.wpilibj.RobotBase.isReal
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import frc.team449.control.holonomic.HolonomicDrive
 import frc.team449.control.vision.VisionSubsystem
 import frc.team449.robot2024.constants.RobotConstants
 import frc.team449.robot2024.constants.drives.SwerveConstants
+import frc.team449.robot2024.constants.drives.SwerveConstantsKraken
 import frc.team449.robot2024.constants.vision.VisionConstants
 import frc.team449.system.AHRS
 import frc.team449.system.encoder.AbsoluteEncoder
@@ -116,7 +122,8 @@ open class SwerveDrive(
 //    normalizeDrive(desiredModuleStates, desiredSpeeds)
     SwerveDriveKinematics.desaturateWheelSpeeds(
       desiredModuleStates,
-      SwerveConstants.MAX_ATTAINABLE_MK4I_SPEED
+      SwerveConstantsKraken.MAX_ATTAINABLE_MK4I_SPEED,
+
     )
 
     for (i in this.modules.indices) {
@@ -183,7 +190,7 @@ open class SwerveDrive(
       visionPose[1] != visionPoseCopy[1] ||
       visionPose[2] != visionPoseCopy[2]
 
-    // Sets the robot's pose and individual module rotations on the SmartDashboard [Field2d] widget.
+    // Sets the robot's pose and individual module rotations on the SmartDashboard [Field 2d] widget.
     setRobotPose()
   }
 
@@ -207,28 +214,28 @@ open class SwerveDrive(
 
     this.field.getObject("FL").pose = this.pose.plus(
       Transform2d(
-        Translation2d(SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, SwerveConstants.TRACKWIDTH / 2),
+        Translation2d(SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, SwerveConstantsKraken.TRACKWIDTH / 2),
         this.getPositions()[0].angle
       )
     )
 
     this.field.getObject("FR").pose = this.pose.plus(
       Transform2d(
-        Translation2d(SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, -SwerveConstants.TRACKWIDTH / 2),
+        Translation2d(SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, -SwerveConstantsKraken.TRACKWIDTH / 2),
         this.getPositions()[1].angle
       )
     )
 
     this.field.getObject("BL").pose = this.pose.plus(
       Transform2d(
-        Translation2d(-SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, SwerveConstants.TRACKWIDTH / 2),
+        Translation2d(-SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, SwerveConstantsKraken.TRACKWIDTH / 2),
         this.getPositions()[2].angle
       )
     )
 
     this.field.getObject("BR").pose = this.pose.plus(
       Transform2d(
-        Translation2d(-SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, -SwerveConstants.TRACKWIDTH / 2),
+        Translation2d(-SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, -SwerveConstantsKraken.TRACKWIDTH / 2),
         this.getPositions()[0].angle
       )
     )
@@ -366,42 +373,116 @@ open class SwerveDrive(
     builder.addDoubleProperty("5.4 Angular X Vel", { ahrs.angularXVel() }, null)
     builder.addBooleanProperty("5.5 Navx Connected", { ahrs.connected() }, null)
     builder.addBooleanProperty("5.6 Navx Calibrated", { ahrs.calibrated() }, null)
-
-    // Note: You should also tune UPR too
-    builder.publishConstString("6.0", "Tuning Values")
-    builder.addDoubleProperty("6.1 FL Drive P", { modules[0].driveController.p }, { value -> modules[0].driveController.p = value })
-    builder.addDoubleProperty("6.2 FL Drive D", { modules[0].driveController.d }, { value -> modules[0].driveController.d = value })
-    builder.addDoubleProperty("6.3 FL Turn P", { modules[0].turnController.p }, { value -> modules[0].turnController.p = value })
-    builder.addDoubleProperty("6.4 FL Turn D", { modules[0].turnController.d }, { value -> modules[0].turnController.d = value })
-    builder.addDoubleProperty("6.5 FR Drive P", { modules[1].driveController.p }, { value -> modules[1].driveController.p = value })
-    builder.addDoubleProperty("6.6 FR Drive D", { modules[1].driveController.d }, { value -> modules[1].driveController.d = value })
-    builder.addDoubleProperty("6.8 FR Turn P", { modules[1].turnController.p }, { value -> modules[1].turnController.p = value })
-    builder.addDoubleProperty("6.9 FR Turn D", { modules[1].turnController.d }, { value -> modules[1].turnController.d = value })
-    builder.addDoubleProperty("6.10 BL Drive P", { modules[2].driveController.p }, { value -> modules[2].driveController.p = value })
-    builder.addDoubleProperty("6.11 BL Drive D", { modules[2].driveController.d }, { value -> modules[2].driveController.d = value })
-    builder.addDoubleProperty("6.12 BL Turn P", { modules[2].turnController.p }, { value -> modules[2].turnController.p = value })
-    builder.addDoubleProperty("6.13 BL Turn D", { modules[2].turnController.d }, { value -> modules[2].turnController.d = value })
-    builder.addDoubleProperty("6.14 BR Drive P", { modules[3].driveController.p }, { value -> modules[3].driveController.p = value })
-    builder.addDoubleProperty("6.15 BR Drive D", { modules[3].driveController.d }, { value -> modules[3].driveController.d = value })
-    builder.addDoubleProperty("6.16 BR Turn P", { modules[3].turnController.p }, { value -> modules[3].turnController.p = value })
-    builder.addDoubleProperty("6.17 BR Turn D", { modules[3].turnController.d }, { value -> modules[3].turnController.d = value })
   }
 
   companion object {
     /** Create a [SwerveDrive] using [SwerveConstants]. */
-    fun createSwerve(ahrs: AHRS, field: Field2d): SwerveDrive {
+    fun createSwerveKraken(ahrs: AHRS, field: Field2d): SwerveDrive {
+      val turnMotorController = { PIDController(SwerveConstantsKraken.TURN_KP, SwerveConstantsKraken.TURN_KI, SwerveConstantsKraken.TURN_KD) }
+      val modules = listOf(
+        SwerveModuleKraken.create(
+          "FLModule",
+          makeKrakenDrivingMotor(
+            SwerveConstantsKraken.DRIVE_MOTOR_FL,
+            inverted = InvertedValue.CounterClockwise_Positive
+          ),
+          makeNEOTurningMotor(
+            "FL",
+            SwerveConstantsKraken.TURN_MOTOR_FL,
+            inverted = true,
+            sensorPhase = false,
+            SwerveConstantsKraken.TURN_ENC_CHAN_FL,
+            SwerveConstantsKraken.TURN_ENC_OFFSET_FL
+          ),
+          turnMotorController(),
+          Translation2d(SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, SwerveConstantsKraken.TRACKWIDTH / 2)
+        ),
+        SwerveModuleKraken.create(
+          "FRModule",
+          makeKrakenDrivingMotor(
+            SwerveConstantsKraken.DRIVE_MOTOR_FR,
+            inverted = InvertedValue.CounterClockwise_Positive
+          ),
+          makeNEOTurningMotor(
+            "FR",
+            SwerveConstantsKraken.TURN_MOTOR_FR,
+            inverted = true,
+            sensorPhase = false,
+            SwerveConstantsKraken.TURN_ENC_CHAN_FR,
+            SwerveConstantsKraken.TURN_ENC_OFFSET_FR
+          ),
+          turnMotorController(),
+          Translation2d(SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, -SwerveConstantsKraken.TRACKWIDTH / 2)
+        ),
+        SwerveModuleKraken.create(
+          "BLModule",
+          makeKrakenDrivingMotor(
+            SwerveConstantsKraken.DRIVE_MOTOR_BL,
+            inverted = InvertedValue.CounterClockwise_Positive
+          ),
+          makeNEOTurningMotor(
+            "BL",
+            SwerveConstantsKraken.TURN_MOTOR_BL,
+            inverted = true,
+            sensorPhase = false,
+            SwerveConstantsKraken.TURN_ENC_CHAN_BL,
+            SwerveConstantsKraken.TURN_ENC_OFFSET_BL
+          ),
+          turnMotorController(),
+          Translation2d(-SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, SwerveConstantsKraken.TRACKWIDTH / 2)
+        ),
+        SwerveModuleKraken.create(
+          "BRModule",
+          makeKrakenDrivingMotor(
+            SwerveConstantsKraken.DRIVE_MOTOR_BR,
+            inverted = InvertedValue.CounterClockwise_Positive
+          ),
+          makeNEOTurningMotor(
+            "BR",
+            SwerveConstantsKraken.TURN_MOTOR_BR,
+            inverted = true,
+            sensorPhase = false,
+            SwerveConstantsKraken.TURN_ENC_CHAN_BR,
+            SwerveConstantsKraken.TURN_ENC_OFFSET_BR
+          ),
+          turnMotorController(),
+          Translation2d(-SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, -SwerveConstantsKraken.TRACKWIDTH / 2)
+        )
+      )
+      return if (isReal()) {
+        SwerveDrive(
+          modules,
+          ahrs,
+          RobotConstants.MAX_LINEAR_SPEED,
+          RobotConstants.MAX_ROT_SPEED,
+          VisionConstants.ESTIMATORS,
+          field
+        )
+      } else {
+        SwerveSim(
+          modules,
+          ahrs,
+          RobotConstants.MAX_LINEAR_SPEED,
+          RobotConstants.MAX_ROT_SPEED,
+          VisionConstants.ESTIMATORS,
+          field
+        )
+      }
+    }
+
+    fun createSwerveNEO(ahrs: AHRS, field: Field2d): SwerveDrive {
       val driveMotorController = { PIDController(SwerveConstants.DRIVE_KP, SwerveConstants.DRIVE_KI, SwerveConstants.DRIVE_KD) }
       val turnMotorController = { PIDController(SwerveConstants.TURN_KP, SwerveConstants.TURN_KI, SwerveConstants.TURN_KD) }
       val driveFeedforward = SimpleMotorFeedforward(SwerveConstants.DRIVE_KS, SwerveConstants.DRIVE_KV, SwerveConstants.DRIVE_KA)
       val modules = listOf(
-        SwerveModule.create(
+        SwerveModuleNEO.create(
           "FLModule",
-          makeDrivingMotor(
+          makeNEODrivingMotor(
             "FL",
             SwerveConstants.DRIVE_MOTOR_FL,
             inverted = false
           ),
-          makeTurningMotor(
+          makeNEOTurningMotor(
             "FL",
             SwerveConstants.TURN_MOTOR_FL,
             inverted = true,
@@ -414,14 +495,14 @@ open class SwerveDrive(
           driveFeedforward,
           Translation2d(SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, SwerveConstants.TRACKWIDTH / 2)
         ),
-        SwerveModule.create(
+        SwerveModuleNEO.create(
           "FRModule",
-          makeDrivingMotor(
+          makeNEODrivingMotor(
             "FR",
             SwerveConstants.DRIVE_MOTOR_FR,
             inverted = false
           ),
-          makeTurningMotor(
+          makeNEOTurningMotor(
             "FR",
             SwerveConstants.TURN_MOTOR_FR,
             inverted = true,
@@ -434,14 +515,14 @@ open class SwerveDrive(
           driveFeedforward,
           Translation2d(SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, -SwerveConstants.TRACKWIDTH / 2)
         ),
-        SwerveModule.create(
+        SwerveModuleNEO.create(
           "BLModule",
-          makeDrivingMotor(
+          makeNEODrivingMotor(
             "BL",
             SwerveConstants.DRIVE_MOTOR_BL,
             inverted = false
           ),
-          makeTurningMotor(
+          makeNEOTurningMotor(
             "BL",
             SwerveConstants.TURN_MOTOR_BL,
             inverted = true,
@@ -454,14 +535,14 @@ open class SwerveDrive(
           driveFeedforward,
           Translation2d(-SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, SwerveConstants.TRACKWIDTH / 2)
         ),
-        SwerveModule.create(
+        SwerveModuleNEO.create(
           "BRModule",
-          makeDrivingMotor(
+          makeNEODrivingMotor(
             "BR",
             SwerveConstants.DRIVE_MOTOR_BR,
             inverted = false
           ),
-          makeTurningMotor(
+          makeNEOTurningMotor(
             "BR",
             SwerveConstants.TURN_MOTOR_BR,
             inverted = true,
@@ -497,7 +578,55 @@ open class SwerveDrive(
     }
 
     /** Helper to make turning motors for swerve. */
-    private fun makeDrivingMotor(
+    private fun makeKrakenDrivingMotor(
+      motorId: Int,
+      inverted: InvertedValue
+    ): TalonFX {
+      val motor = TalonFX(motorId)
+
+      val config = TalonFXConfiguration()
+
+      config.MotorOutput.Inverted = inverted
+      config.MotorOutput.NeutralMode = SwerveConstantsKraken.NEUTRAL_MODE
+      config.MotorOutput.DutyCycleNeutralDeadband = SwerveConstantsKraken.DUTY_CYCLE_DEADBAND
+
+      config.Feedback.SensorToMechanismRatio = 1 / SwerveConstantsKraken.DRIVE_GEARING
+
+      config.Slot0.kP = SwerveConstantsKraken.DRIVE_KP
+      config.Slot0.kI = SwerveConstantsKraken.DRIVE_KI
+      config.Slot0.kD = SwerveConstantsKraken.DRIVE_KD
+      config.Slot0.kS = SwerveConstantsKraken.DRIVE_KS
+      config.Slot0.kV = SwerveConstantsKraken.DRIVE_KV
+      config.Slot0.kA = SwerveConstantsKraken.DRIVE_KA
+
+      config.CurrentLimits.SupplyCurrentLimitEnable = true
+      config.CurrentLimits.StatorCurrentLimitEnable = true
+      config.CurrentLimits.StatorCurrentLimit = SwerveConstantsKraken.STATOR_LIMIT
+      config.CurrentLimits.SupplyCurrentLimit = SwerveConstantsKraken.SUPPLY_LIMIT
+      config.CurrentLimits.SupplyCurrentThreshold = SwerveConstantsKraken.SUPPLY_BOOST
+      config.CurrentLimits.SupplyTimeThreshold = SwerveConstantsKraken.SUPPLY_BOOST_TIME
+
+      var status: StatusCode = StatusCode.StatusCodeNotInitialized
+      for (i in 0..4) {
+        status = motor.configurator.apply(config)
+        if (status.isOK) break
+      }
+      if (!status.isOK) {
+        println("Could not apply configs, error code: $status")
+      }
+
+      motor.statorCurrent.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
+      motor.supplyCurrent.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
+      motor.velocity.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
+      motor.motorVoltage.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
+      motor.closedLoopError.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
+      motor.optimizeBusUtilization()
+
+      return motor
+    }
+
+    /** Helper to make turning motors for swerve. */
+    private fun makeNEODrivingMotor(
       name: String,
       motorId: Int,
       inverted: Boolean
@@ -516,7 +645,7 @@ open class SwerveDrive(
       )
 
     /** Helper to make turning motors for swerve. */
-    private fun makeTurningMotor(
+    private fun makeNEOTurningMotor(
       name: String,
       motorId: Int,
       inverted: Boolean,

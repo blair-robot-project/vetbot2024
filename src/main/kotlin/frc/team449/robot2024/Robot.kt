@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.PowerDistribution
 import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.team449.RobotBase
-import frc.team449.control.holonomic.SwerveDrive
-import frc.team449.control.holonomic.SwerveOrthogonalCommand
+import frc.team449.control.holonomic.swerve.SwerveDrive
+import frc.team449.control.holonomic.swerve.SwerveOrthogonalCommand
 import frc.team449.robot2024.constants.RobotConstants
 import frc.team449.system.AHRS
 import frc.team449.system.light.Light.Companion.createLight
@@ -29,7 +29,7 @@ class Robot : RobotBase(), Logged {
   )
 
   @Log.NT
-  override val drive = SwerveDrive.createSwerve(ahrs, field)
+  override val drive = SwerveDrive.createSwerveNEO(ahrs, field)
 
   @Log.NT
   override val driveCommand = SwerveOrthogonalCommand(drive, driveController.hid)

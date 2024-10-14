@@ -7,7 +7,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
-import frc.team449.control.holonomic.SwerveDrive
+import frc.team449.control.holonomic.swerve.SwerveDrive
 import frc.team449.robot2024.constants.RobotConstants
 import frc.team449.robot2024.constants.auto.AutoConstants
 import kotlin.math.PI
