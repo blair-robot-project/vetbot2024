@@ -89,7 +89,7 @@ open class SwerveModuleKraken(
     desiredState.speedMetersPerSecond = 0.0
   }
 
-  open override fun update() {
+  override fun update() {
     /** CONTROL speed of module */
     drivingMotor.setControl(
       VelocityVoltage(desiredState.speedMetersPerSecond / SwerveConstantsKraken.DRIVE_UPR)
