@@ -19,7 +19,7 @@ import kotlin.math.abs
  * @param poseTol Tolerance within final pose to say it is "good enough"
  * @param resetPosition Whether to reset the pose to the first pose in every trajectory. By default you reset to the first pose in the first trajectory, unless you are in resetPositionTolerance.
  * @param resetPositionTolerance If within this tolerance from initial pose to the first pose in the first trajectory, do not reset pose.
- * @param timeout Maximum time to wait after trajectory has finished to get in tolerance. A very low timeout may end this command before you get in tolerance.
+ * @param timeout Maximum time to wait after trajectory has finished to get in tolerance. If it gets in tolerance before the timeout, the command will still end, so you will not see this in simulation
  * @param debug Whether to run on trajectory expected velocities only (no feedback control)
  */
 class ChoreoRoutine(
@@ -72,7 +72,7 @@ class ChoreoRoutine(
             timeout,
             resetPosition,
             debug
-          ),
+          ).andThen(drive::stop, drive),
           parallelEventMap.getOrDefault(i, InstantCommand())
         )
       )

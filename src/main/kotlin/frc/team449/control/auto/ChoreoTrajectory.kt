@@ -63,30 +63,28 @@ class ChoreoTrajectory(
   companion object {
 
     /**
-     * Create all the Choreo Trajectories in a given Choreo .chor document file.
-     * @param filename Filename of .chor document file. By default, it will check in the deploy/choreo folder
+     * @param filenames Filenames of .traj document file. By default, it will check in the deploy/choreo folder
      */
     fun createTrajectory(
-      filename: String
+      filenames: List<String>,
+      subFolder: String = "",
     ): MutableList<ChoreoTrajectory> {
-      val path = Filesystem.getDeployDirectory().absolutePath.plus("/choreo/$filename.chor")
-      val document = (JSONParser().parse(FileReader(File(path).absolutePath)) as JSONObject)["paths"] as HashMap<*, *>
-
       val trajList = mutableListOf<ChoreoTrajectory>()
 
-      document.forEach { (name, pathData) ->
-        name as String
-        pathData as JSONObject
-        val trajectory = pathData["trajectory"] as JSONArray
+      for (filename in filenames) {
+        val path = Filesystem.getDeployDirectory().absolutePath.plus("/choreo/$subFolder/$filename.traj")
+        val document = (JSONParser().parse(FileReader(File(path).absolutePath)) as JSONObject)["trajectory"] as JSONObject
+
+        val trajectory = document["samples"] as JSONArray
 
         val info = parse(trajectory)
 
         val last = trajectory.last() as JSONObject
-        val totalTime = last["timestamp"] as Double
+        val totalTime = last["t"] as Double
 
         trajList.add(
           ChoreoTrajectory(
-            filename + name,
+            filename,
             info.first,
             totalTime,
             info.second
@@ -108,7 +106,7 @@ class ChoreoTrajectory(
 
       trajectory.forEach { state ->
         state as JSONObject
-        val stateTime = state["timestamp"].toString().toDouble()
+        val stateTime = state["t"].toString().toDouble()
 
         timestamps.add(stateTime)
 
@@ -118,9 +116,9 @@ class ChoreoTrajectory(
           deadband(state["x"].toString().toDouble()),
           deadband(state["y"].toString().toDouble()),
           deadband(state["heading"].toString().toDouble()),
-          deadband(state["velocityX"].toString().toDouble()),
-          deadband(state["velocityY"].toString().toDouble()),
-          deadband(state["angularVelocity"].toString().toDouble())
+          deadband(state["vx"].toString().toDouble()),
+          deadband(state["vy"].toString().toDouble()),
+          deadband(state["omega"].toString().toDouble())
         )
 
         stateMap.put(stateTime, matrix)

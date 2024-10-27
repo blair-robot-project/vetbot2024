@@ -8,12 +8,17 @@ class RoutineChooser(private val robot: Robot) : SendableChooser<String>() {
 
   fun routineMap(): HashMap<String, Command> {
     return hashMapOf(
-      "DoNothing" to DoNothing(robot).createCommand(),
+      "RedDoNothing" to DoNothing(robot).createCommand(),
+      "BlueDoNothing" to DoNothing(robot).createCommand(),
+      "RedExample" to ExampleRoutine(robot, true).createCommand(),
+      "BlueExample" to ExampleRoutine(robot, false).createCommand(),
     )
   }
 
   fun createOptions() {
     /** Add auto options here */
     this.setDefaultOption("Do Nothing", "DoNothing")
+
+    this.addOption("The Example Auto", "Example")
   }
 }
