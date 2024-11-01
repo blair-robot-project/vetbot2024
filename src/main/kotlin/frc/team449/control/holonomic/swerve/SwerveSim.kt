@@ -22,8 +22,12 @@ class SwerveSim(
   maxLinearSpeed: Double,
   maxRotSpeed: Double,
   cameras: List<VisionSubsystem>,
-  field: Field2d
-) : SwerveDrive(modules, ahrs, maxLinearSpeed, maxRotSpeed, cameras, field) {
+  field: Field2d,
+  trackwidth: Double,
+  wheelbase: Double,
+  xShift: Double,
+  maxAttainableModuleSpeed: Double
+) : SwerveDrive(modules, ahrs, maxLinearSpeed, maxRotSpeed, cameras, field, trackwidth, wheelbase, xShift, maxAttainableModuleSpeed) {
 
   private var lastTime = getFPGATimestamp()
   var odoPose = Pose2d()

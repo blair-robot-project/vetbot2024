@@ -8,12 +8,16 @@ object SwerveConstantsKraken {
   const val USE_FOC = false
   val NEUTRAL_MODE = NeutralModeValue.Brake
   const val DUTY_CYCLE_DEADBAND = 0.001
-  const val UPDATE_FREQUENCY = 100.0
+  const val POS_UPDATE_FREQUENCY = 100.0
+  const val UPDATE_FREQUENCY = 50.0
 
   const val SUPPLY_LIMIT = 50.0
   const val SUPPLY_BOOST = 65.0
   const val SUPPLY_BOOST_TIME = 0.25
   const val STATOR_LIMIT = 120.0
+  const val CLOSED_LOOP_RAMP = 0.020
+
+  const val TORQUE_CURRENT_LIMIT = 80.0
 
   /** Drive motor ports */
   const val DRIVE_MOTOR_FL = 2
@@ -55,7 +59,7 @@ object SwerveConstantsKraken {
   const val DRIVE_KI = 0.0
   const val DRIVE_KD = 0.0
 
-  /** Drive configuration */
+  /** Drive configuration, Look through SwerveConstantsNEO for turning NEO */
   const val DRIVE_GEARING = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0)
   const val DRIVE_UPR = 0.31818905832
   const val TURN_UPR = 2 * Math.PI

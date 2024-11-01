@@ -21,6 +21,7 @@ class NewControllerBindings(
   private fun robotBindings() {
     /** Call robot functions you create below */
     characterizationExample()
+    pointToRight()
   }
 
   private fun nonRobotBindings() {
@@ -61,6 +62,12 @@ class NewControllerBindings(
         }),
         InstantCommand()
       ) { RobotBase.isSimulation() }
+    )
+  }
+
+  private fun pointToRight() {
+    driveController.a().onTrue(
+      robot.driveCommand.pointAtAngleCommand(Rotation2d.fromDegrees(90.0))
     )
   }
 

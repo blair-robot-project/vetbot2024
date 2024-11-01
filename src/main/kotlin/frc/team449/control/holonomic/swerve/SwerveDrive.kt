@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.team449.control.holonomic.HolonomicDrive
 import frc.team449.control.vision.VisionSubsystem
 import frc.team449.robot2024.constants.RobotConstants
-import frc.team449.robot2024.constants.drives.SwerveConstants
+import frc.team449.robot2024.constants.drives.SwerveConstantsNEO
 import frc.team449.robot2024.constants.drives.SwerveConstantsKraken
 import frc.team449.robot2024.constants.vision.VisionConstants
 import frc.team449.system.AHRS
@@ -52,7 +52,11 @@ open class SwerveDrive(
   override var maxLinearSpeed: Double,
   override var maxRotSpeed: Double,
   protected val cameras: List<VisionSubsystem> = mutableListOf(),
-  protected val field: Field2d
+  protected val field: Field2d,
+  private val trackwidth: Double,
+  private val wheelbase: Double,
+  private val xShift: Double,
+  private val maxAttainableModuleSpeed: Double
 ) : SubsystemBase(), HolonomicDrive {
 
   /** Vision statistics */
@@ -122,8 +126,7 @@ open class SwerveDrive(
 //    normalizeDrive(desiredModuleStates, desiredSpeeds)
     SwerveDriveKinematics.desaturateWheelSpeeds(
       desiredModuleStates,
-      SwerveConstantsKraken.MAX_ATTAINABLE_MK4I_SPEED,
-
+      maxAttainableModuleSpeed
     )
 
     for (i in this.modules.indices) {
@@ -214,28 +217,28 @@ open class SwerveDrive(
 
     this.field.getObject("FL").pose = this.pose.plus(
       Transform2d(
-        Translation2d(SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, SwerveConstantsKraken.TRACKWIDTH / 2),
+        Translation2d(wheelbase / 2 - xShift, trackwidth / 2),
         this.getPositions()[0].angle
       )
     )
 
     this.field.getObject("FR").pose = this.pose.plus(
       Transform2d(
-        Translation2d(SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, -SwerveConstantsKraken.TRACKWIDTH / 2),
+        Translation2d(wheelbase / 2 - xShift, -trackwidth / 2),
         this.getPositions()[1].angle
       )
     )
 
     this.field.getObject("BL").pose = this.pose.plus(
       Transform2d(
-        Translation2d(-SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, SwerveConstantsKraken.TRACKWIDTH / 2),
+        Translation2d(-wheelbase / 2 - xShift, trackwidth / 2),
         this.getPositions()[2].angle
       )
     )
 
     this.field.getObject("BR").pose = this.pose.plus(
       Transform2d(
-        Translation2d(-SwerveConstantsKraken.WHEELBASE / 2 - SwerveConstantsKraken.X_SHIFT, -SwerveConstantsKraken.TRACKWIDTH / 2),
+        Translation2d(-wheelbase / 2 - xShift, -trackwidth / 2),
         this.getPositions()[0].angle
       )
     )
@@ -376,7 +379,7 @@ open class SwerveDrive(
   }
 
   companion object {
-    /** Create a [SwerveDrive] using [SwerveConstants]. */
+    /** Create a [SwerveDrive] using [SwerveConstantsNEO]. */
     fun createSwerveKraken(ahrs: AHRS, field: Field2d): SwerveDrive {
       val turnMotorController = { PIDController(SwerveConstantsKraken.TURN_KP, SwerveConstantsKraken.TURN_KI, SwerveConstantsKraken.TURN_KD) }
       val modules = listOf(
@@ -456,7 +459,11 @@ open class SwerveDrive(
           RobotConstants.MAX_LINEAR_SPEED,
           RobotConstants.MAX_ROT_SPEED,
           VisionConstants.ESTIMATORS,
-          field
+          field,
+          SwerveConstantsKraken.TRACKWIDTH,
+          SwerveConstantsKraken.WHEELBASE,
+          SwerveConstantsKraken.X_SHIFT,
+          SwerveConstantsKraken.MAX_ATTAINABLE_MK4I_SPEED
         )
       } else {
         SwerveSim(
@@ -465,95 +472,99 @@ open class SwerveDrive(
           RobotConstants.MAX_LINEAR_SPEED,
           RobotConstants.MAX_ROT_SPEED,
           VisionConstants.ESTIMATORS,
-          field
+          field,
+          SwerveConstantsKraken.TRACKWIDTH,
+          SwerveConstantsKraken.WHEELBASE,
+          SwerveConstantsKraken.X_SHIFT,
+          SwerveConstantsKraken.MAX_ATTAINABLE_MK4I_SPEED
         )
       }
     }
 
     fun createSwerveNEO(ahrs: AHRS, field: Field2d): SwerveDrive {
-      val driveMotorController = { PIDController(SwerveConstants.DRIVE_KP, SwerveConstants.DRIVE_KI, SwerveConstants.DRIVE_KD) }
-      val turnMotorController = { PIDController(SwerveConstants.TURN_KP, SwerveConstants.TURN_KI, SwerveConstants.TURN_KD) }
-      val driveFeedforward = SimpleMotorFeedforward(SwerveConstants.DRIVE_KS, SwerveConstants.DRIVE_KV, SwerveConstants.DRIVE_KA)
+      val driveMotorController = { PIDController(SwerveConstantsNEO.DRIVE_KP, SwerveConstantsNEO.DRIVE_KI, SwerveConstantsNEO.DRIVE_KD) }
+      val turnMotorController = { PIDController(SwerveConstantsNEO.TURN_KP, SwerveConstantsNEO.TURN_KI, SwerveConstantsNEO.TURN_KD) }
+      val driveFeedforward = SimpleMotorFeedforward(SwerveConstantsNEO.DRIVE_KS, SwerveConstantsNEO.DRIVE_KV, SwerveConstantsNEO.DRIVE_KA)
       val modules = listOf(
         SwerveModuleNEO.create(
           "FLModule",
           makeNEODrivingMotor(
             "FL",
-            SwerveConstants.DRIVE_MOTOR_FL,
+            SwerveConstantsNEO.DRIVE_MOTOR_FL,
             inverted = false
           ),
           makeNEOTurningMotor(
             "FL",
-            SwerveConstants.TURN_MOTOR_FL,
+            SwerveConstantsNEO.TURN_MOTOR_FL,
             inverted = true,
             sensorPhase = false,
-            SwerveConstants.TURN_ENC_CHAN_FL,
-            SwerveConstants.TURN_ENC_OFFSET_FL
+            SwerveConstantsNEO.TURN_ENC_CHAN_FL,
+            SwerveConstantsNEO.TURN_ENC_OFFSET_FL
           ),
           driveMotorController(),
           turnMotorController(),
           driveFeedforward,
-          Translation2d(SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, SwerveConstants.TRACKWIDTH / 2)
+          Translation2d(SwerveConstantsNEO.WHEELBASE / 2 - SwerveConstantsNEO.X_SHIFT, SwerveConstantsNEO.TRACKWIDTH / 2)
         ),
         SwerveModuleNEO.create(
           "FRModule",
           makeNEODrivingMotor(
             "FR",
-            SwerveConstants.DRIVE_MOTOR_FR,
+            SwerveConstantsNEO.DRIVE_MOTOR_FR,
             inverted = false
           ),
           makeNEOTurningMotor(
             "FR",
-            SwerveConstants.TURN_MOTOR_FR,
+            SwerveConstantsNEO.TURN_MOTOR_FR,
             inverted = true,
             sensorPhase = false,
-            SwerveConstants.TURN_ENC_CHAN_FR,
-            SwerveConstants.TURN_ENC_OFFSET_FR
+            SwerveConstantsNEO.TURN_ENC_CHAN_FR,
+            SwerveConstantsNEO.TURN_ENC_OFFSET_FR
           ),
           driveMotorController(),
           turnMotorController(),
           driveFeedforward,
-          Translation2d(SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, -SwerveConstants.TRACKWIDTH / 2)
+          Translation2d(SwerveConstantsNEO.WHEELBASE / 2 - SwerveConstantsNEO.X_SHIFT, -SwerveConstantsNEO.TRACKWIDTH / 2)
         ),
         SwerveModuleNEO.create(
           "BLModule",
           makeNEODrivingMotor(
             "BL",
-            SwerveConstants.DRIVE_MOTOR_BL,
+            SwerveConstantsNEO.DRIVE_MOTOR_BL,
             inverted = false
           ),
           makeNEOTurningMotor(
             "BL",
-            SwerveConstants.TURN_MOTOR_BL,
+            SwerveConstantsNEO.TURN_MOTOR_BL,
             inverted = true,
             sensorPhase = false,
-            SwerveConstants.TURN_ENC_CHAN_BL,
-            SwerveConstants.TURN_ENC_OFFSET_BL
+            SwerveConstantsNEO.TURN_ENC_CHAN_BL,
+            SwerveConstantsNEO.TURN_ENC_OFFSET_BL
           ),
           driveMotorController(),
           turnMotorController(),
           driveFeedforward,
-          Translation2d(-SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, SwerveConstants.TRACKWIDTH / 2)
+          Translation2d(-SwerveConstantsNEO.WHEELBASE / 2 - SwerveConstantsNEO.X_SHIFT, SwerveConstantsNEO.TRACKWIDTH / 2)
         ),
         SwerveModuleNEO.create(
           "BRModule",
           makeNEODrivingMotor(
             "BR",
-            SwerveConstants.DRIVE_MOTOR_BR,
+            SwerveConstantsNEO.DRIVE_MOTOR_BR,
             inverted = false
           ),
           makeNEOTurningMotor(
             "BR",
-            SwerveConstants.TURN_MOTOR_BR,
+            SwerveConstantsNEO.TURN_MOTOR_BR,
             inverted = true,
             sensorPhase = false,
-            SwerveConstants.TURN_ENC_CHAN_BR,
-            SwerveConstants.TURN_ENC_OFFSET_BR
+            SwerveConstantsNEO.TURN_ENC_CHAN_BR,
+            SwerveConstantsNEO.TURN_ENC_OFFSET_BR
           ),
           driveMotorController(),
           turnMotorController(),
           driveFeedforward,
-          Translation2d(-SwerveConstants.WHEELBASE / 2 - SwerveConstants.X_SHIFT, -SwerveConstants.TRACKWIDTH / 2)
+          Translation2d(-SwerveConstantsNEO.WHEELBASE / 2 - SwerveConstantsNEO.X_SHIFT, -SwerveConstantsNEO.TRACKWIDTH / 2)
         )
       )
       return if (isReal()) {
@@ -563,7 +574,11 @@ open class SwerveDrive(
           RobotConstants.MAX_LINEAR_SPEED,
           RobotConstants.MAX_ROT_SPEED,
           VisionConstants.ESTIMATORS,
-          field
+          field,
+          SwerveConstantsNEO.TRACKWIDTH,
+          SwerveConstantsNEO.WHEELBASE,
+          SwerveConstantsNEO.X_SHIFT,
+          SwerveConstantsNEO.MAX_ATTAINABLE_MK4I_SPEED
         )
       } else {
         SwerveSim(
@@ -572,7 +587,11 @@ open class SwerveDrive(
           RobotConstants.MAX_LINEAR_SPEED,
           RobotConstants.MAX_ROT_SPEED,
           VisionConstants.ESTIMATORS,
-          field
+          field,
+          SwerveConstantsNEO.TRACKWIDTH,
+          SwerveConstantsNEO.WHEELBASE,
+          SwerveConstantsNEO.X_SHIFT,
+          SwerveConstantsNEO.MAX_ATTAINABLE_MK4I_SPEED
         )
       }
     }
@@ -599,12 +618,18 @@ open class SwerveDrive(
       config.Slot0.kV = SwerveConstantsKraken.DRIVE_KV
       config.Slot0.kA = SwerveConstantsKraken.DRIVE_KA
 
+      config.TorqueCurrent.PeakForwardTorqueCurrent = SwerveConstantsKraken.TORQUE_CURRENT_LIMIT
+      config.TorqueCurrent.PeakReverseTorqueCurrent = -SwerveConstantsKraken.TORQUE_CURRENT_LIMIT
+      config.ClosedLoopRamps.TorqueClosedLoopRampPeriod = SwerveConstantsKraken.CLOSED_LOOP_RAMP
+
       config.CurrentLimits.SupplyCurrentLimitEnable = true
       config.CurrentLimits.StatorCurrentLimitEnable = true
       config.CurrentLimits.StatorCurrentLimit = SwerveConstantsKraken.STATOR_LIMIT
       config.CurrentLimits.SupplyCurrentLimit = SwerveConstantsKraken.SUPPLY_LIMIT
       config.CurrentLimits.SupplyCurrentThreshold = SwerveConstantsKraken.SUPPLY_BOOST
       config.CurrentLimits.SupplyTimeThreshold = SwerveConstantsKraken.SUPPLY_BOOST_TIME
+      config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = SwerveConstantsKraken.CLOSED_LOOP_RAMP
+      config.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = SwerveConstantsKraken.CLOSED_LOOP_RAMP
 
       var status: StatusCode = StatusCode.StatusCodeNotInitialized
       for (i in 0..4) {
@@ -615,6 +640,7 @@ open class SwerveDrive(
         println("Could not apply configs, error code: $status")
       }
 
+      motor.position.setUpdateFrequency(SwerveConstantsKraken.POS_UPDATE_FREQUENCY)
       motor.statorCurrent.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
       motor.supplyCurrent.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
       motor.velocity.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
@@ -638,10 +664,10 @@ open class SwerveDrive(
         inverted = inverted,
         encCreator =
         NEOEncoder.creator(
-          SwerveConstants.DRIVE_UPR,
-          SwerveConstants.DRIVE_GEARING
+          SwerveConstantsNEO.DRIVE_UPR,
+          SwerveConstantsNEO.DRIVE_GEARING
         ),
-        currentLimit = SwerveConstants.DRIVE_CURRENT_LIM
+        currentLimit = SwerveConstantsNEO.DRIVE_CURRENT_LIM
       )
 
     /** Helper to make turning motors for swerve. */
@@ -661,10 +687,10 @@ open class SwerveDrive(
         encCreator = AbsoluteEncoder.creator(
           encoderChannel,
           offset,
-          SwerveConstants.TURN_UPR,
+          SwerveConstantsNEO.TURN_UPR,
           sensorPhase
         ),
-        currentLimit = SwerveConstants.STEERING_CURRENT_LIM
+        currentLimit = SwerveConstantsNEO.STEERING_CURRENT_LIM
       )
   }
 }

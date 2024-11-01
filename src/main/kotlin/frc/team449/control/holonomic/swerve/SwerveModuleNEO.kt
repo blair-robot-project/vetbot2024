@@ -8,7 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.Timer
-import frc.team449.robot2024.constants.drives.SwerveConstants
+import frc.team449.robot2024.constants.drives.SwerveConstantsNEO
 import frc.team449.system.encoder.Encoder
 import frc.team449.system.motor.WrappedNEO
 import kotlin.math.PI
@@ -113,7 +113,7 @@ open class SwerveModuleNEO(
     turningMotor.set(
       turnPid +
         sign(desiredState.angle.radians - turningMotor.position) *
-          SwerveConstants.STEER_KS
+          SwerveConstantsNEO.STEER_KS
     )
   }
 

@@ -26,11 +26,11 @@ class TrapezoidalExponentialProfile(
   systemMass: Double,
   angle: Double,
   private val tolerance: Double = 0.05,
-  private val vMax: Double = 5.0,
+  private val vMax: Double = Double.MAX_VALUE,
   startingDistance: Double = 0.0,
   private var finalDistance: Double,
   private var aStop: Double = 9.81,
-  efficiency: Double
+  efficiency: Double = 0.80
 ) {
   private val trueStartingDistance: Double = startingDistance
   private val trueFinalDistance: Double = finalDistance
@@ -198,8 +198,6 @@ class TrapezoidalExponentialProfile(
   private val x4f = x40 + v40 * (t4f - t40) - 0.5 * aStop * (t4f - t40).pow(2)
   private val v4f = v40 - aStop * (t4f - t40)
 
-  val finalTime = t4f
-
   private fun sample1(t: Double): Pair<Double, Double> {
     return if (switchedStartingAndFinal) {
       Pair(
@@ -233,13 +231,13 @@ class TrapezoidalExponentialProfile(
       Pair(
         // hey, this was vMax in this script. Shouldn't this be vMax2 for the actual top speed?
         trueStartingDistance - (x30 + vMax2 * (t - t30)),
-        -vMax
+        -vMax2
       )
     } else {
       Pair(
         // hey, this was vMax in this script. Shouldn't this be vMax2 for the actual top speed?
         x30 + vMax2 * (t - t30) + trueStartingDistance,
-        vMax
+        vMax2
       )
     }
   }

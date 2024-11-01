@@ -11,8 +11,9 @@ import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.RunCommand
 import frc.team449.robot2024.constants.RobotConstants
-import frc.team449.robot2024.constants.drives.SwerveConstants
+import frc.team449.robot2024.constants.drives.SwerveConstantsNEO
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.*
 
@@ -37,7 +38,7 @@ class SwerveOrthogonalCommand(
   private val allianceCompensation = { if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) PI else 0.0 }
   private val directionCompensation = { if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) -1.0 else 1.0 }
 
-  var atGoal = true
+  var headingLock = false
 
   private var rotRamp = SlewRateLimiter(RobotConstants.ROT_RATE_LIMIT)
 
@@ -49,12 +50,9 @@ class SwerveOrthogonalCommand(
     RobotConstants.SNAP_KD
   )
 
-  private var skewConstant = SwerveConstants.SKEW_CONSTANT
+  private var skewConstant = SwerveConstantsNEO.SKEW_CONSTANT
 
   private var desiredVel = doubleArrayOf(0.0, 0.0, 0.0)
-
-  private var angVelOffset = 0.0
-  private var usingAngVelOffset = false
 
   init {
     addRequirements(drive)
@@ -80,29 +78,30 @@ class SwerveOrthogonalCommand(
       drive.currentSpeeds.omegaRadiansPerSecond
     )
 
-    atGoal = true
+    headingLock = false
   }
 
-  fun orthogonalAngle(angle: Double) {
-    val desAngle = MathUtil.angleModulus(angle + allianceCompensation.invoke())
-    if (abs(desAngle - drive.heading.radians) > RobotConstants.SNAP_TO_ANGLE_TOLERANCE_RAD &&
-      abs(desAngle - drive.heading.radians) < 2 * PI - RobotConstants.SNAP_TO_ANGLE_TOLERANCE_RAD
-    ) {
-      rotCtrl.calculate(drive.heading.radians, desAngle)
-      atGoal = rotCtrl.atSetpoint()
-    }
-  }
-
-  fun snapToAngle(angle: Double, angVel: Double = 0.0) {
-    val desAngle = MathUtil.angleModulus(angle + allianceCompensation.invoke())
+  fun snapToAngle(angle: Rotation2d) {
+    val desAngle = MathUtil.angleModulus(angle.radians + allianceCompensation.invoke())
     rotCtrl.calculate(drive.heading.radians, desAngle)
-    atGoal = rotCtrl.atSetpoint()
-    angVelOffset = angVel
-    usingAngVelOffset = true
+    headingLock = true
+  }
+
+  fun exitSnapToAngle() {
+    headingLock = false
   }
 
   fun checkSnapToAngleTolerance(): Boolean {
     return abs(rotCtrl.positionError) < RobotConstants.SNAP_TO_ANGLE_TOLERANCE_RAD
+  }
+
+  /** Just a helper command factory to point at a given angle and stop the heading lock once you get into tolerance
+   * If you want to customize when the heading lock is lifted, use the internal snapToAngle,
+   *  checkSnapToAngleTolerance, and exitSnapToAngle functions */
+  fun pointAtAngleCommand(angle: Rotation2d): Command {
+    return RunCommand({ snapToAngle(angle) })
+      .until(::checkSnapToAngleTolerance)
+      .andThen(::exitSnapToAngle)
   }
 
   override fun execute() {
@@ -117,7 +116,7 @@ class SwerveOrthogonalCommand(
       min(sqrt(ctrlX.pow(2) + ctrlY.pow(2)), 1.0),
       RobotConstants.DRIVE_RADIUS_DEADBAND,
       1.0
-    ).pow(SwerveConstants.JOYSTICK_FILTER_ORDER)
+    ).pow(SwerveConstantsNEO.JOYSTICK_FILTER_ORDER)
 
     val ctrlTheta = atan2(ctrlY, ctrlX)
 
@@ -155,33 +154,21 @@ class SwerveOrthogonalCommand(
 //      orthogonalAngle(0.0)
 //    }
 
-    if (atGoal) {
-      rotScaled = rotRamp.calculate(
-        MathUtil.applyDeadband(
-          abs(controller.rightX).pow(SwerveConstants.ROT_FILTER_ORDER),
-          RobotConstants.ROTATION_DEADBAND,
+    rotScaled = if (!headingLock) {
+      rotRamp.calculate(
+        min(
+          MathUtil.applyDeadband(
+            abs(controller.rightX).pow(SwerveConstantsNEO.ROT_FILTER_ORDER), RobotConstants.ROTATION_DEADBAND, 1.0),
           1.0
         ) * -sign(controller.rightX) * drive.maxRotSpeed
       )
     } else {
-      if (usingAngVelOffset) {
-        rotScaled = MathUtil.clamp(
-          rotCtrl.calculate(drive.heading.radians) + angVelOffset,
-          -RobotConstants.ALIGN_ROT_SPEED,
-          RobotConstants.ALIGN_ROT_SPEED
-        )
-        atGoal = rotCtrl.atSetpoint()
-      } else {
-        rotScaled = MathUtil.clamp(
-          rotCtrl.calculate(drive.heading.radians),
-          -RobotConstants.ALIGN_ROT_SPEED,
-          RobotConstants.ALIGN_ROT_SPEED
-        )
-        atGoal = rotCtrl.atSetpoint()
-      }
+      MathUtil.clamp(
+        rotCtrl.calculate(drive.heading.radians),
+        -RobotConstants.ALIGN_ROT_SPEED,
+        RobotConstants.ALIGN_ROT_SPEED
+      )
     }
-
-    usingAngVelOffset = false
 
     val vel = Translation2d(xClamped, yClamped)
 
@@ -238,6 +225,7 @@ class SwerveOrthogonalCommand(
     builder.addDoubleArrayProperty("Chassis Speed", { desiredVel }, null)
 
     builder.publishConstString("6.0", "Rotation Controller")
-    builder.addBooleanProperty("6.1 Controller At Goal", { atGoal }, null)
+    builder.addBooleanProperty("6.1 In Heading Lock", { headingLock }, null)
+    builder.addBooleanProperty("6.2 In Snap to Angle Tolerance", ::checkSnapToAngleTolerance, null)
   }
 }
