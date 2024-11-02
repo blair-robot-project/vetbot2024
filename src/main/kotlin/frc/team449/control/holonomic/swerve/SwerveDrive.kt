@@ -25,8 +25,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.team449.control.holonomic.HolonomicDrive
 import frc.team449.control.vision.VisionSubsystem
 import frc.team449.robot2024.constants.RobotConstants
-import frc.team449.robot2024.constants.drives.SwerveConstantsNEO
 import frc.team449.robot2024.constants.drives.SwerveConstantsKraken
+import frc.team449.robot2024.constants.drives.SwerveConstantsNEO
 import frc.team449.robot2024.constants.vision.VisionConstants
 import frc.team449.system.AHRS
 import frc.team449.system.encoder.AbsoluteEncoder

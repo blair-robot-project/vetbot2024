@@ -158,7 +158,10 @@ class SwerveOrthogonalCommand(
       rotRamp.calculate(
         min(
           MathUtil.applyDeadband(
-            abs(controller.rightX).pow(SwerveConstantsNEO.ROT_FILTER_ORDER), RobotConstants.ROTATION_DEADBAND, 1.0),
+            abs(controller.rightX).pow(SwerveConstantsNEO.ROT_FILTER_ORDER),
+            RobotConstants.ROTATION_DEADBAND,
+            1.0
+          ),
           1.0
         ) * -sign(controller.rightX) * drive.maxRotSpeed
       )

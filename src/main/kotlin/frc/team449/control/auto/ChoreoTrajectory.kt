@@ -67,7 +67,7 @@ class ChoreoTrajectory(
      */
     fun createTrajectory(
       filenames: List<String>,
-      subFolder: String = "",
+      subFolder: String = ""
     ): MutableList<ChoreoTrajectory> {
       val trajList = mutableListOf<ChoreoTrajectory>()
 
