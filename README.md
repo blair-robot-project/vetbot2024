@@ -1,5 +1,5 @@
-# Robot 2024
-Repository for Team 449's code for the 2024 FRC Crescendo game.
+# vetbot2024
+Repository for FRC Team 449's code for [2025 Blair Bunnybots](https://robot.mbhs.edu/bunnybots).
 
 Credit to 6328 for characterization commands and analysis.
 
