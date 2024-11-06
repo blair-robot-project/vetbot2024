@@ -2,6 +2,7 @@ package frc.team449.robot2024.constants.subsystem
 
 import com.ctre.phoenix6.signals.InvertedValue
 import com.ctre.phoenix6.signals.NeutralModeValue
+import edu.wpi.first.wpilibj.util.Color8Bit
 
 object PivotConstants {
 
@@ -14,16 +15,26 @@ object PivotConstants {
   const val BURST_CURRENT_LIMIT = 60.0
   const val SUPPLY_CURRENT_LIMIT = 40.0
   const val STATOR_CURRENT_LIMIT = 150.0
-  const val MOTOR_ID = 0
+  const val MOTOR_ID = 10
 
   const val GEARING_MOTOR_TO_GEARBOX = 15.0 / 1.0
   const val GEARING_GEARBOX_TO_AXLE = 4.0 / 1.0
   const val GEARING = GEARING_MOTOR_TO_GEARBOX * GEARING_GEARBOX_TO_AXLE
 
-  const val RIGHT_KS = 1.0
-  const val RIGHT_KV = 1.0
-  const val RIGHT_KA = 1.0
-  const val RIGHT_KP = 1.0
-  const val RIGHT_KI = 1.0
-  const val RIGHT_KD = 1.0
+  const val KS = 1.0
+  const val KV = 1.0
+  const val KA = 1.0
+  const val KP = 1.0
+  const val KI = 1.0
+  const val KD = 1.0
+  const val KG = 1.0
+
+  const val PIVOT_LENGTH = 1.0
+  const val START_ANGLE = 0.0
+  const val WIDTH = 0.25
+  val REAL_COLOR = Color8Bit(255, 0, 255)
+  val TARGET_COLOR = Color8Bit(0, 255, 0)
+
+  const val CRUISE_VEL = 3.0
+  const val MAX_ACCEL = 3.0
 }

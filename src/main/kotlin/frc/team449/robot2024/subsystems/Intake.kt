@@ -32,7 +32,7 @@ class Intake(
   override fun initSendable(builder: SendableBuilder) {
     builder.publishConstString("1.0", "Motor Voltages")
     builder.addDoubleProperty("1.1 Front Voltage", { frontMotor.get() }, null)
-    builder.addDoubleProperty("1.2 Front Voltage", { backMotor.get() }, null)
+    builder.addDoubleProperty("1.2 Back Voltage", { backMotor.get() }, null)
   }
 
   companion object {

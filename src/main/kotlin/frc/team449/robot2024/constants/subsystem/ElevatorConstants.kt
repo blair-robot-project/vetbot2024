@@ -22,7 +22,7 @@ object ElevatorConstants {
   const val BURST_CURRENT_LIMIT = 60.0
   const val SUPPLY_CURRENT_LIMIT = 30.0
   const val STATOR_CURRENT_LIMIT = 80.0
-  const val MOTOR_ID = 0
+  const val MOTOR_ID = 12
 
   const val GEARING_MOTOR_TO_GEAR = 25.0 / 1.0
   const val GEAR_DIAMETER_IN = 1.92222
