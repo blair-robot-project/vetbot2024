@@ -5,6 +5,15 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.controls.MotionMagicVoltage
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
+import edu.wpi.first.math.Nat
+import edu.wpi.first.math.VecBuilder
+import edu.wpi.first.math.controller.LinearQuadraticRegulator
+import edu.wpi.first.math.estimator.KalmanFilter
+import edu.wpi.first.math.numbers.N1
+import edu.wpi.first.math.numbers.N2
+import edu.wpi.first.math.system.LinearSystemLoop
+import edu.wpi.first.math.system.plant.DCMotor
+import edu.wpi.first.math.system.plant.LinearSystemId
 import edu.wpi.first.math.util.Units
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d
@@ -12,10 +21,12 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import frc.team449.robot2024.constants.RobotConstants
 import frc.team449.robot2024.constants.subsystem.PivotConstants
 
 class Pivot(
-  private val motor: TalonFX
+  private val motor: TalonFX,
+  private val loop: LinearSystemLoop<N2, N1, N1>
 ) : SubsystemBase() {
 
   private val positionRequest = MotionMagicVoltage(PivotConstants.START_ANGLE)
@@ -46,6 +57,16 @@ class Pivot(
       PivotConstants.TARGET_COLOR
     )
   )
+
+  fun moveToAngle(rotations: Double): Command {
+    loop.nextR = VecBuilder.fill(rotations, 0.0)
+    return this.run {
+      loop.correct(VecBuilder.fill(motor.position.value))
+      loop.predict(RobotConstants.LOOP_TIME)
+      val nextVoltage = loop.getU(0)
+      motor.setVoltage(nextVoltage)
+    }
+  }
 
   fun setPosition(position: Double): Command {
     return this.runOnce { motor.setControl(positionRequest.withPosition(position)) }
@@ -110,7 +131,47 @@ class Pivot(
       )
       motor.optimizeBusUtilization()
 
-      return Pivot(motor)
+      val plant = LinearSystemId.createSingleJointedArmSystem(
+        DCMotor.getKrakenX60(1),
+        PivotConstants.MOMENT_OF_INERTIA,
+        PivotConstants.GEARING
+      )
+
+      val filter = KalmanFilter(
+        Nat.N2(),
+        Nat.N1(),
+        plant,
+        VecBuilder.fill(
+          PivotConstants.MODEL_POS_DEVIATION,
+          PivotConstants.MODEL_VEL_DEVIATION
+        ),
+        VecBuilder.fill(
+          PivotConstants.ENCODER_POS_DEVIATION
+        ),
+        RobotConstants.LOOP_TIME
+      )
+
+      val controller = LinearQuadraticRegulator(
+        plant,
+        VecBuilder.fill(
+          PivotConstants.POS_TOLERANCE,
+          PivotConstants.VEL_TOLERANCE
+        ),
+        VecBuilder.fill(
+          PivotConstants.CONTROL_EFFORT_VOLTS
+        ),
+        RobotConstants.LOOP_TIME
+      )
+
+      val loop = LinearSystemLoop(
+        plant,
+        controller,
+        filter,
+        PivotConstants.CONTROL_EFFORT_VOLTS,
+        RobotConstants.LOOP_TIME
+      )
+
+      return Pivot(motor, loop)
     }
   }
 }

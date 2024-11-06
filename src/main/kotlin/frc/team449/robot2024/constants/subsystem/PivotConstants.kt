@@ -2,6 +2,7 @@ package frc.team449.robot2024.constants.subsystem
 
 import com.ctre.phoenix6.signals.InvertedValue
 import com.ctre.phoenix6.signals.NeutralModeValue
+import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.util.Color8Bit
 
 object PivotConstants {
@@ -17,9 +18,19 @@ object PivotConstants {
   const val STATOR_CURRENT_LIMIT = 150.0
   const val MOTOR_ID = 10
 
+  const val MOMENT_OF_INERTIA = 1.0 // TODO: find actual value
+
   const val GEARING_MOTOR_TO_GEARBOX = 15.0 / 1.0
   const val GEARING_GEARBOX_TO_AXLE = 4.0 / 1.0
   const val GEARING = GEARING_MOTOR_TO_GEARBOX * GEARING_GEARBOX_TO_AXLE
+
+  val MODEL_POS_DEVIATION = Units.degreesToRadians(10.0)
+  val MODEL_VEL_DEVIATION = Units.degreesToRadians(20.0)
+  val ENCODER_POS_DEVIATION = Units.degreesToRadians(0.175)
+
+  val POS_TOLERANCE = Units.degreesToRadians(1.975)
+  val VEL_TOLERANCE = Units.degreesToRadians(13.5)
+  const val CONTROL_EFFORT_VOLTS = 12.0
 
   const val KS = 1.0
   const val KV = 1.0
