@@ -1,11 +1,16 @@
 package frc.team449.robot2024.subsystems
 
+import com.ctre.phoenix6.SignalLogger
 import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.units.Measure
+import edu.wpi.first.units.Units.*
+import edu.wpi.first.units.Voltage
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj2.command.ConditionalCommand
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
 import frc.team449.control.holonomic.swerve.SwerveSim
 import frc.team449.robot2024.Robot
 import frc.team449.robot2024.constants.RobotConstants
@@ -20,8 +25,10 @@ class NewControllerBindings(
 
   private fun robotBindings() {
     /** Call robot functions you create below */
-    characterizationExample()
-    pointToRight()
+    //pivotChar()
+//    pointToRight()
+    raiseArm()
+    lowerArm()
   }
 
   private fun nonRobotBindings() {
@@ -69,6 +76,55 @@ class NewControllerBindings(
     driveController.a().onTrue(
       robot.driveCommand.pointAtAngleCommand(Rotation2d.fromDegrees(90.0))
     )
+  }
+
+  private fun raiseArm() {
+    driveController.b().onTrue(
+      robot.pivot.setPosition(0.25)
+    )
+  }
+
+  private fun lowerArm() {
+    driveController.x().onTrue(
+      robot.pivot.setPosition(0.0)
+    )
+  }
+
+  private fun pivotChar() {
+    val pivotRoutine = SysIdRoutine(
+      SysIdRoutine.Config(
+        Volts.of(0.5).per(Seconds.of(1.0)),
+        Volts.of(2.0),
+        Seconds.of(4.0)
+      ) { state -> SignalLogger.writeString("state", state.toString()) },
+      SysIdRoutine.Mechanism(
+        { voltage: Measure<Voltage> -> run { robot.pivot.setVoltage(voltage) } },
+        null,
+        robot.pivot,
+        "pivot"
+      )
+    )
+
+    // Quasistatic Forwards
+    driveController.a().onTrue(
+      pivotRoutine.quasistatic(SysIdRoutine.Direction.kForward)
+    )
+
+    // Quasistatic Reverse
+    driveController.b().onTrue(
+      pivotRoutine.quasistatic(SysIdRoutine.Direction.kReverse)
+    )
+
+    // Dynamic Forwards
+    driveController.x().onTrue(
+      pivotRoutine.dynamic(SysIdRoutine.Direction.kForward)
+    )
+
+    // Dynamic Reverse
+    driveController.y().onTrue(
+      pivotRoutine.dynamic(SysIdRoutine.Direction.kReverse)
+    )
+
   }
 
   /** Characterization functions */

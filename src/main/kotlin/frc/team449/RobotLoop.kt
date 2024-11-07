@@ -23,7 +23,6 @@ import monologue.Logged
 import monologue.Monologue
 import org.littletonrobotics.urcl.URCL
 import kotlin.jvm.optionals.getOrNull
-import kotlin.math.PI
 
 /** The main class of the robot, constructs all the subsystems
  * and initializes default commands . */
@@ -144,12 +143,10 @@ class RobotLoop : TimedRobot(), Logged {
     } else if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Blue) {
       FieldConstants.PASS_POSE = FieldConstants.BLUE_PASS_POSE
     }
-
-
   }
 
   override fun teleopPeriodic() {
-    CommandScheduler.getInstance().schedule(robot.pivot.moveToAngle(PI / 2))
+
   }
 
   override fun disabledInit() {

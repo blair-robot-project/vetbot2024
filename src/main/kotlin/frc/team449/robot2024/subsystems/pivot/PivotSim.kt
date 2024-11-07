@@ -1,12 +1,14 @@
 package frc.team449.robot2024.subsystems.pivot
 
 import com.ctre.phoenix6.hardware.TalonFX
+import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.numbers.N1
 import edu.wpi.first.math.numbers.N2
 import edu.wpi.first.math.system.LinearSystemLoop
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.units.Units.*
 import edu.wpi.first.util.sendable.SendableBuilder
+import edu.wpi.first.wpilibj.RobotController
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim
 import frc.team449.robot2024.constants.RobotConstants
 import frc.team449.robot2024.constants.subsystem.PivotConstants
@@ -28,16 +30,23 @@ class PivotSim(
     PivotConstants.MIN_ANGLE
   )
 
+  private var simMotor = motor.simState
+
   override val positionSupplier = Supplier { Radians.of(sim.angleRads) }
   override val velocitySupplier = Supplier { RadiansPerSecond.of(sim.velocityRadPerSec) }
   var currentDraw = 0.0
 
   override fun periodic() {
     super.periodic()
+    simMotor = motor.simState
+    simMotor.setSupplyVoltage(RobotController.getBatteryVoltage())
 
-    sim.setInputVoltage(motor.motorVoltage.value)
+    sim.setInputVoltage(MathUtil.clamp(simMotor.motorVoltage, -12.0, 12.0))
     sim.update(RobotConstants.LOOP_TIME)
     currentDraw = sim.currentDrawAmps
+
+    simMotor.setRawRotorPosition(positionSupplier.get().`in`(Rotations) * PivotConstants.GEARING_MOTOR_TO_MECHANISM)
+    simMotor.setRotorVelocity(velocitySupplier.get().`in`(RotationsPerSecond) * PivotConstants.GEARING_MOTOR_TO_MECHANISM)
   }
 
   override fun initSendable(builder: SendableBuilder) {

@@ -3,6 +3,7 @@ package frc.team449.robot2024.subsystems.pivot
 import com.ctre.phoenix6.BaseStatusSignal
 import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.controls.MotionMagicVoltage
+import com.ctre.phoenix6.controls.VoltageOut
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
 import edu.wpi.first.math.Nat
@@ -14,11 +15,11 @@ import edu.wpi.first.math.numbers.N2
 import edu.wpi.first.math.system.LinearSystemLoop
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.system.plant.LinearSystemId
-import edu.wpi.first.math.util.Units
 import edu.wpi.first.units.Angle
 import edu.wpi.first.units.Measure
 import edu.wpi.first.units.Units.*
 import edu.wpi.first.units.Velocity
+import edu.wpi.first.units.Voltage
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d
@@ -43,6 +44,7 @@ open class Pivot(
 
   open val positionSupplier: Supplier<Measure<Angle>> = Supplier {Rotations.of(motor.position.value)}
   open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
+  open var target = Rotations.of(PivotConstants.MIN_ANGLE)
 
   // sim stuff
   private val mech = Mechanism2d(2.0, 2.0)
@@ -68,23 +70,39 @@ open class Pivot(
     )
   )
 
-  fun moveToAngle(radians: Double): Command {
-    loop.nextR = VecBuilder.fill(radians, 0.0)
-    return this.run {
-      loop.correct(VecBuilder.fill(positionSupplier.get().`in`(Radians)))
-      loop.predict(RobotConstants.LOOP_TIME)
-      val nextVoltage = loop.getU(0)
-      motor.setVoltage(nextVoltage)
+//  fun moveToAngle(radians: Double): Command {
+//    target = Radians.of(radians)
+//    loop.nextR = VecBuilder.fill(radians, 0.0)
+//    return this.run {
+//      loop.correct(VecBuilder.fill(positionSupplier.get().`in`(Radians)))
+//      loop.predict(RobotConstants.LOOP_TIME)
+//      val nextVoltage = loop.getU(0)
+//      motor.setVoltage(nextVoltage)
+//    }
+//  }
+
+  fun setPosition(rotations: Double): Command {
+    return this.runOnce {
+      target = Rotations.of(rotations)
+      motor.setControl(positionRequest.withPosition(rotations))
     }
   }
 
-  fun setPosition(position: Double): Command {
-    return this.runOnce { motor.setControl(positionRequest.withPosition(position)) }
+  fun setVoltage(voltage: Measure<Voltage>) {
+    motor.setControl(
+      VoltageOut(
+        voltage.`in`(Volts),
+        false,
+        false,
+        false,
+        false
+      )
+    )
   }
 
   override fun periodic() {
     pivotVisual.angle = positionSupplier.get().`in`(Degrees)
-    targetVisual.angle = Units.radiansToDegrees(loop.getNextR(0))
+    targetVisual.angle = target.`in`(Degrees)
 
     SmartDashboard.putData("pivot visual", mech)
   }
@@ -95,10 +113,11 @@ open class Pivot(
     builder.addDoubleProperty("1.1 Voltage V", { motor.motorVoltage.value }, null)
     builder.addDoubleProperty("1.2 Velocity RPS", { velocitySupplier.get().`in`(RotationsPerSecond) }, null)
     builder.addDoubleProperty("1.3 Current Position Rot", { positionSupplier.get().`in`(Rotations) }, null)
-    builder.addDoubleProperty("1.4 Desired Position Rot", { loop.getNextR(0)  }, null)
+    builder.addDoubleProperty("1.4 Desired Position Rot", { positionRequest.Position }, null)
     builder.addDoubleProperty("1.5 Stator Current A", { motor.statorCurrent.value }, null)
     builder.publishConstString("2.0", "Model info")
-    builder.addDoubleProperty("2.1 Target Voltage", { loop.getU(0) }, null )
+    builder.addDoubleProperty("2.1 Target Voltage V", { loop.getU(0) }, null )
+    builder.addDoubleProperty("2.2 Closed Loop Error Rot", { motor.closedLoopError.value }, null)
   }
 
   companion object {
