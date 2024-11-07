@@ -12,6 +12,9 @@ object PivotConstants {
   val NEUTRAL_MODE = NeutralModeValue.Brake
   val ORIENTATION = InvertedValue.Clockwise_Positive
 
+  val MIN_ANGLE = Units.degreesToRadians(0.0)
+  val MAX_ANGLE = Units.degreesToRadians(105.0)
+
   const val BURST_TIME_LIMIT = 0.25
   const val BURST_CURRENT_LIMIT = 60.0
   const val SUPPLY_CURRENT_LIMIT = 40.0
@@ -21,8 +24,8 @@ object PivotConstants {
   const val MOMENT_OF_INERTIA = 1.0 // TODO: find actual value
 
   const val GEARING_MOTOR_TO_GEARBOX = 15.0 / 1.0
-  const val GEARING_GEARBOX_TO_AXLE = 4.0 / 1.0
-  const val GEARING = GEARING_MOTOR_TO_GEARBOX * GEARING_GEARBOX_TO_AXLE
+  const val GEARING_GEARBOX_TO_MECHANISM = 4.0 / 1.0
+  const val GEARING_MOTOR_TO_MECHANISM = GEARING_MOTOR_TO_GEARBOX * GEARING_GEARBOX_TO_MECHANISM
 
   val MODEL_POS_DEVIATION = Units.degreesToRadians(10.0)
   val MODEL_VEL_DEVIATION = Units.degreesToRadians(20.0)

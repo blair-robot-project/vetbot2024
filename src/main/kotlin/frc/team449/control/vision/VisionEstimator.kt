@@ -110,7 +110,7 @@ class VisionEstimator(
       if ((!result.multiTagResult.fiducialIDsUsed.containsAll(listOf(3, 4)) && DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) ||
         (!result.multiTagResult.fiducialIDsUsed.containsAll(listOf(7, 8)) && DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Blue)
       ) {
-        println("throwing away estimate, non speaker")
+        // println("throwing away estimate, non speaker")
         return Optional.empty()
       }
 

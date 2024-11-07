@@ -1,4 +1,4 @@
-package frc.team449.robot2024.subsystems
+package frc.team449.robot2024.subsystems.pivot
 
 import com.ctre.phoenix6.BaseStatusSignal
 import com.ctre.phoenix6.configs.TalonFXConfiguration
@@ -15,16 +15,23 @@ import edu.wpi.first.math.system.LinearSystemLoop
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.system.plant.LinearSystemId
 import edu.wpi.first.math.util.Units
+import edu.wpi.first.units.Angle
+import edu.wpi.first.units.Measure
+import edu.wpi.first.units.Units.*
+import edu.wpi.first.units.Velocity
 import edu.wpi.first.util.sendable.SendableBuilder
+import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+
 import frc.team449.robot2024.constants.RobotConstants
 import frc.team449.robot2024.constants.subsystem.PivotConstants
+import java.util.function.Supplier
 
-class Pivot(
+open class Pivot(
   private val motor: TalonFX,
   private val loop: LinearSystemLoop<N2, N1, N1>
 ) : SubsystemBase() {
@@ -33,6 +40,9 @@ class Pivot(
     .withSlot(0)
     .withEnableFOC(false)
     .withUpdateFreqHz(1000.0)
+
+  open val positionSupplier: Supplier<Measure<Angle>> = Supplier {Rotations.of(motor.position.value)}
+  open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
 
   // sim stuff
   private val mech = Mechanism2d(2.0, 2.0)
@@ -58,10 +68,10 @@ class Pivot(
     )
   )
 
-  fun moveToAngle(rotations: Double): Command {
-    loop.nextR = VecBuilder.fill(rotations, 0.0)
+  fun moveToAngle(radians: Double): Command {
+    loop.nextR = VecBuilder.fill(radians, 0.0)
     return this.run {
-      loop.correct(VecBuilder.fill(motor.position.value))
+      loop.correct(VecBuilder.fill(positionSupplier.get().`in`(Radians)))
       loop.predict(RobotConstants.LOOP_TIME)
       val nextVoltage = loop.getU(0)
       motor.setVoltage(nextVoltage)
@@ -73,8 +83,8 @@ class Pivot(
   }
 
   override fun periodic() {
-    pivotVisual.angle = Units.rotationsToDegrees(motor.position.value)
-    targetVisual.angle = Units.rotationsToDegrees(positionRequest.Position)
+    pivotVisual.angle = positionSupplier.get().`in`(Degrees)
+    targetVisual.angle = Units.radiansToDegrees(loop.getNextR(0))
 
     SmartDashboard.putData("pivot visual", mech)
   }
@@ -82,11 +92,13 @@ class Pivot(
   // logging stuff
   override fun initSendable(builder: SendableBuilder) {
     builder.publishConstString("1.0", "Motor Stuff")
-    builder.addDoubleProperty("1.1 Voltage", { motor.motorVoltage.value }, null)
-    builder.addDoubleProperty("1.2 Velocity", { motor.velocity.value }, null)
-    builder.addDoubleProperty("1.3 Current Position", { motor.position.value }, null)
-    builder.addDoubleProperty("1.4 Desired Position", { positionRequest.Position }, null)
-    builder.addDoubleProperty("1.5 Stator Current", { motor.statorCurrent.value }, null)
+    builder.addDoubleProperty("1.1 Voltage V", { motor.motorVoltage.value }, null)
+    builder.addDoubleProperty("1.2 Velocity RPS", { velocitySupplier.get().`in`(RotationsPerSecond) }, null)
+    builder.addDoubleProperty("1.3 Current Position Rot", { positionSupplier.get().`in`(Rotations) }, null)
+    builder.addDoubleProperty("1.4 Desired Position Rot", { loop.getNextR(0)  }, null)
+    builder.addDoubleProperty("1.5 Stator Current A", { motor.statorCurrent.value }, null)
+    builder.publishConstString("2.0", "Model info")
+    builder.addDoubleProperty("2.1 Target Voltage", { loop.getU(0) }, null )
   }
 
   companion object {
@@ -116,7 +128,7 @@ class Pivot(
       config.MotorOutput.Inverted = PivotConstants.ORIENTATION
       config.MotorOutput.NeutralMode = PivotConstants.NEUTRAL_MODE
       config.MotorOutput.DutyCycleNeutralDeadband = PivotConstants.DUTY_CYCLE_DEADBAND
-      config.Feedback.SensorToMechanismRatio = PivotConstants.GEARING
+      config.Feedback.SensorToMechanismRatio = PivotConstants.GEARING_MOTOR_TO_MECHANISM
 
       motor.configurator.apply(config)
 
@@ -134,7 +146,7 @@ class Pivot(
       val plant = LinearSystemId.createSingleJointedArmSystem(
         DCMotor.getKrakenX60(1),
         PivotConstants.MOMENT_OF_INERTIA,
-        PivotConstants.GEARING
+        PivotConstants.GEARING_MOTOR_TO_MECHANISM
       )
 
       val filter = KalmanFilter(
@@ -171,7 +183,7 @@ class Pivot(
         RobotConstants.LOOP_TIME
       )
 
-      return Pivot(motor, loop)
+      if (RobotBase.isReal()) return Pivot(motor, loop) else return PivotSim(motor, loop)
     }
   }
 }

@@ -9,7 +9,7 @@ import frc.team449.control.holonomic.swerve.SwerveOrthogonalCommand
 import frc.team449.robot2024.constants.RobotConstants
 import frc.team449.robot2024.subsystems.Elevator.Companion.createElevator
 import frc.team449.robot2024.subsystems.Intake.Companion.createIntake
-import frc.team449.robot2024.subsystems.Pivot.Companion.createPivot
+import frc.team449.robot2024.subsystems.pivot.Pivot.Companion.createPivot
 import frc.team449.system.AHRS
 import frc.team449.system.light.Light.Companion.createLight
 import monologue.Annotations.Log
@@ -32,6 +32,7 @@ class Robot : RobotBase(), Logged {
   )
 
   val intake = createIntake()
+  @Log.NT
   val pivot = createPivot()
   val elevator = createElevator()
 
