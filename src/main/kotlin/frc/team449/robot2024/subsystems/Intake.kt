@@ -11,6 +11,7 @@ class Intake(
   private val frontMotor: CANSparkMax,
   private val backMotor: CANSparkMax
 ) : SubsystemBase() {
+
   fun intake(): Command {
     return this.runOnce {
       frontMotor.setVoltage(IntakeConstants.INTAKE_VOLTAGE)

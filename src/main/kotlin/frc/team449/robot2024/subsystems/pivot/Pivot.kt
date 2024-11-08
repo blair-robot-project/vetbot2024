@@ -6,15 +6,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage
 import com.ctre.phoenix6.controls.VoltageOut
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
-import edu.wpi.first.math.Nat
-import edu.wpi.first.math.VecBuilder
-import edu.wpi.first.math.controller.LinearQuadraticRegulator
-import edu.wpi.first.math.estimator.KalmanFilter
-import edu.wpi.first.math.numbers.N1
-import edu.wpi.first.math.numbers.N2
-import edu.wpi.first.math.system.LinearSystemLoop
-import edu.wpi.first.math.system.plant.DCMotor
-import edu.wpi.first.math.system.plant.LinearSystemId
 import edu.wpi.first.units.Angle
 import edu.wpi.first.units.Measure
 import edu.wpi.first.units.Units.*
@@ -27,14 +18,11 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
-
-import frc.team449.robot2024.constants.RobotConstants
 import frc.team449.robot2024.constants.subsystem.PivotConstants
 import java.util.function.Supplier
 
 open class Pivot(
   private val motor: TalonFX,
-  private val loop: LinearSystemLoop<N2, N1, N1>
 ) : SubsystemBase() {
 
   private val positionRequest = MotionMagicVoltage(PivotConstants.START_ANGLE)
@@ -44,7 +32,7 @@ open class Pivot(
 
   open val positionSupplier: Supplier<Measure<Angle>> = Supplier {Rotations.of(motor.position.value)}
   open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
-  open var target = Rotations.of(PivotConstants.MIN_ANGLE)
+  open var target: Measure<Angle> = Rotations.of(PivotConstants.MIN_ANGLE)
 
   // sim stuff
   private val mech = Mechanism2d(2.0, 2.0)
@@ -65,21 +53,10 @@ open class Pivot(
       "pivot target",
       PivotConstants.PIVOT_LENGTH,
       PivotConstants.START_ANGLE,
-      PivotConstants.WIDTH,
+      PivotConstants.TARGET_WIDTH,
       PivotConstants.TARGET_COLOR
     )
   )
-
-//  fun moveToAngle(radians: Double): Command {
-//    target = Radians.of(radians)
-//    loop.nextR = VecBuilder.fill(radians, 0.0)
-//    return this.run {
-//      loop.correct(VecBuilder.fill(positionSupplier.get().`in`(Radians)))
-//      loop.predict(RobotConstants.LOOP_TIME)
-//      val nextVoltage = loop.getU(0)
-//      motor.setVoltage(nextVoltage)
-//    }
-//  }
 
   fun setPosition(rotations: Double): Command {
     return this.runOnce {
@@ -101,8 +78,8 @@ open class Pivot(
   }
 
   override fun periodic() {
-    pivotVisual.angle = positionSupplier.get().`in`(Degrees)
     targetVisual.angle = target.`in`(Degrees)
+    pivotVisual.angle = positionSupplier.get().`in`(Degrees)
 
     SmartDashboard.putData("pivot visual", mech)
   }
@@ -116,8 +93,7 @@ open class Pivot(
     builder.addDoubleProperty("1.4 Desired Position Rot", { positionRequest.Position }, null)
     builder.addDoubleProperty("1.5 Stator Current A", { motor.statorCurrent.value }, null)
     builder.publishConstString("2.0", "Model info")
-    builder.addDoubleProperty("2.1 Target Voltage V", { loop.getU(0) }, null )
-    builder.addDoubleProperty("2.2 Closed Loop Error Rot", { motor.closedLoopError.value }, null)
+    builder.addDoubleProperty("2.1 Closed Loop Error Rot", { motor.closedLoopError.value }, null)
   }
 
   companion object {
@@ -162,47 +138,7 @@ open class Pivot(
       )
       motor.optimizeBusUtilization()
 
-      val plant = LinearSystemId.createSingleJointedArmSystem(
-        DCMotor.getKrakenX60(1),
-        PivotConstants.MOMENT_OF_INERTIA,
-        PivotConstants.GEARING_MOTOR_TO_MECHANISM
-      )
-
-      val filter = KalmanFilter(
-        Nat.N2(),
-        Nat.N1(),
-        plant,
-        VecBuilder.fill(
-          PivotConstants.MODEL_POS_DEVIATION,
-          PivotConstants.MODEL_VEL_DEVIATION
-        ),
-        VecBuilder.fill(
-          PivotConstants.ENCODER_POS_DEVIATION
-        ),
-        RobotConstants.LOOP_TIME
-      )
-
-      val controller = LinearQuadraticRegulator(
-        plant,
-        VecBuilder.fill(
-          PivotConstants.POS_TOLERANCE,
-          PivotConstants.VEL_TOLERANCE
-        ),
-        VecBuilder.fill(
-          PivotConstants.CONTROL_EFFORT_VOLTS
-        ),
-        RobotConstants.LOOP_TIME
-      )
-
-      val loop = LinearSystemLoop(
-        plant,
-        controller,
-        filter,
-        PivotConstants.CONTROL_EFFORT_VOLTS,
-        RobotConstants.LOOP_TIME
-      )
-
-      if (RobotBase.isReal()) return Pivot(motor, loop) else return PivotSim(motor, loop)
+      return if (RobotBase.isReal()) Pivot(motor) else PivotSim(motor)
     }
   }
 }

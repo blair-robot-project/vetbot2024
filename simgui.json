@@ -68,7 +68,9 @@
       "/SmartDashboard/Elevator Visual": "Mechanism2d",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Routine Chooser": "String Chooser",
-      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d",
+      "/SmartDashboard/pivot visual": "Mechanism2d",
+      "/SmartDashboard/robot": "Mechanism2d"
     },
     "windows": {
       "/Monologuing/field": {
@@ -117,7 +119,7 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Command Scheduler": {
+      "/SmartDashboard/Elevator Visual": {
         "window": {
           "visible": true
         }
@@ -186,6 +188,11 @@
           "style": "Hidden"
         },
         "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/pivot visual": {
         "window": {
           "visible": true
         }
@@ -317,7 +324,9 @@
             },
             "int[]##v_/Monologuing/robot/drive/2.7 Total Rejected Vision Sights": {
               "open": true
-            },
+            }
+          },
+          "elevator": {
             "open": true
           },
           "intake": {

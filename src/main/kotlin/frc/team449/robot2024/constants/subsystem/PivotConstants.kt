@@ -27,14 +27,6 @@ object PivotConstants {
   const val GEARING_GEARBOX_TO_MECHANISM = 4.0 / 1.0
   const val GEARING_MOTOR_TO_MECHANISM = GEARING_MOTOR_TO_GEARBOX * GEARING_GEARBOX_TO_MECHANISM
 
-  val MODEL_POS_DEVIATION = Units.degreesToRadians(10.0)
-  val MODEL_VEL_DEVIATION = Units.degreesToRadians(20.0)
-  val ENCODER_POS_DEVIATION = Units.degreesToRadians(0.175)
-
-  val POS_TOLERANCE = Units.degreesToRadians(1.975)
-  val VEL_TOLERANCE = Units.degreesToRadians(13.5)
-  const val CONTROL_EFFORT_VOLTS = 12.0
-
   const val KS = 0.010968
   const val KV = 7.1249
   const val KA = 0.072661
@@ -45,10 +37,11 @@ object PivotConstants {
 
   const val PIVOT_LENGTH = 1.0
   const val START_ANGLE = 0.0
-  const val WIDTH = 0.25
+  const val WIDTH = 5.0
+  const val TARGET_WIDTH = 8.0
   val REAL_COLOR = Color8Bit(255, 0, 255)
   val TARGET_COLOR = Color8Bit(0, 255, 0)
 
-  const val CRUISE_VEL = 5.0
+  const val CRUISE_VEL = 10.0
   const val MAX_ACCEL = 5.0
 }

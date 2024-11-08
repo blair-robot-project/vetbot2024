@@ -2,9 +2,6 @@ package frc.team449.robot2024.subsystems.pivot
 
 import com.ctre.phoenix6.hardware.TalonFX
 import edu.wpi.first.math.MathUtil
-import edu.wpi.first.math.numbers.N1
-import edu.wpi.first.math.numbers.N2
-import edu.wpi.first.math.system.LinearSystemLoop
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.units.Units.*
 import edu.wpi.first.util.sendable.SendableBuilder
@@ -15,9 +12,8 @@ import frc.team449.robot2024.constants.subsystem.PivotConstants
 import java.util.function.Supplier
 
 class PivotSim(
-  private val motor: TalonFX,
-  private val loop: LinearSystemLoop<N2, N1, N1>
-): Pivot(motor, loop) {
+  private val motor: TalonFX
+): Pivot(motor) {
 
   private val sim = SingleJointedArmSim(
     DCMotor.getKrakenX60(1),
@@ -34,7 +30,7 @@ class PivotSim(
 
   override val positionSupplier = Supplier { Radians.of(sim.angleRads) }
   override val velocitySupplier = Supplier { RadiansPerSecond.of(sim.velocityRadPerSec) }
-  var currentDraw = 0.0
+  private var currentDraw = 0.0
 
   override fun periodic() {
     super.periodic()
@@ -54,5 +50,6 @@ class PivotSim(
 
     builder.publishConstString("4.0", "Sim Stuff")
     builder.addDoubleProperty("4.1 Current Draw", {currentDraw}, null)
+
   }
 }

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
 import frc.team449.control.holonomic.swerve.SwerveSim
 import frc.team449.robot2024.Robot
 import frc.team449.robot2024.constants.RobotConstants
+import frc.team449.robot2024.constants.subsystem.ElevatorConstants
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.PI
 
@@ -29,6 +30,9 @@ class NewControllerBindings(
 //    pointToRight()
     raiseArm()
     lowerArm()
+    raiseElevator()
+    lowerElevator()
+//    elevatorChar()
   }
 
   private fun nonRobotBindings() {
@@ -85,8 +89,20 @@ class NewControllerBindings(
   }
 
   private fun lowerArm() {
-    driveController.x().onTrue(
+    driveController.a().onTrue(
       robot.pivot.setPosition(0.0)
+    )
+  }
+
+  private fun raiseElevator() {
+    driveController.x().onTrue(
+      robot.elevator.setPosition(ElevatorConstants.HIGH_HEIGHT)
+    )
+  }
+
+  private fun lowerElevator() {
+    driveController.y().onTrue(
+      robot.elevator.setPosition(ElevatorConstants.STOW_HEIGHT)
     )
   }
 
@@ -94,8 +110,8 @@ class NewControllerBindings(
     val pivotRoutine = SysIdRoutine(
       SysIdRoutine.Config(
         Volts.of(0.5).per(Seconds.of(1.0)),
-        Volts.of(2.0),
-        Seconds.of(4.0)
+        Volts.of(4.0),
+        Seconds.of(10.0)
       ) { state -> SignalLogger.writeString("state", state.toString()) },
       SysIdRoutine.Mechanism(
         { voltage: Measure<Voltage> -> run { robot.pivot.setVoltage(voltage) } },
@@ -125,6 +141,42 @@ class NewControllerBindings(
       pivotRoutine.dynamic(SysIdRoutine.Direction.kReverse)
     )
 
+  }
+
+  private fun elevatorChar() {
+    val elevatorRoutine = SysIdRoutine(
+      SysIdRoutine.Config(
+        Volts.of(0.5).per(Seconds.of(1.0)),
+        Volts.of(12.0),
+        Seconds.of(10.0)
+      ) { state -> SignalLogger.writeString("state", state.toString()) },
+      SysIdRoutine.Mechanism(
+        { voltage: Measure<Voltage> -> run { robot.elevator.setVoltage(voltage.`in`(Volts)) } },
+        null,
+        robot.elevator,
+        "elevator"
+      )
+    )
+
+    // Quasistatic Forwards
+    driveController.a().onTrue(
+      elevatorRoutine.quasistatic(SysIdRoutine.Direction.kForward)
+    )
+
+    // Quasistatic Reverse
+    driveController.b().onTrue(
+      elevatorRoutine.quasistatic(SysIdRoutine.Direction.kReverse)
+    )
+
+    // Dynamic Forwards
+    driveController.x().onTrue(
+      elevatorRoutine.dynamic(SysIdRoutine.Direction.kForward)
+    )
+
+    // Dynamic Reverse
+    driveController.y().onTrue(
+      elevatorRoutine.dynamic(SysIdRoutine.Direction.kReverse)
+    )
   }
 
   /** Characterization functions */
