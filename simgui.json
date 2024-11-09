@@ -98,7 +98,7 @@
           "length": 0.9271000027656555,
           "width": 0.8508999943733215
         },
-        "height": 8.210550308227539,
+        "height": 8.229599952697754,
         "image": "C:\\Users\\Jeffery\\Downloads\\field.png",
         "odo": {
           "color": [
@@ -110,8 +110,8 @@
           "length": 0.7620000243186951,
           "style": "Box/Image"
         },
-        "units": "inches",
-        "width": 16.541748046875,
+        "units": "feet",
+        "width": 16.459199905395508,
         "window": {
           "visible": true
         }

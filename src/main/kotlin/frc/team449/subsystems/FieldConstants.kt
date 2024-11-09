@@ -4,8 +4,8 @@ import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.util.Units
 
 object FieldConstants {
-  const val fieldLength = 16.54175
-  const val fieldWidth = 8.21055
+  const val fieldLength = 16.4592
+  const val fieldWidth = 8.2296
 
   /** Find these constants in meters for the blue alliance */
   val BLUE_SPEAKER_POSE = Translation2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42))

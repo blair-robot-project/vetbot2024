@@ -172,4 +172,5 @@ out/
 *-window.json
 
 *.wpilog
+*.hoot
 /.run/

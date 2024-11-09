@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.util.Units
-import frc.team449.subsystems.drive.holonomic.swerve.SwerveConstantsNEO
+import frc.team449.subsystems.drive.swerve.SwerveConstantsNEO
 import kotlin.math.PI
 
 object RobotConstants {
@@ -20,7 +20,7 @@ object RobotConstants {
   val SNAP_TO_ANGLE_TOLERANCE_RAD = Units.degreesToRadians(3.5)
 
   /** In kilograms, include bumpers and battery and all */
-  const val ROBOT_WEIGHT = 55.0
+  const val ROBOT_WEIGHT = 55.0 // TODO: find
 
   /** Drive configuration */
   val MAX_LINEAR_SPEED = SwerveConstantsNEO.MAX_ATTAINABLE_MK4I_SPEED // m/s
