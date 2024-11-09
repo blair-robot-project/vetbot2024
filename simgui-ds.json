@@ -1,4 +1,9 @@
 {
+  "FMS": {
+    "window": {
+      "visible": false
+    }
+  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
@@ -94,7 +99,7 @@
       "guid": "Keyboard0"
     },
     {
-      "useGamepad": true
+      "guid": "Keyboard1"
     }
   ]
 }

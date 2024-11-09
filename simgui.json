@@ -93,14 +93,13 @@
         "Robot": {
           "length": 0.7620000243186951
         },
-        "bottom": 1476,
+        "builtin": "",
         "bumpers": {
           "length": 0.9271000027656555,
           "width": 0.8508999943733215
         },
         "height": 8.210550308227539,
-        "image": "C:\\Users\\jpoth\\Downloads\\image(1).png",
-        "left": 150,
+        "image": "C:\\Users\\Jeffery\\Downloads\\field.png",
         "odo": {
           "color": [
             0.7647056579589844,
@@ -111,13 +110,8 @@
           "length": 0.7620000243186951,
           "style": "Box/Image"
         },
-        "right": 2961,
-        "top": 79,
         "units": "inches",
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
+        "width": 16.541748046875
       },
       "/SmartDashboard/Elevator Visual": {
         "window": {
@@ -125,15 +119,10 @@
         }
       },
       "/SmartDashboard/Field": {
-        "bottom": 1476,
+        "builtin": "",
         "height": 8.210550308227539,
-        "left": 150,
-        "right": 2961,
-        "top": 79,
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
+        "image": "C:\\Users\\Jeffery\\Downloads\\field.png",
+        "width": 16.541748046875
       },
       "/SmartDashboard/Routine Chooser": {
         "window": {
@@ -172,16 +161,13 @@
           ],
           "style": "Box/Image"
         },
-        "bottom": 1476,
+        "builtin": "",
         "cameras": {
           "arrowSize": 68,
           "style": "Track"
         },
         "height": 8.210550308227539,
-        "image": "C:\\Users\\jpoth\\Downloads\\image(1).png",
-        "left": 150,
-        "right": 2961,
-        "top": 79,
+        "image": "C:\\Users\\Jeffery\\Downloads\\field.png",
         "units": "inches",
         "visibleTargetPoses": {
           "selectable": false,
@@ -304,6 +290,12 @@
             "double[]##v_/Monologuing/robot/drive/2.83 Vision Pose Cam 2": {
               "open": true
             },
+            "double[]##v_/Monologuing/robot/drive/3.1 Current States": {
+              "open": true
+            },
+            "double[]##v_/Monologuing/robot/drive/3.2 Desired States": {
+              "open": true
+            },
             "double[]##v_/Monologuing/robot/drive/4.2 Current Speeds": {
               "open": true
             },
@@ -324,9 +316,7 @@
             },
             "int[]##v_/Monologuing/robot/drive/2.7 Total Rejected Vision Sights": {
               "open": true
-            }
-          },
-          "elevator": {
+            },
             "open": true
           },
           "intake": {
