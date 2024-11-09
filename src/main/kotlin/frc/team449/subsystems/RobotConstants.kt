@@ -1,10 +1,10 @@
-package frc.team449.robot2024.constants
+package frc.team449.subsystems
 
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.util.Units
-import frc.team449.robot2024.constants.drives.SwerveConstantsNEO
+import frc.team449.subsystems.drive.holonomic.swerve.SwerveConstantsNEO
 import kotlin.math.PI
 
 object RobotConstants {
@@ -24,18 +24,13 @@ object RobotConstants {
 
   /** Drive configuration */
   val MAX_LINEAR_SPEED = SwerveConstantsNEO.MAX_ATTAINABLE_MK4I_SPEED // m/s
-  const val MAX_ROT_SPEED = 5.804 * PI / 4 // rad/s
+  const val MAX_ROT_SPEED = 5.804 * PI / 4 // r ad/s
 
   const val USE_ACCEL_LIMIT = true
 
-  val MAX_ACCEL = 4 * DCMotor(
-    MotorConstants.NOMINAL_VOLTAGE,
-    MotorConstants.STALL_TORQUE * SwerveConstantsNEO.EFFICIENCY,
-    MotorConstants.STALL_CURRENT,
-    MotorConstants.FREE_CURRENT,
-    MotorConstants.FREE_SPEED,
-    1
-  ).getTorque(75.0) /
+  val MAX_ACCEL = 4 *
+    DCMotor.getNEO(1)
+    .getTorque(75.0) /
     ((SwerveConstantsNEO.DRIVE_UPR / (2 * PI)) * ROBOT_WEIGHT * SwerveConstantsNEO.DRIVE_GEARING) // m/s/s
 
   val INITIAL_POSE = Pose2d(0.0, 0.0, Rotation2d())

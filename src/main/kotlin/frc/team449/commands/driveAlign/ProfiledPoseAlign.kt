@@ -1,4 +1,4 @@
-package frc.team449.robot2024.commands.driveAlign
+package frc.team449.commands.driveAlign
 
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Pose2d
@@ -7,9 +7,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
-import frc.team449.control.holonomic.swerve.SwerveDrive
-import frc.team449.robot2024.constants.RobotConstants
-import frc.team449.robot2024.constants.auto.AutoConstants
+import frc.team449.subsystems.drive.holonomic.swerve.SwerveDrive
+import frc.team449.subsystems.RobotConstants
+import frc.team449.auto.AutoConstants
 import kotlin.math.PI
 import kotlin.math.hypot
 

@@ -1,7 +1,7 @@
-package frc.team449.control
+package frc.team449.util
 
+import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.util.Units
-import frc.team449.robot2024.constants.MotorConstants
 import kotlin.math.*
 
 // TODO: Copy parameter descriptions from Rafi's spreadsheet
@@ -37,10 +37,10 @@ class TrapezoidalExponentialProfile(
   private var switchedStartingAndFinal: Boolean = false
 
   // NEO Motor Constants
-  val freeSpeed = MotorConstants.FREE_SPEED
-  val freeCurrent = MotorConstants.FREE_CURRENT
-  val stallCurrent = MotorConstants.STALL_CURRENT
-  val stallTorque = MotorConstants.STALL_TORQUE * efficiency
+  val freeSpeed = DCMotor.getNEO(1).freeSpeedRadPerSec
+  val freeCurrent = DCMotor.getNEO(1).freeCurrentAmps
+  val stallCurrent = DCMotor.getNEO(1).stallCurrentAmps
+  val stallTorque = DCMotor.getNEO(1).stallTorqueNewtonMeters * efficiency
 
   private fun expDecelIntercept(
     vFree: Double,
