@@ -7,6 +7,8 @@ import kotlin.math.PI
 
 object ElevatorConstants {
 
+  const val MOTOR_ID = 12
+
   const val ANGLE = 75.0 // TODO: someone figure this out
   const val WIDTH = 5.0
   const val TARGET_WIDTH = 8.0
@@ -22,7 +24,8 @@ object ElevatorConstants {
   const val BURST_CURRENT_LIMIT = 60.0
   const val SUPPLY_CURRENT_LIMIT = 30.0
   const val STATOR_CURRENT_LIMIT = 80.0
-  const val MOTOR_ID = 12
+
+  const val TOLERANCE = 0.1
 
   const val CARRIAGE_MASS_KG = 9.3811974
 

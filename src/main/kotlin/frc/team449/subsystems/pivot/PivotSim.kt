@@ -19,10 +19,10 @@ class PivotSim(
     PivotConstants.GEARING_MOTOR_TO_MECHANISM,
     PivotConstants.MOMENT_OF_INERTIA,
     PivotConstants.PIVOT_LENGTH,
-    PivotConstants.MIN_ANGLE,
-    PivotConstants.MAX_ANGLE,
+    PivotConstants.MIN_ANGLE.`in`(Radians),
+    PivotConstants.MAX_ANGLE.`in`(Radians),
     true,
-    PivotConstants.MIN_ANGLE
+    PivotConstants.MIN_ANGLE.`in`(Radians)
   )
 
   private var simMotor = motor.simState

@@ -3,23 +3,29 @@ package frc.team449.subsystems.pivot
 import com.ctre.phoenix6.signals.InvertedValue
 import com.ctre.phoenix6.signals.NeutralModeValue
 import edu.wpi.first.math.util.Units
+import edu.wpi.first.units.Units.*
 import edu.wpi.first.wpilibj.util.Color8Bit
+import kotlin.math.PI
 
 object PivotConstants {
+  const val MOTOR_ID = 10
 
   const val UPDATE_FREQUENCY = 50.0
   const val DUTY_CYCLE_DEADBAND = 0.001
   val NEUTRAL_MODE = NeutralModeValue.Brake
   val ORIENTATION = InvertedValue.CounterClockwise_Positive
 
-  val MIN_ANGLE = Units.degreesToRadians(0.0)
-  val MAX_ANGLE = Units.degreesToRadians(105.0)
+  val MIN_ANGLE = Degrees.of(0.0)
+  val STOW_ANGLE = Degrees.of(0.0)
+  val HIGH_ANGLE = Degrees.of(90.0)
+  val MAX_ANGLE = Degrees.of(105.0)
 
   const val BURST_TIME_LIMIT = 0.25
   const val BURST_CURRENT_LIMIT = 60.0
   const val SUPPLY_CURRENT_LIMIT = 40.0
   const val STATOR_CURRENT_LIMIT = 150.0
-  const val MOTOR_ID = 10
+
+  val TOLERANCE = 0.1
 
   const val MOMENT_OF_INERTIA = 0.5253
 

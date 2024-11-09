@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import java.util.function.Supplier
+import kotlin.math.abs
 
 open class Elevator(
   private val motor: TalonFX
@@ -70,6 +71,19 @@ open class Elevator(
     return this.runOnce { motor.stopMotor() }
   }
 
+  fun stow(): Command {
+    return setPosition(ElevatorConstants.STOW_HEIGHT)
+  }
+
+  fun high(): Command {
+    return setPosition(ElevatorConstants.HIGH_HEIGHT)
+  }
+
+  fun atSetpoint(): Boolean {
+    return (abs(motor.position.value - request.Position) < ElevatorConstants.TOLERANCE)
+  }
+
+
   override fun periodic() {
     elevatorVisual.length = ElevatorConstants.MIN_HEIGHT + positionSupplier.get()
     desiredElevatorVisual.length = ElevatorConstants.MIN_HEIGHT + request.Position
@@ -84,8 +98,7 @@ open class Elevator(
     builder.addDoubleProperty("1.3 Velocity", { velocitySupplier.get() }, null)
     builder.addDoubleProperty("1.4 Desired Position", { request.Position }, null)
     builder.addDoubleProperty("1.5 Closed-loop Error", { motor.closedLoopError.value }, null)
-    builder.addDoubleProperty("1.6 Motor Position", {motor.position.value}, null)
-    builder.addDoubleProperty("1.7 Motor Velocity", {motor.velocity.value}, null)
+    builder.addBooleanProperty("1.6 At Tolerance", {atSetpoint()}, null)
   }
 
   companion object {

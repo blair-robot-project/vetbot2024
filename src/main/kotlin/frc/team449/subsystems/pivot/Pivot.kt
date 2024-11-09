@@ -31,7 +31,7 @@ open class Pivot(
 
   open val positionSupplier: Supplier<Measure<Angle>> = Supplier {Rotations.of(motor.position.value)}
   open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
-  open var target: Measure<Angle> = Rotations.of(PivotConstants.MIN_ANGLE)
+  open var target: Measure<Angle> = PivotConstants.MIN_ANGLE
 
   // sim stuff
   private val mech = Mechanism2d(2.0, 2.0)
@@ -57,10 +57,10 @@ open class Pivot(
     )
   )
 
-  fun setPosition(rotations: Double): Command {
+  fun setPosition(rotations: Measure<Angle>): Command {
     return this.runOnce {
-      target = Rotations.of(rotations)
-      motor.setControl(positionRequest.withPosition(rotations))
+      target = rotations
+      motor.setControl(positionRequest.withPosition(rotations.`in`(Rotations)))
     }
   }
 
@@ -74,6 +74,18 @@ open class Pivot(
         false
       )
     )
+  }
+
+  fun stow(): Command {
+    return setPosition(PivotConstants.STOW_ANGLE)
+  }
+
+  fun high(): Command {
+    return setPosition(PivotConstants.HIGH_ANGLE)
+  }
+
+  fun atSetpoint(): Boolean {
+    return (positionSupplier.get().isNear(target, PivotConstants.TOLERANCE))
   }
 
   override fun periodic() {
@@ -93,6 +105,7 @@ open class Pivot(
     builder.addDoubleProperty("1.5 Stator Current A", { motor.statorCurrent.value }, null)
     builder.publishConstString("2.0", "Model info")
     builder.addDoubleProperty("2.1 Closed Loop Error Rot", { motor.closedLoopError.value }, null)
+    builder.addBooleanProperty("2.2 At Setpoint", { atSetpoint() }, null)
   }
 
   companion object {

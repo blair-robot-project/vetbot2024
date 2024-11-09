@@ -83,13 +83,13 @@ class NewControllerBindings(
 
   private fun raiseArm() {
     driveController.b().onTrue(
-      robot.pivot.setPosition(0.25)
+      robot.pivot.high()
     )
   }
 
   private fun lowerArm() {
     driveController.a().onTrue(
-      robot.pivot.setPosition(0.0)
+      robot.pivot.stow()
     )
   }
 
