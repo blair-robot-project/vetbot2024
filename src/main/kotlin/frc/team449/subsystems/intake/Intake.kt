@@ -1,7 +1,5 @@
 package frc.team449.subsystems.intake
 
-import com.revrobotics.CANSparkLowLevel
-import com.revrobotics.CANSparkMax
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -10,7 +8,7 @@ import frc.team449.system.motor.WrappedNEO
 import frc.team449.system.motor.createSparkMax
 
 class Intake(
-  private val motor: WrappedNEO,
+  private val motor: WrappedNEO
 ) : SubsystemBase() {
 
   fun intake(): Command {

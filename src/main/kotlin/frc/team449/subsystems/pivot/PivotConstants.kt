@@ -16,9 +16,14 @@ object PivotConstants {
   val ORIENTATION = InvertedValue.CounterClockwise_Positive
 
   val MIN_ANGLE = Degrees.of(0.0)
-  val STOW_ANGLE = Degrees.of(0.0)
-  val HIGH_ANGLE = Degrees.of(90.0)
-  val MAX_ANGLE = Degrees.of(105.0)
+  val MAX_ANGLE = Degrees.of(90.0)
+
+  /** TODO: Figure out exact values for these, especially once hardstop is created
+   * Note: 0 deg must  be defined as the inner 1x1 on the wrist is perfectly vertical
+   */
+  val STOW_ANGLE = Degrees.of(91.5)
+  val INTAKE_ANGLE = Degrees.of(5.0)
+  val HIGH_ANGLE = Degrees.of(75.0)
 
   const val BURST_TIME_LIMIT = 0.25
   const val BURST_CURRENT_LIMIT = 60.0
