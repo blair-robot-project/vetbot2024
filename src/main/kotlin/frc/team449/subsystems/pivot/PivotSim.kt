@@ -22,7 +22,7 @@ class PivotSim(
     PivotConstants.MIN_ANGLE.`in`(Radians),
     PivotConstants.MAX_ANGLE.`in`(Radians),
     true,
-    PivotConstants.MIN_ANGLE.`in`(Radians)
+    PivotConstants.STOW_ANGLE.`in`(Radians)
   )
 
   private var simMotor = motor.simState

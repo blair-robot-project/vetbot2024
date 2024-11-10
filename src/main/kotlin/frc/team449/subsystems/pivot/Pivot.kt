@@ -19,19 +19,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import java.util.function.Supplier
+import kotlin.math.abs
 
 open class Pivot(
   private val motor: TalonFX
 ) : SubsystemBase() {
 
-  private val positionRequest = MotionMagicVoltage(PivotConstants.START_ANGLE)
+  private val positionRequest = MotionMagicVoltage(PivotConstants.STOW_ANGLE.`in`(Rotations))
     .withSlot(0)
     .withEnableFOC(false)
     .withUpdateFreqHz(1000.0)
 
   open val positionSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(motor.position.value) }
   open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
-  open var target: Measure<Angle> = PivotConstants.MIN_ANGLE
+  open var target: Measure<Angle> = PivotConstants.STOW_ANGLE
 
   // sim stuff
   private val mech = Mechanism2d(2.0, 2.0)
@@ -40,7 +41,7 @@ open class Pivot(
     MechanismLigament2d(
       "pivot",
       PivotConstants.PIVOT_LENGTH,
-      PivotConstants.START_ANGLE,
+      PivotConstants.STOW_ANGLE.`in`(Degrees),
       PivotConstants.WIDTH,
       PivotConstants.REAL_COLOR
     )
@@ -51,7 +52,7 @@ open class Pivot(
     MechanismLigament2d(
       "pivot target",
       PivotConstants.PIVOT_LENGTH,
-      PivotConstants.START_ANGLE,
+      PivotConstants.STOW_ANGLE.`in`(Degrees),
       PivotConstants.TARGET_WIDTH,
       PivotConstants.TARGET_COLOR
     )
@@ -76,8 +77,16 @@ open class Pivot(
     )
   }
 
+  fun calibrateStartingPos() {
+    motor.setPosition(PivotConstants.STOW_ANGLE.`in`(Rotations))
+  }
+
   fun stow(): Command {
     return setPosition(PivotConstants.STOW_ANGLE)
+  }
+
+  fun intakeAngle(): Command {
+    return setPosition(PivotConstants.INTAKE_ANGLE)
   }
 
   fun high(): Command {
@@ -85,7 +94,8 @@ open class Pivot(
   }
 
   fun atSetpoint(): Boolean {
-    return (positionSupplier.get().isNear(target, PivotConstants.TOLERANCE))
+    return abs(positionSupplier.get().`in`(Rotations) - target.`in`(Rotations)) <
+      PivotConstants.TOLERANCE.`in`(Rotations)
   }
 
   override fun periodic() {
@@ -149,6 +159,8 @@ open class Pivot(
         motor.deviceTemp
       )
       motor.optimizeBusUtilization()
+
+      motor.setPosition(PivotConstants.STOW_ANGLE.`in`(Rotations))
 
       return if (RobotBase.isReal()) Pivot(motor) else PivotSim(motor)
     }

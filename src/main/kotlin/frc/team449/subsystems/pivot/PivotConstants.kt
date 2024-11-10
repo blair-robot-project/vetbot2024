@@ -25,7 +25,7 @@ object PivotConstants {
   const val SUPPLY_CURRENT_LIMIT = 40.0
   const val STATOR_CURRENT_LIMIT = 150.0
 
-  val TOLERANCE = 0.025
+  val TOLERANCE = Degrees.of(1.75)
 
   const val MOMENT_OF_INERTIA = 0.5253
 
@@ -42,12 +42,11 @@ object PivotConstants {
   const val KG = 0.21875
 
   const val PIVOT_LENGTH = 1.0
-  const val START_ANGLE = 0.0
   const val WIDTH = 5.0
   const val TARGET_WIDTH = 8.0
   val REAL_COLOR = Color8Bit(255, 0, 255)
   val TARGET_COLOR = Color8Bit(0, 255, 0)
 
   val CRUISE_VEL = RadiansPerSecond.of(PI) // radians
-  val MAX_ACCEL = RadiansPerSecond.per(Second).of(DCMotor.getKrakenX60(1).getTorque(60.0) / MOMENT_OF_INERTIA) // radians
+  val MAX_ACCEL = RadiansPerSecond.per(Second).of(DCMotor.getKrakenX60(1).getTorque(40.0) / MOMENT_OF_INERTIA) // radians
 }

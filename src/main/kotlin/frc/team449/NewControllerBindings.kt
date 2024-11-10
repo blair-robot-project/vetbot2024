@@ -27,8 +27,8 @@ class NewControllerBindings(
     /** Call robot functions you create below */
     // pivotChar()
 //    pointToRight()
-    raiseArm()
-    lowerArm()
+    stowArm()
+    intakeArm()
     raiseElevator()
     lowerElevator()
 //    elevatorChar()
@@ -81,15 +81,15 @@ class NewControllerBindings(
     )
   }
 
-  private fun raiseArm() {
+  private fun stowArm() {
     driveController.b().onTrue(
-      robot.pivot.high()
+      robot.pivot.stow()
     )
   }
 
-  private fun lowerArm() {
+  private fun intakeArm() {
     driveController.a().onTrue(
-      robot.pivot.stow()
+      robot.pivot.intakeAngle()
     )
   }
 
