@@ -139,8 +139,8 @@ open class Pivot(
       config.Slot0.kG = PivotConstants.KG
       config.Slot0.GravityType = GravityTypeValue.Arm_Cosine
 
-      config.MotionMagic.MotionMagicCruiseVelocity = PivotConstants.CRUISE_VEL.`in`(RadiansPerSecond)
-      config.MotionMagic.MotionMagicAcceleration = PivotConstants.MAX_ACCEL.`in`(RadiansPerSecond.per(Second))
+      config.MotionMagic.MotionMagicCruiseVelocity = PivotConstants.CRUISE_VEL.`in`(RotationsPerSecond)
+      config.MotionMagic.MotionMagicAcceleration = PivotConstants.MAX_ACCEL.`in`(RotationsPerSecond.per(Second))
 
       config.MotorOutput.Inverted = PivotConstants.ORIENTATION
       config.MotorOutput.NeutralMode = PivotConstants.NEUTRAL_MODE
@@ -160,7 +160,7 @@ open class Pivot(
       )
       motor.optimizeBusUtilization()
 
-      motor.setPosition(PivotConstants.STOW_ANGLE.`in`(Rotations))
+      if (RobotBase.isReal()) motor.setPosition(PivotConstants.STOW_ANGLE.`in`(Rotations))
 
       return if (RobotBase.isReal()) Pivot(motor) else PivotSim(motor)
     }

@@ -13,5 +13,4 @@ object IntakeConstants {
   const val INTAKE_VOLTAGE = 6.0
   const val HOLD_VOLTAGE = 2.0
   const val OUTTAKE_VOLTAGE = -3.0
-  const val HOLD_VOLTAGE = 2.0
 }

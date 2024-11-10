@@ -5,7 +5,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.units.Units.*
 import edu.wpi.first.wpilibj.util.Color8Bit
-import kotlin.math.PI
 
 object PivotConstants {
   const val MOTOR_ID = 10
@@ -52,6 +51,11 @@ object PivotConstants {
   val REAL_COLOR = Color8Bit(255, 0, 255)
   val TARGET_COLOR = Color8Bit(0, 255, 0)
 
-  val CRUISE_VEL = RadiansPerSecond.of(PI) // radians
-  val MAX_ACCEL = RadiansPerSecond.per(Second).of(DCMotor.getKrakenX60(1).getTorque(40.0) / MOMENT_OF_INERTIA) // radians
+  const val ACCEL_DAMPING_FACTOR = 0.125
+
+  val CRUISE_VEL = RotationsPerSecond.of(1.0)
+  val MAX_ACCEL = RadiansPerSecond.per(Second).of(
+    ACCEL_DAMPING_FACTOR * DCMotor.getKrakenX60(1).getTorque(40.0) * GEARING_MOTOR_TO_MECHANISM /
+      MOMENT_OF_INERTIA
+  )
 }
