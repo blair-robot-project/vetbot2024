@@ -123,6 +123,7 @@ open class Elevator(
       config.Slot0.kG = ElevatorConstants.KG
       config.Slot0.GravityType = GravityTypeValue.Elevator_Static
 
+      config.MotionMagic.MotionMagicJerk = ElevatorConstants.MM_JERK
       config.MotionMagic.MotionMagicAcceleration = ElevatorConstants.MM_ACCEL
       config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.MM_VEL
 

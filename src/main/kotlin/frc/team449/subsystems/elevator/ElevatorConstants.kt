@@ -38,7 +38,8 @@ object ElevatorConstants {
   const val STOW_HEIGHT = 0.0 // m
   const val HIGH_HEIGHT = 0.5 // m
 
-  const val MM_ACCEL = 1.0 // m/s^2
+  const val MM_JERK = 5.0 // m/s^3
+  const val MM_ACCEL = 1.75 // m/s^2
   const val MM_VEL = 1.0 // m/s
 
   // TODO replace with real sysid values
