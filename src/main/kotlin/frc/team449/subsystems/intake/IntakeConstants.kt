@@ -7,7 +7,11 @@ object IntakeConstants {
   const val FRONT_INVERTED = true
   const val BACK_INVERTED_FROM_FRONT = false
 
-  const val INTAKE_VOLTAGE = 5.0
+  const val BRAKE_MODE = false
+  const val CURRENT_LIMIT = 40
+
+  const val INTAKE_VOLTAGE = 6.0
+  const val HOLD_VOLTAGE = 2.0
   const val OUTTAKE_VOLTAGE = -3.0
   const val HOLD_VOLTAGE = 2.0
 }
