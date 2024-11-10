@@ -11,7 +11,7 @@ import kotlin.math.PI
 
 object AutoUtil {
 
-  /** If you need snap to angle during auto (for vision assisted pointing), use this controlelr since
+  /** If you need snap to angle during auto (for vision assisted pointing), use this controller since
    * the orthogonal command is not set up yet during auto
    */
   val turnController = PIDController(
