@@ -2,10 +2,8 @@ package frc.team449.subsystems.pivot
 
 import com.ctre.phoenix6.signals.InvertedValue
 import com.ctre.phoenix6.signals.NeutralModeValue
-import edu.wpi.first.math.util.Units
 import edu.wpi.first.units.Units.*
 import edu.wpi.first.wpilibj.util.Color8Bit
-import kotlin.math.PI
 
 object PivotConstants {
   const val MOTOR_ID = 10
@@ -37,7 +35,7 @@ object PivotConstants {
   const val KV = 7.1249
   const val KA = 0.072661
   const val KP = 7.537
-  const val KI = 0.5
+  const val KI = 0.0
   const val KD = 0.0
   const val KG = 0.21875
 
@@ -48,6 +46,6 @@ object PivotConstants {
   val REAL_COLOR = Color8Bit(255, 0, 255)
   val TARGET_COLOR = Color8Bit(0, 255, 0)
 
-  const val CRUISE_VEL = 10.0
-  const val MAX_ACCEL = 5.0
+  const val CRUISE_VEL = 0.75 // rotations
+  const val MAX_ACCEL = 0.5 // rotations
 }
