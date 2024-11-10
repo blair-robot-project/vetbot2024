@@ -26,7 +26,7 @@ object VisionConstants {
     8.1026
   )
 
-  val TAG_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout(listOf(), 16.4846,8.1026)
+  val TAG_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout(listOf(), 16.4846, 8.1026)
 
   /** WPILib's AprilTagFieldLayout for the 2024 Crescendo Game */
 //  val TAG_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(

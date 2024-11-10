@@ -2,12 +2,9 @@ package frc.team449.commands
 
 import edu.wpi.first.wpilibj2.command.*
 import frc.team449.Robot
-import frc.team449.subsystems.elevator.Elevator
-import frc.team449.subsystems.intake.Intake
-import frc.team449.subsystems.pivot.Pivot
 
 object Commands {
-  fun pickup (robot: Robot): Command {
+  fun pickup(robot: Robot): Command {
     return SequentialCommandGroup(
       ParallelCommandGroup(
         robot.elevator.stow(),
@@ -20,7 +17,7 @@ object Commands {
     )
   }
 
-  fun scoreHigh (robot: Robot): Command {
+  fun scoreHigh(robot: Robot): Command {
     return SequentialCommandGroup(
       ParallelCommandGroup(
         robot.elevator.high(),

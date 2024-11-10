@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import java.util.function.Supplier
 
 open class Pivot(
-  private val motor: TalonFX,
+  private val motor: TalonFX
 ) : SubsystemBase() {
 
   private val positionRequest = MotionMagicVoltage(PivotConstants.START_ANGLE)
@@ -29,7 +29,7 @@ open class Pivot(
     .withEnableFOC(false)
     .withUpdateFreqHz(1000.0)
 
-  open val positionSupplier: Supplier<Measure<Angle>> = Supplier {Rotations.of(motor.position.value)}
+  open val positionSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(motor.position.value) }
   open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
   open var target: Measure<Angle> = PivotConstants.MIN_ANGLE
 

@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
-import frc.team449.subsystems.drive.swerve.SwerveSim
 import frc.team449.subsystems.RobotConstants
+import frc.team449.subsystems.drive.swerve.SwerveSim
 import frc.team449.subsystems.elevator.ElevatorConstants
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.PI
@@ -25,7 +25,7 @@ class NewControllerBindings(
 
   private fun robotBindings() {
     /** Call robot functions you create below */
-    //pivotChar()
+    // pivotChar()
 //    pointToRight()
     raiseArm()
     lowerArm()
@@ -139,7 +139,6 @@ class NewControllerBindings(
     driveController.y().onTrue(
       pivotRoutine.dynamic(SysIdRoutine.Direction.kReverse)
     )
-
   }
 
   private fun elevatorChar() {

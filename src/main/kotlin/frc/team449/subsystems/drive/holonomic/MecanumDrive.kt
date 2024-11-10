@@ -13,9 +13,9 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.SubsystemBase
-import frc.team449.subsystems.vision.VisionSubsystem
 import frc.team449.subsystems.RobotConstants
 import frc.team449.subsystems.vision.VisionConstants
+import frc.team449.subsystems.vision.VisionSubsystem
 import frc.team449.system.AHRS
 import frc.team449.system.encoder.NEOEncoder
 import frc.team449.system.motor.WrappedNEO

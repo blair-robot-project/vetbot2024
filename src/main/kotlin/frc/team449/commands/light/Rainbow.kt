@@ -2,8 +2,8 @@ package frc.team449.commands.light
 
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.wpilibj2.command.Command
-import frc.team449.subsystems.light.LightConstants
 import frc.team449.subsystems.light.Light
+import frc.team449.subsystems.light.LightConstants
 
 class Rainbow(
   private val led: Light

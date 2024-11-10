@@ -5,8 +5,8 @@ import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.Nat
 import edu.wpi.first.math.controller.PIDController
 import frc.team449.auto.choreo.ChoreoTrajectory
-import frc.team449.subsystems.RobotConstants
 import frc.team449.subsystems.FieldConstants
+import frc.team449.subsystems.RobotConstants
 import kotlin.math.PI
 
 object AutoUtil {

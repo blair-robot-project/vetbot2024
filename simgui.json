@@ -99,7 +99,6 @@
           "width": 0.8508999943733215
         },
         "height": 8.229599952697754,
-        "image": "C:\\Users\\Jeffery\\Downloads\\field.png",
         "odo": {
           "color": [
             0.7647056579589844,
@@ -124,7 +123,6 @@
       "/SmartDashboard/Field": {
         "builtin": "",
         "height": 8.210550308227539,
-        "image": "C:\\Users\\Jeffery\\Downloads\\field.png",
         "width": 16.541748046875,
         "window": {
           "visible": true
@@ -173,7 +171,6 @@
           "style": "Track"
         },
         "height": 8.210550308227539,
-        "image": "C:\\Users\\Jeffery\\Downloads\\field.png",
         "units": "inches",
         "visibleTargetPoses": {
           "selectable": false,
@@ -332,10 +329,7 @@
               "open": true
             }
           },
-          "open": true,
-          "pivot": {
-            "open": true
-          }
+          "open": true
         }
       },
       "Shuffleboard": {
@@ -378,7 +372,8 @@
   "NetworkTables Info": {
     "Server": {
       "open": true
-    }
+    },
+    "visible": true
   },
   "Plot": {
     "Plot <0>": {

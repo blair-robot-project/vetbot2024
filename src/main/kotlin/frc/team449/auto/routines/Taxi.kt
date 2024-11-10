@@ -2,11 +2,11 @@ package frc.team449.auto.routines
 
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.PrintCommand
+import frc.team449.Robot
+import frc.team449.auto.AutoUtil
 import frc.team449.auto.choreo.ChoreoRoutine
 import frc.team449.auto.choreo.ChoreoRoutineStructure
 import frc.team449.auto.choreo.ChoreoTrajectory
-import frc.team449.Robot
-import frc.team449.auto.AutoUtil
 
 class Taxi(
   robot: Robot,

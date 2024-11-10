@@ -30,7 +30,7 @@ object RobotConstants {
 
   val MAX_ACCEL = 4 *
     DCMotor.getNEO(1)
-    .getTorque(75.0) /
+      .getTorque(75.0) /
     ((SwerveConstantsNEO.DRIVE_UPR / (2 * PI)) * ROBOT_WEIGHT * SwerveConstantsNEO.DRIVE_GEARING) // m/s/s
 
   val INITIAL_POSE = Pose2d(0.0, 0.0, Rotation2d())

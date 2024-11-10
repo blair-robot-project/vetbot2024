@@ -12,7 +12,7 @@ import java.util.function.Supplier
 
 class PivotSim(
   private val motor: TalonFX
-): Pivot(motor) {
+) : Pivot(motor) {
 
   private val sim = SingleJointedArmSim(
     DCMotor.getKrakenX60(1),
@@ -48,7 +48,6 @@ class PivotSim(
     super.initSendable(builder)
 
     builder.publishConstString("4.0", "Sim Stuff")
-    builder.addDoubleProperty("4.1 Current Draw", {currentDraw}, null)
-
+    builder.addDoubleProperty("4.1 Current Draw", { currentDraw }, null)
   }
 }

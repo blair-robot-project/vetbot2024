@@ -21,8 +21,8 @@ open class Elevator(
   private val motor: TalonFX
 ) : SubsystemBase() {
 
-  open val positionSupplier = Supplier {motor.position.value}
-  open val velocitySupplier = Supplier {motor.velocity.value}
+  open val positionSupplier = Supplier { motor.position.value }
+  open val velocitySupplier = Supplier { motor.velocity.value }
 
   // simulation
   private val mech = Mechanism2d(1.5, 2.0)
@@ -58,13 +58,15 @@ open class Elevator(
   }
 
   fun setVoltage(voltage: Double) {
-    motor.setControl(VoltageOut(
-      voltage,
-      false,
-      false,
-      false,
-      false
-    ))
+    motor.setControl(
+      VoltageOut(
+        voltage,
+        false,
+        false,
+        false,
+        false
+      )
+    )
   }
 
   fun stop(): Command {
@@ -83,7 +85,6 @@ open class Elevator(
     return (abs(motor.position.value - request.Position) < ElevatorConstants.TOLERANCE)
   }
 
-
   override fun periodic() {
     elevatorVisual.length = ElevatorConstants.MIN_HEIGHT + positionSupplier.get()
     desiredElevatorVisual.length = ElevatorConstants.MIN_HEIGHT + request.Position
@@ -98,7 +99,7 @@ open class Elevator(
     builder.addDoubleProperty("1.3 Velocity", { velocitySupplier.get() }, null)
     builder.addDoubleProperty("1.4 Desired Position", { request.Position }, null)
     builder.addDoubleProperty("1.5 Closed-loop Error", { motor.closedLoopError.value }, null)
-    builder.addBooleanProperty("1.6 At Tolerance", {atSetpoint()}, null)
+    builder.addBooleanProperty("1.6 At Tolerance", { atSetpoint() }, null)
   }
 
   companion object {
