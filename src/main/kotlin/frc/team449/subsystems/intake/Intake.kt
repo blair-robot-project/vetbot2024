@@ -23,6 +23,12 @@ class Intake(
     }
   }
 
+  fun hold(): Command {
+    return this.runOnce {
+      frontMotor.setVoltage(IntakeConstants.HOLD_VOLTAGE)
+    }
+  }
+
   // HEIMOV JR CODE DO NOT REMOVE
   fun stop(): Command {
     return this.runOnce {

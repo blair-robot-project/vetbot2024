@@ -2,8 +2,10 @@ package frc.team449.subsystems.pivot
 
 import com.ctre.phoenix6.signals.InvertedValue
 import com.ctre.phoenix6.signals.NeutralModeValue
+import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.units.Units.*
 import edu.wpi.first.wpilibj.util.Color8Bit
+import kotlin.math.PI
 
 object PivotConstants {
   const val MOTOR_ID = 10
@@ -23,7 +25,7 @@ object PivotConstants {
   const val SUPPLY_CURRENT_LIMIT = 40.0
   const val STATOR_CURRENT_LIMIT = 150.0
 
-  val TOLERANCE = 0.1
+  val TOLERANCE = 0.025
 
   const val MOMENT_OF_INERTIA = 0.5253
 
@@ -46,6 +48,6 @@ object PivotConstants {
   val REAL_COLOR = Color8Bit(255, 0, 255)
   val TARGET_COLOR = Color8Bit(0, 255, 0)
 
-  const val CRUISE_VEL = 0.75 // rotations
-  const val MAX_ACCEL = 0.5 // rotations
+  val CRUISE_VEL = RadiansPerSecond.of(PI) // radians
+  val MAX_ACCEL = RadiansPerSecond.per(Second).of(DCMotor.getKrakenX60(1).getTorque(60.0) / MOMENT_OF_INERTIA) // radians
 }

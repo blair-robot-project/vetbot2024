@@ -67,6 +67,8 @@ class RobotLoop : TimedRobot(), Logged {
     SmartDashboard.putData("Routine Chooser", routineChooser)
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance())
 
+    robot.intake.defaultCommand = robot.intake.hold()
+
     robot.light.defaultCommand = BlairChasing(robot.light)
 
     controllerBinder.bindButtons()
