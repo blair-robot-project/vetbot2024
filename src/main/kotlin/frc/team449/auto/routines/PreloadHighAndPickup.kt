@@ -24,9 +24,8 @@ class PreloadHighAndPickup(
         1 to pickup(robot)
       ),
       stopEventMap = hashMapOf(
-        0 to scoreHigh(robot),
-        1 to stow(robot)
-          .withTimeout(1.0)
+        0 to readyHigh(robot),
+        1 to scoreHigh(robot)
           .andThen(pickup(robot)),
         2 to stowAndHold(robot)
       ),

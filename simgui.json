@@ -170,13 +170,14 @@
           "arrowSize": 68,
           "style": "Track"
         },
-        "height": 8.210550308227539,
-        "units": "inches",
+        "height": 8.229599952697754,
+        "image": "C:\\Users\\Jeffery\\Downloads\\field.png",
+        "units": "feet",
         "visibleTargetPoses": {
           "selectable": false,
           "style": "Hidden"
         },
-        "width": 16.541748046875,
+        "width": 16.459199905395508,
         "window": {
           "visible": true
         }
