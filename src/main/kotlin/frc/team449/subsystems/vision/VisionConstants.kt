@@ -21,8 +21,8 @@ object VisionConstants {
   /** How the tags are laid out on the field (their locations and ids) */
   private val TEST_TAG_LAYOUT = AprilTagFieldLayout(
     listOf(
-      AprilTag(5, Pose3d(16.3576, 4.6355, 0.597, Rotation3d(0.0, 0.0, PI))),
-      AprilTag(6, Pose3d(0.1016, 4.6355, 0.597, Rotation3d(0.0, 0.0, 0.0)))
+      AprilTag(5, Pose3d(16.3576, 4.532, 0.494, Rotation3d(0.0, 0.0, PI))),
+      AprilTag(6, Pose3d(0.1016, 4.532, 0.494, Rotation3d(0.0, 0.0, 0.0)))
     ),
     16.4846,
     8.1026
