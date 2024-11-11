@@ -10,8 +10,8 @@ object ElevatorConstants {
   const val MOTOR_ID = 12
 
   const val ANGLE = 75.0 // DEGREES
-  const val WIDTH = 5.0
-  const val TARGET_WIDTH = 8.0
+  const val WIDTH = 7.0
+  const val TARGET_WIDTH = 4.0
   val COLOR = Color8Bit(255, 0, 255)
   val DESIRED_COLOR = Color8Bit(0, 255, 0)
   const val MAX_HEIGHT = 0.524383

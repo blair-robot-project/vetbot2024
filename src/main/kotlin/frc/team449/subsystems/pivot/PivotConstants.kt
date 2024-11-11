@@ -46,8 +46,8 @@ object PivotConstants {
   const val KG = 0.21875
 
   const val PIVOT_LENGTH = 1.0
-  const val WIDTH = 5.0
-  const val TARGET_WIDTH = 8.0
+  const val WIDTH = 7.0
+  const val TARGET_WIDTH = 4.0
   val REAL_COLOR = Color8Bit(255, 0, 255)
   val TARGET_COLOR = Color8Bit(0, 255, 0)
 

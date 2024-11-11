@@ -32,7 +32,7 @@ open class Pivot(
 
   open val positionSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(motor.position.value) }
   open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
-  open var target: Measure<Angle> = PivotConstants.STOW_ANGLE
+  open var targetSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(positionRequest.Position)}
 
   // sim stuff
   private val mech = Mechanism2d(2.0, 2.0)
@@ -60,7 +60,6 @@ open class Pivot(
 
   fun setPosition(rotations: Measure<Angle>): Command {
     return this.runOnce {
-      target = rotations
       motor.setControl(positionRequest.withPosition(rotations.`in`(Rotations)))
     }
   }
@@ -94,12 +93,12 @@ open class Pivot(
   }
 
   fun atSetpoint(): Boolean {
-    return abs(positionSupplier.get().`in`(Rotations) - target.`in`(Rotations)) <
+    return abs(positionSupplier.get().`in`(Rotations) - targetSupplier.get().`in`(Rotations)) <
       PivotConstants.TOLERANCE.`in`(Rotations)
   }
 
   override fun periodic() {
-    targetVisual.angle = target.`in`(Degrees)
+    targetVisual.angle = targetSupplier.get().`in`(Degrees)
     pivotVisual.angle = positionSupplier.get().`in`(Degrees)
 
     SmartDashboard.putData("pivot visual", mech)

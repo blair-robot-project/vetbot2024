@@ -14,19 +14,22 @@ import edu.wpi.first.math.numbers.N3
 import edu.wpi.first.math.util.Units
 import org.photonvision.estimation.TargetModel
 import org.photonvision.simulation.VisionSystemSim
+import kotlin.math.PI
 
 /** Constants that have anything to do with vision */
 object VisionConstants {
   /** How the tags are laid out on the field (their locations and ids) */
   private val TEST_TAG_LAYOUT = AprilTagFieldLayout(
     listOf(
-      AprilTag(3, Pose3d())
+      AprilTag(5, Pose3d(16.3576, 3.6195, 0.5969, Rotation3d(0.0, 0.0, PI))),
+      AprilTag(6, Pose3d(0.1016, 3.6195, 0.5969, Rotation3d(0.0, 0.0, 0.0)))
     ),
     16.4846,
     8.1026
   )
 
-  val TAG_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout(listOf(), 16.4846, 8.1026)
+  val TAG_LAYOUT: AprilTagFieldLayout = TEST_TAG_LAYOUT
+
 
   /** WPILib's AprilTagFieldLayout for the 2024 Crescendo Game */
 //  val TAG_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(

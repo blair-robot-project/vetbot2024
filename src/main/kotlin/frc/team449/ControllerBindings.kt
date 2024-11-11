@@ -11,13 +11,14 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
+import frc.team449.commands.Commands
 import frc.team449.subsystems.RobotConstants
 import frc.team449.subsystems.drive.swerve.SwerveSim
 import frc.team449.subsystems.elevator.ElevatorConstants
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.PI
 
-class NewControllerBindings(
+class ControllerBindings(
   private val driveController: CommandXboxController,
   private val mechanismController: CommandXboxController,
   private val robot: Robot
@@ -25,21 +26,18 @@ class NewControllerBindings(
 
   private fun robotBindings() {
     /** Call robot functions you create below */
-    // pivotChar()
-//    pointToRight()
-    stowArm()
-    intakeArm()
-    raiseElevator()
-    lowerElevator()
-//    elevatorChar()
+    stow()
+    pickup()
+    readyHigh()
+    scoreHigh()
+
   }
 
   private fun nonRobotBindings() {
     // slowDrive()
 
     resetGyro()
-
-    // addNoiseToSimulatedPose()
+    addNoiseToSimulatedPose()
   }
 
   private fun slowDrive() {
@@ -81,27 +79,27 @@ class NewControllerBindings(
     )
   }
 
-  private fun stowArm() {
-    driveController.b().onTrue(
-      robot.pivot.stow()
+  private fun stow() {
+    mechanismController.b().onTrue(
+      Commands.stowAndHold(robot)
     )
   }
 
-  private fun intakeArm() {
-    driveController.a().onTrue(
-      robot.pivot.intakeAngle()
+  private fun pickup() {
+    mechanismController.a().onTrue(
+      Commands.pickup(robot)
     )
   }
 
-  private fun raiseElevator() {
-    driveController.x().onTrue(
-      robot.elevator.setPosition(ElevatorConstants.HIGH_HEIGHT)
+  private fun readyHigh() {
+    mechanismController.x().onTrue(
+      Commands.readyHigh(robot)
     )
   }
 
-  private fun lowerElevator() {
-    driveController.y().onTrue(
-      robot.elevator.setPosition(ElevatorConstants.STOW_HEIGHT)
+  private fun scoreHigh() {
+    mechanismController.y().onTrue(
+      Commands.scoreHigh(robot)
     )
   }
 
