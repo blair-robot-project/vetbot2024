@@ -1,5 +1,6 @@
 package frc.team449.auto.routines
 
+import edu.wpi.first.wpilibj2.command.InstantCommand
 import frc.team449.Robot
 import frc.team449.auto.AutoUtil
 import frc.team449.auto.choreo.ChoreoRoutine
@@ -8,7 +9,6 @@ import frc.team449.auto.choreo.ChoreoTrajectory
 import frc.team449.commands.Commands.pickup
 import frc.team449.commands.Commands.readyHigh
 import frc.team449.commands.Commands.scoreHigh
-import frc.team449.commands.Commands.stow
 import frc.team449.commands.Commands.stowAndHold
 
 class PreloadHighAndPickup(
@@ -24,7 +24,7 @@ class PreloadHighAndPickup(
         1 to pickup(robot)
       ),
       stopEventMap = hashMapOf(
-        0 to readyHigh(robot),
+        0 to InstantCommand(),
         1 to scoreHigh(robot)
           .andThen(pickup(robot)),
         2 to stowAndHold(robot)
