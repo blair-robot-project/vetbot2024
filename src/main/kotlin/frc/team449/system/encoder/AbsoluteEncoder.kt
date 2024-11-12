@@ -78,7 +78,6 @@ open class AbsoluteEncoder(
 
     return vel
   }
-
   companion object {
     /**
      * @param <T>

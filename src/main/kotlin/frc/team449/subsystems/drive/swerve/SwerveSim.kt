@@ -138,10 +138,12 @@ class SwerveSim(
 
     // Updates the robot's currentSpeeds.
     currentSpeeds = kinematics.toChassisSpeeds(
-      modules[0].state,
-      modules[1].state,
-      modules[2].state,
-      modules[3].state
+      arrayOf(
+        modules[0].state,
+        modules[1].state,
+        modules[2].state,
+        modules[3].state
+      )
     )
 
     speedMagnitude = hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond)

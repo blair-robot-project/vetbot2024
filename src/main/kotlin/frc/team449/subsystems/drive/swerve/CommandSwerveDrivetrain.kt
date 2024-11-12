@@ -1,10 +1,10 @@
 package frc.team449.subsystems.drive.swerve
 
 import com.ctre.phoenix6.Utils
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest
+import com.ctre.phoenix6.swerve.SwerveDrivetrain
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants
+import com.ctre.phoenix6.swerve.SwerveModuleConstants
+import com.ctre.phoenix6.swerve.SwerveRequest
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.DriverStation.Alliance

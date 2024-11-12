@@ -1,7 +1,7 @@
 package frc.team449.system.encoder
 
-import com.revrobotics.CANSparkMax
 import com.revrobotics.RelativeEncoder
+import com.revrobotics.spark.SparkMax
 
 /** A NEO integrated encoder plugged into a Spark */
 class NEOEncoder(
@@ -41,7 +41,7 @@ class NEOEncoder(
       gearing: Double,
       measurementPeriod: Int? = null,
       depth: Int? = null
-    ): EncoderCreator<CANSparkMax> = EncoderCreator { name, motor, _ ->
+    ): EncoderCreator<SparkMax> = EncoderCreator { name, motor, _ ->
       NEOEncoder(name, motor.encoder, unitPerRotation, gearing, measurementPeriod = measurementPeriod, depth = depth)
     }
   }

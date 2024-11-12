@@ -2,6 +2,7 @@ package frc.team449.subsystems.elevator
 
 import com.ctre.phoenix6.signals.InvertedValue
 import com.ctre.phoenix6.signals.NeutralModeValue
+import edu.wpi.first.units.Units.*
 import edu.wpi.first.wpilibj.util.Color8Bit
 import kotlin.math.PI
 
@@ -27,7 +28,7 @@ object ElevatorConstants {
   const val SUPPLY_CURRENT_LIMIT = 30.0
   const val STATOR_CURRENT_LIMIT = 80.0
 
-  const val TOLERANCE = 0.025
+  val TOLERANCE = Millimeters.of(5.0)
 
   const val CARRIAGE_MASS_KG = 9.3811974
 
@@ -35,8 +36,8 @@ object ElevatorConstants {
   const val GEAR_DIAMETER_M = 0.048824388
   const val GEARING_MOTOR_TO_ELEVATOR = GEARING_MOTOR_TO_GEAR / (GEAR_DIAMETER_M * PI)
 
-  const val STOW_HEIGHT = 0.0 // m
-  const val HIGH_HEIGHT = 0.5 // m
+  val STOW_HEIGHT = Meters.of(0.0) // m
+  val HIGH_HEIGHT = Meters.of(0.5) // m
 
   const val MM_JERK = 5.0 // m/s^3
   const val MM_ACCEL = 1.75 // m/s^2

@@ -2,9 +2,9 @@ package frc.team449
 
 import com.ctre.phoenix6.SignalLogger
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.units.Measure
-import edu.wpi.first.units.Units.*
-import edu.wpi.first.units.Voltage
+import edu.wpi.first.units.Units.Seconds
+import edu.wpi.first.units.Units.Volts
+import edu.wpi.first.units.measure.Voltage
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj2.command.ConditionalCommand
@@ -106,12 +106,12 @@ class ControllerBindings(
   private fun pivotChar() {
     val pivotRoutine = SysIdRoutine(
       SysIdRoutine.Config(
-        Volts.of(0.5).per(Seconds.of(1.0)),
+        Volts.of(0.5).per(Seconds),
         Volts.of(4.0),
         Seconds.of(10.0)
       ) { state -> SignalLogger.writeString("state", state.toString()) },
       SysIdRoutine.Mechanism(
-        { voltage: Measure<Voltage> -> run { robot.pivot.setVoltage(voltage) } },
+        { voltage: Voltage -> run { robot.pivot.setVoltage(voltage) } },
         null,
         robot.pivot,
         "pivot"
@@ -142,12 +142,12 @@ class ControllerBindings(
   private fun elevatorChar() {
     val elevatorRoutine = SysIdRoutine(
       SysIdRoutine.Config(
-        Volts.of(0.5).per(Seconds.of(1.0)),
+        Volts.of(0.5).per(Seconds),
         Volts.of(12.0),
         Seconds.of(10.0)
       ) { state -> SignalLogger.writeString("state", state.toString()) },
       SysIdRoutine.Mechanism(
-        { voltage: Measure<Voltage> -> run { robot.elevator.setVoltage(voltage.`in`(Volts)) } },
+        { voltage: Voltage -> run { robot.elevator.setVoltage(voltage) } },
         null,
         robot.elevator,
         "elevator"

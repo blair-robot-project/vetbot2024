@@ -169,10 +169,12 @@ open class SwerveDrive(
   override fun periodic() {
     // Updates the robot's currentSpeeds.
     currentSpeeds = kinematics.toChassisSpeeds(
-      modules[0].state,
-      modules[1].state,
-      modules[2].state,
-      modules[3].state
+      arrayOf(
+        modules[0].state,
+        modules[1].state,
+        modules[2].state,
+        modules[3].state
+      )
     )
 
     speedMagnitude = hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond)
@@ -623,9 +625,9 @@ open class SwerveDrive(
       config.CurrentLimits.SupplyCurrentLimitEnable = true
       config.CurrentLimits.StatorCurrentLimitEnable = true
       config.CurrentLimits.StatorCurrentLimit = SwerveConstantsKraken.STATOR_LIMIT
-      config.CurrentLimits.SupplyCurrentLimit = SwerveConstantsKraken.SUPPLY_LIMIT
-      config.CurrentLimits.SupplyCurrentThreshold = SwerveConstantsKraken.SUPPLY_BOOST
-      config.CurrentLimits.SupplyTimeThreshold = SwerveConstantsKraken.SUPPLY_BOOST_TIME
+      config.CurrentLimits.SupplyCurrentLowerLimit = SwerveConstantsKraken.SUPPLY_LIMIT
+      config.CurrentLimits.SupplyCurrentLimit = SwerveConstantsKraken.SUPPLY_BOOST
+      config.CurrentLimits.SupplyCurrentLowerTime = SwerveConstantsKraken.SUPPLY_BOOST_TIME
       config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = SwerveConstantsKraken.CLOSED_LOOP_RAMP
       config.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = SwerveConstantsKraken.CLOSED_LOOP_RAMP
 

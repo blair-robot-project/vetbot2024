@@ -6,11 +6,10 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage
 import com.ctre.phoenix6.controls.VoltageOut
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
-import edu.wpi.first.units.Angle
-import edu.wpi.first.units.Measure
 import edu.wpi.first.units.Units.*
-import edu.wpi.first.units.Velocity
-import edu.wpi.first.units.Voltage
+import edu.wpi.first.units.measure.Angle
+import edu.wpi.first.units.measure.AngularVelocity
+import edu.wpi.first.units.measure.Voltage
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d
@@ -30,9 +29,9 @@ open class Pivot(
     .withEnableFOC(false)
     .withUpdateFreqHz(1000.0)
 
-  open val positionSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(motor.position.value) }
-  open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
-  open var targetSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(positionRequest.Position)}
+  open val positionSupplier: Supplier<Angle> = motor.position.asSupplier()
+  open val velocitySupplier: Supplier<AngularVelocity> = motor.velocity.asSupplier()
+  open var targetSupplier: Supplier<Angle> = Supplier {positionRequest.positionMeasure}
 
   // sim stuff
   private val mech = Mechanism2d(2.0, 2.0)
@@ -58,21 +57,15 @@ open class Pivot(
     )
   )
 
-  fun setPosition(rotations: Measure<Angle>): Command {
+  fun setPosition(rotations: Angle): Command {
     return this.runOnce {
       motor.setControl(positionRequest.withPosition(rotations.`in`(Rotations)))
     }
   }
 
-  fun setVoltage(voltage: Measure<Voltage>) {
+  fun setVoltage(voltage: Voltage) {
     motor.setControl(
-      VoltageOut(
-        voltage.`in`(Volts),
-        false,
-        false,
-        false,
-        false
-      )
+      VoltageOut(voltage.`in`(Volts)).withEnableFOC(false)
     )
   }
 
@@ -107,11 +100,11 @@ open class Pivot(
   // logging stuff
   override fun initSendable(builder: SendableBuilder) {
     builder.publishConstString("1.0", "Motor Stuff")
-    builder.addDoubleProperty("1.1 Voltage V", { motor.motorVoltage.value }, null)
+    builder.addDoubleProperty("1.1 Voltage V", { motor.motorVoltage.value.`in`(Volts) }, null)
     builder.addDoubleProperty("1.2 Velocity RPS", { velocitySupplier.get().`in`(RotationsPerSecond) }, null)
     builder.addDoubleProperty("1.3 Current Position Rot", { positionSupplier.get().`in`(Rotations) }, null)
     builder.addDoubleProperty("1.4 Desired Position Rot", { positionRequest.Position }, null)
-    builder.addDoubleProperty("1.5 Stator Current A", { motor.statorCurrent.value }, null)
+    builder.addDoubleProperty("1.5 Stator Current A", { motor.statorCurrent.value.`in`(Amps) }, null)
     builder.publishConstString("2.0", "Model info")
     builder.addDoubleProperty("2.1 Closed Loop Error Rot", { motor.closedLoopError.value }, null)
     builder.addBooleanProperty("2.2 At Setpoint", { atSetpoint() }, null)
@@ -125,9 +118,9 @@ open class Pivot(
       config.CurrentLimits.StatorCurrentLimitEnable = true
       config.CurrentLimits.SupplyCurrentLimitEnable = true
       config.CurrentLimits.StatorCurrentLimit = PivotConstants.STATOR_CURRENT_LIMIT
-      config.CurrentLimits.SupplyCurrentLimit = PivotConstants.SUPPLY_CURRENT_LIMIT
-      config.CurrentLimits.SupplyCurrentThreshold = PivotConstants.BURST_CURRENT_LIMIT
-      config.CurrentLimits.SupplyTimeThreshold = PivotConstants.BURST_TIME_LIMIT
+      config.CurrentLimits.SupplyCurrentLowerLimit = PivotConstants.SUPPLY_CURRENT_LIMIT
+      config.CurrentLimits.SupplyCurrentLimit = PivotConstants.BURST_CURRENT_LIMIT
+      config.CurrentLimits.SupplyCurrentLowerTime = PivotConstants.BURST_TIME_LIMIT
 
       config.Slot0.kS = PivotConstants.KS
       config.Slot0.kV = PivotConstants.KV

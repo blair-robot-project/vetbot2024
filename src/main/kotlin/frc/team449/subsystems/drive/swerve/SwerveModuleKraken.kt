@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
+import edu.wpi.first.units.Units.*
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.Timer
 import frc.team449.system.encoder.Encoder
@@ -69,7 +70,7 @@ open class SwerveModuleKraken(
   override val position: SwerveModulePosition
     get() {
       return SwerveModulePosition(
-        drivingMotor.position.value,
+        drivingMotor.position.value.magnitude(),
         Rotation2d(turningMotor.position)
       )
     }

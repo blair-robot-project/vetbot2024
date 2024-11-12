@@ -1,7 +1,6 @@
 package frc.team449
 
 import edu.wpi.first.wpilibj.PowerDistribution
-import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.team449.subsystems.RobotConstants
 import frc.team449.subsystems.drive.swerve.SwerveDrive
@@ -20,7 +19,7 @@ class Robot : RobotBase(), Logged {
 
   val mechController = CommandXboxController(1)
 
-  val ahrs = AHRS(SPI.Port.kMXP)
+  val ahrs = AHRS()
 
   // Instantiate/declare PDP and other stuff here
 
