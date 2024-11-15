@@ -2,7 +2,8 @@ package frc.team449.subsystems.elevator
 
 import com.ctre.phoenix6.signals.InvertedValue
 import com.ctre.phoenix6.signals.NeutralModeValue
-import edu.wpi.first.units.Units.*
+import edu.wpi.first.units.Units.Meters
+import edu.wpi.first.units.Units.Millimeters
 import edu.wpi.first.wpilibj.util.Color8Bit
 import kotlin.math.PI
 

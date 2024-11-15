@@ -9,24 +9,14 @@ class NEOEncoder(
   private val enc: RelativeEncoder,
   unitPerRotation: Double,
   gearing: Double,
-  pollTime: Double = .01,
-  measurementPeriod: Int?,
-  depth: Int?
+  pollTime: Double = .01
 ) : Encoder(name, NEO_ENCODER_CPR, 1.0, 1.0, pollTime) {
+  val positionConversionFactor = unitPerRotation * gearing
+  val velocityConversionFactor = unitPerRotation * gearing / 60
 
   init {
     // Let the underlying encoder do the conversions
-    enc.positionConversionFactor = unitPerRotation * gearing
     // Divide by 60 because it's originally in RPM
-    enc.velocityConversionFactor = unitPerRotation * gearing / 60
-
-    if (measurementPeriod != null) {
-      enc.setMeasurementPeriod(measurementPeriod)
-    }
-
-    if (depth != null) {
-      enc.setAverageDepth(depth)
-    }
   }
 
   override fun getPositionNative() = enc.position
@@ -38,11 +28,9 @@ class NEOEncoder(
 
     fun creator(
       unitPerRotation: Double,
-      gearing: Double,
-      measurementPeriod: Int? = null,
-      depth: Int? = null
+      gearing: Double
     ): EncoderCreator<SparkMax> = EncoderCreator { name, motor, _ ->
-      NEOEncoder(name, motor.encoder, unitPerRotation, gearing, measurementPeriod = measurementPeriod, depth = depth)
+      NEOEncoder(name, motor.encoder, unitPerRotation, gearing)
     }
   }
 }

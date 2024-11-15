@@ -3,7 +3,10 @@ package frc.team449.auto
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import frc.team449.Robot
-import frc.team449.auto.routines.*
+import frc.team449.auto.routines.DoNothing
+import frc.team449.auto.routines.Preload
+import frc.team449.auto.routines.PreloadHighAndPickup
+import frc.team449.auto.routines.Taxi
 
 class RoutineChooser(private val robot: Robot) : SendableChooser<String>() {
 

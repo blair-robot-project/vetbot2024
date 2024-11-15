@@ -1,15 +1,20 @@
 package frc.team449.subsystems.drive.swerve
 
+import com.revrobotics.spark.SparkMax
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.controller.SimpleMotorFeedforward
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
+import edu.wpi.first.units.Units.MetersPerSecond
+import edu.wpi.first.units.Units.Volts
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.Timer
+import frc.team449.system.encoder.AbsoluteEncoder
 import frc.team449.system.encoder.Encoder
-import frc.team449.system.motor.WrappedNEO
+import frc.team449.system.encoder.NEOEncoder
+import frc.team449.system.motor.createSparkMax
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.sign
@@ -27,8 +32,9 @@ import kotlin.math.sign
  */
 open class SwerveModuleNEO(
   private val name: String,
-  private val drivingMotor: WrappedNEO,
-  private val turningMotor: WrappedNEO,
+  private val drivingMotor: SparkMax,
+  private val turningMotor: SparkMax,
+  private val turnEncoder: Encoder,
   val driveController: PIDController,
   val turnController: PIDController,
   private val driveFeedforward: SimpleMotorFeedforward,
@@ -49,8 +55,8 @@ open class SwerveModuleNEO(
   override var state: SwerveModuleState
     get() {
       return SwerveModuleState(
-        drivingMotor.velocity,
-        Rotation2d(turningMotor.position)
+        drivingMotor.encoder.velocity,
+        Rotation2d(turnEncoder.position)
       )
     }
     set(desState) {
@@ -59,23 +65,20 @@ open class SwerveModuleNEO(
         return
       }
       /** Ensure the module doesn't turn more than 90 degrees. */
-      val optimizedState = SwerveModuleState.optimize(
-        desState,
-        Rotation2d(turningMotor.position)
-      )
+      desState.optimize(Rotation2d(turnEncoder.position))
 
-      turnController.setpoint = optimizedState.angle.radians
-      driveController.setpoint = optimizedState.speedMetersPerSecond
-      desiredState.speedMetersPerSecond = optimizedState.speedMetersPerSecond
-      desiredState.angle = optimizedState.angle
+      turnController.setpoint = desState.angle.radians
+      driveController.setpoint = desState.speedMetersPerSecond
+      desiredState.speedMetersPerSecond = desState.speedMetersPerSecond
+      desiredState.angle = desState.angle
     }
 
   /** The module's [SwerveModulePosition], containing distance and angle. */
   override val position: SwerveModulePosition
     get() {
       return SwerveModulePosition(
-        drivingMotor.position,
-        Rotation2d(turningMotor.position)
+        drivingMotor.encoder.position,
+        Rotation2d(turnEncoder.position)
       )
     }
 
@@ -84,54 +87,97 @@ open class SwerveModuleNEO(
     desiredState.speedMetersPerSecond = 0.0
     turnController.setpoint = 0.0
 
-    turningMotor.set(turnController.calculate(turningMotor.position))
+    turningMotor.set(turnController.calculate(turnEncoder.position))
     drivingMotor.setVoltage(volts)
   }
 
   /** Set module speed to zero but keep module angle the same. */
   override fun stop() {
-    turnController.setpoint = turningMotor.position
+    turnController.setpoint = turnEncoder.position
     desiredState.speedMetersPerSecond = 0.0
   }
 
   override fun update() {
     /** CONTROL speed of module */
     val drivePid = driveController.calculate(
-      drivingMotor.velocity
+      drivingMotor.encoder.velocity
     )
     val driveFF = driveFeedforward.calculate(
-      desiredState.speedMetersPerSecond
+      MetersPerSecond.of(desiredState.speedMetersPerSecond)
     )
-    drivingMotor.setVoltage(drivePid + driveFF)
+    // .calculate(
+
+    drivingMotor.setVoltage(drivePid + driveFF.`in`(Volts))
 
     /** CONTROL direction of module */
     val turnPid = turnController.calculate(
-      turningMotor.position
+      turningMotor.encoder.position
     )
 
     turningMotor.set(
       turnPid +
-        sign(desiredState.angle.radians - turningMotor.position) *
-          SwerveConstantsNEO.STEER_KS
+        sign(desiredState.angle.radians - turnEncoder.position) *
+          SwerveConstants.STEER_KS
     )
   }
 
   companion object {
     /** Create a real or simulated [SwerveModule] based on the simulation status of the robot. */
-    fun create(
+    fun createNEOModule(
       name: String,
-      drivingMotor: WrappedNEO,
-      turningMotor: WrappedNEO,
-      driveController: PIDController,
-      turnController: PIDController,
-      driveFeedforward: SimpleMotorFeedforward,
+      driveID: Int,
+      driveInverted: Boolean,
+      turnID: Int,
+      turnInverted: Boolean,
+      turnEncoderChannel: Int,
+      turnEncoderOffset: Double,
+      turnEncoderInverted: Boolean,
       location: Translation2d
     ): SwerveModule {
+      val driveMotor = createSparkMax(
+        driveID,
+        driveInverted,
+        true,
+        gearing = SwerveConstants.DRIVE_GEARING,
+        upr = SwerveConstants.DRIVE_UPR,
+        currentLimit = SwerveConstants.DRIVE_CURRENT_LIM
+      )
+      val turnMotor = createSparkMax(
+        turnID,
+        turnInverted,
+        false,
+        gearing = SwerveConstants.DRIVE_GEARING,
+        upr = SwerveConstants.DRIVE_UPR,
+        currentLimit = SwerveConstants.STEERING_CURRENT_LIM
+      )
+      val turnEncoder = AbsoluteEncoder.createAbsoluteEncoder(
+        "$name Turn Encoder",
+        turnEncoderChannel,
+        turnEncoderOffset,
+        SwerveConstants.TURN_UPR,
+        turnEncoderInverted
+      )
+      val driveController = PIDController(
+        SwerveConstants.DRIVE_KP,
+        SwerveConstants.DRIVE_KI,
+        SwerveConstants.DRIVE_KD
+      )
+      val turnController = PIDController(
+        SwerveConstants.TURN_KP,
+        SwerveConstants.TURN_KI,
+        SwerveConstants.TURN_KD
+      )
+      val driveFeedforward = SimpleMotorFeedforward(
+        SwerveConstants.DRIVE_KS,
+        SwerveConstants.DRIVE_KV,
+        SwerveConstants.DRIVE_KA
+      )
       if (RobotBase.isReal()) {
         return SwerveModuleNEO(
           name,
-          drivingMotor,
-          turningMotor,
+          driveMotor,
+          turnMotor,
+          turnEncoder,
           driveController,
           turnController,
           driveFeedforward,
@@ -140,8 +186,9 @@ open class SwerveModuleNEO(
       } else {
         return SwerveModuleSimNEO(
           name,
-          drivingMotor,
-          turningMotor,
+          driveMotor,
+          turnMotor,
+          turnEncoder,
           driveController,
           turnController,
           driveFeedforward,
@@ -155,8 +202,9 @@ open class SwerveModuleNEO(
 /** A "simulated" swerve module. Immediately reaches to its desired state. */
 class SwerveModuleSimNEO(
   name: String,
-  drivingMotor: WrappedNEO,
-  turningMotor: WrappedNEO,
+  drivingMotor: SparkMax,
+  turningMotor: SparkMax,
+  turnEncoder: Encoder,
   driveController: PIDController,
   turnController: PIDController,
   driveFeedforward: SimpleMotorFeedforward,
@@ -165,13 +213,23 @@ class SwerveModuleSimNEO(
   name,
   drivingMotor,
   turningMotor,
+  turnEncoder,
   driveController,
   turnController,
   driveFeedforward,
   location
 ) {
-  private val turningMotorEncoder = Encoder.SimController(turningMotor.encoder)
-  private val driveEncoder = Encoder.SimController(drivingMotor.encoder)
+  private val turningMotorEncoder = Encoder.SimController(turnEncoder)
+  private val driveEncoder = Encoder.SimController(
+    NEOEncoder.creator(
+      SwerveConstants.DRIVE_UPR,
+      SwerveConstants.DRIVE_GEARING
+    ).create(
+      "drive encoder",
+      drivingMotor,
+      true
+    )
+  )
   private var prevTime = Timer.getFPGATimestamp()
   override var state: SwerveModuleState
     get() = SwerveModuleState(

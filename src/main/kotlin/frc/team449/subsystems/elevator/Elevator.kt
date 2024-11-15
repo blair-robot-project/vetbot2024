@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import java.util.function.Supplier
-import kotlin.math.abs
 
 open class Elevator(
   private val motor: TalonFX
@@ -63,7 +62,7 @@ open class Elevator(
 
   fun setVoltage(voltage: Voltage) {
     motor.setControl(
-      VoltageOut( voltage )
+      VoltageOut(voltage)
     )
   }
 
@@ -129,7 +128,6 @@ open class Elevator(
       config.MotorOutput.NeutralMode = ElevatorConstants.NEUTRAL_MODE
       config.MotorOutput.DutyCycleNeutralDeadband = ElevatorConstants.DUTY_CYCLE_DEADBAND
       config.Feedback.SensorToMechanismRatio = ElevatorConstants.GEARING_MOTOR_TO_ELEVATOR
-
 
       motor.configurator.apply(config)
 

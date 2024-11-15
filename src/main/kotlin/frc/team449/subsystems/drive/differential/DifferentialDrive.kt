@@ -1,5 +1,6 @@
 package frc.team449.subsystems.drive.differential
 
+import com.revrobotics.spark.SparkMax
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator
@@ -11,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.team449.subsystems.RobotConstants
 import frc.team449.subsystems.drive.DriveSubsystem
 import frc.team449.system.AHRS
+import frc.team449.system.encoder.Encoder
 import frc.team449.system.encoder.QuadEncoder
-import frc.team449.system.motor.WrappedNEO
 import frc.team449.system.motor.createSparkMax
 
 /**
@@ -25,16 +26,18 @@ import frc.team449.system.motor.createSparkMax
  * @param trackwidth The distance between the two wheel sides of the robot.
  */
 open class DifferentialDrive(
-  private val leftLeader: WrappedNEO,
-  private val rightLeader: WrappedNEO,
+  private val leftLeader: SparkMax,
+  private val rightLeader: SparkMax,
+  private val leftEncoder: Encoder,
+  private val rightEncoder: Encoder,
   private val ahrs: AHRS,
   private val feedForward: DifferentialDriveFeedforward,
   private val makeSidePID: () -> PIDController,
   private val trackwidth: Double
 ) : DriveSubsystem, SubsystemBase() {
   init {
-    leftLeader.encoder.resetPosition(0.0)
-    rightLeader.encoder.resetPosition(0.0)
+    leftEncoder.resetPosition(0.0)
+    rightEncoder.resetPosition(0.0)
   }
 
   /** Kinematics used to convert [ChassisSpeeds] to [DifferentialDriveWheelSpeeds] */
@@ -44,8 +47,8 @@ open class DifferentialDrive(
   val poseEstimator = DifferentialDrivePoseEstimator(
     kinematics,
     ahrs.heading,
-    leftLeader.position,
-    rightLeader.position,
+    leftEncoder.position,
+    rightEncoder.position,
     Pose2d()
   )
 
@@ -99,7 +102,7 @@ open class DifferentialDrive(
   override var pose: Pose2d
     get() = this.poseEstimator.estimatedPosition
     set(pose) {
-      this.poseEstimator.resetPosition(ahrs.heading, leftLeader.position, rightLeader.position, pose)
+      this.poseEstimator.resetPosition(ahrs.heading, leftEncoder.position, rightEncoder.position, pose)
     }
 
   override fun stop() {
@@ -107,59 +110,38 @@ open class DifferentialDrive(
   }
 
   override fun periodic() {
-    this.poseEstimator.update(ahrs.heading, this.leftLeader.position, this.rightLeader.position)
+    this.poseEstimator.update(ahrs.heading, leftEncoder.position, rightEncoder.position)
   }
 
   companion object {
     /** Create a [DifferentialDrive] using [DifferentialConstants]. */
-    private fun makeSide(
-      name: String,
-      motorId: Int,
-      inverted: Boolean,
-      encInverted: Boolean,
-      wpiEnc: edu.wpi.first.wpilibj.Encoder,
-      followers: Map<Int, Boolean>
-    ) =
-      createSparkMax(
-        name = name + "_Side",
-        id = motorId,
-        enableBrakeMode = true,
-        inverted = inverted,
-        encCreator = QuadEncoder.creator(
-          wpiEnc,
+    fun createDifferentialDrive(ahrs: AHRS): DifferentialDrive {
+      return DifferentialDrive(
+        createSparkMax(
+          DifferentialConstants.DRIVE_MOTOR_L,
+          DifferentialConstants.LEFT_INVERTED,
+          currentLimit = DifferentialConstants.DRIVE_CURRENT_LIM
+        ),
+        createSparkMax(
+          DifferentialConstants.DRIVE_MOTOR_L,
+          DifferentialConstants.LEFT_INVERTED,
+          currentLimit = DifferentialConstants.DRIVE_CURRENT_LIM
+        ),
+        QuadEncoder.createQuadEncoder(
+          "Left Encoder",
+          DifferentialConstants.DRIVE_ENC_LEFT,
           DifferentialConstants.DRIVE_EXT_ENC_CPR,
           DifferentialConstants.DRIVE_UPR,
           DifferentialConstants.DRIVE_GEARING,
-          encInverted
+          DifferentialConstants.LEFT_INVERTED
         ),
-
-        slaveSparks = followers,
-        currentLimit = DifferentialConstants.DRIVE_CURRENT_LIM
-      )
-
-    fun createDifferentialDrive(ahrs: AHRS): DifferentialDrive {
-      return DifferentialDrive(
-        leftLeader = makeSide(
-          "Left",
-          DifferentialConstants.DRIVE_MOTOR_L,
-          inverted = false,
-          encInverted = false,
-          wpiEnc = DifferentialConstants.DRIVE_ENC_LEFT,
-          followers = mapOf(
-            DifferentialConstants.DRIVE_MOTOR_L1 to false,
-            DifferentialConstants.DRIVE_MOTOR_L2 to false
-          )
-        ),
-        rightLeader = makeSide(
-          "Right",
-          DifferentialConstants.DRIVE_MOTOR_R,
-          inverted = true,
-          encInverted = true,
-          wpiEnc = DifferentialConstants.DRIVE_ENC_RIGHT,
-          followers = mapOf(
-            DifferentialConstants.DRIVE_MOTOR_R1 to false,
-            DifferentialConstants.DRIVE_MOTOR_R2 to false
-          )
+        QuadEncoder.createQuadEncoder(
+          "Right Encoder",
+          DifferentialConstants.DRIVE_ENC_RIGHT,
+          DifferentialConstants.DRIVE_EXT_ENC_CPR,
+          DifferentialConstants.DRIVE_UPR,
+          DifferentialConstants.DRIVE_GEARING,
+          DifferentialConstants.LEFT_INVERTED
         ),
         ahrs,
         DifferentialConstants.DRIVE_FEED_FORWARD,

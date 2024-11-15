@@ -1,5 +1,6 @@
 package frc.team449.subsystems.drive.differential
 
+import com.revrobotics.spark.SparkMax
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Pose2d
@@ -8,20 +9,21 @@ import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim
 import frc.team449.system.AHRS
 import frc.team449.system.encoder.Encoder
-import frc.team449.system.motor.WrappedNEO
 
 class DifferentialSim(
   private val driveSim: DifferentialDrivetrainSim,
-  leftLeader: WrappedNEO,
-  rightLeader: WrappedNEO,
+  leftLeader: SparkMax,
+  rightLeader: SparkMax,
+  leftEncoder: Encoder,
+  rightEncoder: Encoder,
   ahrs: AHRS,
   private val feedForward: DifferentialDriveFeedforward,
   makeVelPID: () -> PIDController,
   trackwidth: Double
-) : DifferentialDrive(leftLeader, rightLeader, ahrs, feedForward, makeVelPID, trackwidth) {
+) : DifferentialDrive(leftLeader, rightLeader, leftEncoder, rightEncoder, ahrs, feedForward, makeVelPID, trackwidth) {
 
-  private val leftEncSim = Encoder.SimController(leftLeader.encoder)
-  private val rightEncSim = Encoder.SimController(rightLeader.encoder)
+  private val leftEncSim = Encoder.SimController(leftEncoder)
+  private val rightEncSim = Encoder.SimController(rightEncoder)
 
   private var offset: Rotation2d = Rotation2d()
   private var lastTime = Timer.getFPGATimestamp()

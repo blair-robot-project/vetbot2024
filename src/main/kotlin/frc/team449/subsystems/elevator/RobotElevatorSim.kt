@@ -3,6 +3,8 @@ package frc.team449.subsystems.elevator
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.sim.ChassisReference
 import edu.wpi.first.math.system.plant.DCMotor
+import edu.wpi.first.units.Units.Meters
+import edu.wpi.first.units.Units.MetersPerSecond
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.wpilibj.RobotController
 import frc.team449.subsystems.RobotConstants
@@ -23,8 +25,8 @@ class RobotElevatorSim(
   )
   private var simMotor = motor.simState
 
-  override val positionSupplier = Supplier { sim.positionMeters }
-  override val velocitySupplier = Supplier { sim.velocityMetersPerSecond }
+  override val positionSupplier = Supplier { Meters.of(sim.positionMeters) }
+  override val velocitySupplier = Supplier { MetersPerSecond.of(sim.velocityMetersPerSecond) }
   var currentDraw = 0.0
 
   override fun periodic() {

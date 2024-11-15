@@ -2,6 +2,8 @@ package frc.team449.subsystems.drive.swerve
 
 import com.ctre.phoenix6.signals.NeutralModeValue
 import edu.wpi.first.math.util.Units
+import edu.wpi.first.units.Units.Amps
+import edu.wpi.first.units.Units.Seconds
 
 object SwerveConstantsKraken {
   const val EFFICIENCY = 0.95
@@ -11,10 +13,10 @@ object SwerveConstantsKraken {
   const val POS_UPDATE_FREQUENCY = 100.0
   const val UPDATE_FREQUENCY = 50.0
 
-  const val SUPPLY_LIMIT = 50.0
-  const val SUPPLY_BOOST = 65.0
-  const val SUPPLY_BOOST_TIME = 0.25
-  const val STATOR_LIMIT = 120.0
+  val SUPPLY_LIMIT = Amps.of(50.0)
+  val SUPPLY_BOOST = Amps.of(65.0)
+  val SUPPLY_BOOST_TIME = Seconds.of(0.25)
+  val STATOR_LIMIT = Amps.of(120.0)
   const val CLOSED_LOOP_RAMP = 0.020
 
   const val TORQUE_CURRENT_LIMIT = 80.0
@@ -63,7 +65,7 @@ object SwerveConstantsKraken {
   const val DRIVE_GEARING = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0)
   const val DRIVE_UPR = 0.31818905832
   const val TURN_UPR = 2 * Math.PI
-  val MAX_ATTAINABLE_MK4I_SPEED = Units.feetToMeters(15.85) // (12 - DRIVE_KS) / DRIVE_KV
+  val MAX_ATTAINABLE_MK4I_SPEED = (12 - DRIVE_KP) / DRIVE_KS
   const val STEERING_CURRENT_LIM = 40
   const val JOYSTICK_FILTER_ORDER = 2
   const val ROT_FILTER_ORDER = 1.25

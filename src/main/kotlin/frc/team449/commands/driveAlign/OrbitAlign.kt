@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.team449.auto.AutoConstants
 import frc.team449.subsystems.RobotConstants
-import frc.team449.subsystems.drive.swerve.SwerveConstantsNEO
+import frc.team449.subsystems.drive.swerve.SwerveConstants
 import frc.team449.subsystems.drive.swerve.SwerveDrive
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.*
@@ -66,7 +66,7 @@ class OrbitAlign(
     RobotConstants.SNAP_KD
   )
 
-  private var skewConstant = SwerveConstantsNEO.SKEW_CONSTANT
+  private var skewConstant = SwerveConstants.SKEW_CONSTANT
 
   init {
     addRequirements(drive)
@@ -99,7 +99,7 @@ class OrbitAlign(
     val ctrlX = if (abs(controller.leftY) < RobotConstants.DRIVE_RADIUS_DEADBAND) .0 else -controller.leftY
     val ctrlY = if (abs(controller.leftX) < RobotConstants.DRIVE_RADIUS_DEADBAND) .0 else -controller.leftX
 
-    val ctrlRadius = sqrt(ctrlX.pow(2) + ctrlY.pow(2)).pow(SwerveConstantsNEO.JOYSTICK_FILTER_ORDER)
+    val ctrlRadius = sqrt(ctrlX.pow(2) + ctrlY.pow(2)).pow(SwerveConstants.JOYSTICK_FILTER_ORDER)
 
     val ctrlTheta = atan2(ctrlY, ctrlX)
 

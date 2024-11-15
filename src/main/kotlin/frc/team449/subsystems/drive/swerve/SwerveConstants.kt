@@ -1,8 +1,9 @@
 package frc.team449.subsystems.drive.swerve
 
 import edu.wpi.first.math.util.Units
+import edu.wpi.first.units.Units.Amps
 
-object SwerveConstantsNEO {
+object SwerveConstants {
   const val EFFICIENCY = 0.95
 
   /** Drive motor ports */
@@ -27,6 +28,11 @@ object SwerveConstantsNEO {
   const val TURN_ENC_OFFSET_BL = 0.4755
   const val TURN_ENC_OFFSET_BR = 0.391 + 0.5
 
+  /** Inverted */
+  const val DRIVE_INVERTED = false
+  const val TURN_INVERTED = true
+  const val TURN_ENC_INVERTED = false
+
   /** PID gains for turning each module */
   const val TURN_KP = 0.5
   const val TURN_KI = 0.0
@@ -50,8 +56,8 @@ object SwerveConstantsNEO {
   const val DRIVE_UPR = 0.31818905832
   const val TURN_UPR = 2 * Math.PI
   val MAX_ATTAINABLE_MK4I_SPEED = Units.feetToMeters(15.85) // (12 - DRIVE_KS) / DRIVE_KV
-  const val DRIVE_CURRENT_LIM = 55
-  const val STEERING_CURRENT_LIM = 40
+  val DRIVE_CURRENT_LIM = Amps.of(55.0)
+  val STEERING_CURRENT_LIM = Amps.of(40.0)
   const val JOYSTICK_FILTER_ORDER = 2
   const val ROT_FILTER_ORDER = 1.25
   const val SKEW_CONSTANT = 15.5

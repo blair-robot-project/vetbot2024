@@ -2,6 +2,7 @@ package frc.team449.subsystems.drive.differential
 
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward
 import edu.wpi.first.math.util.Units
+import edu.wpi.first.units.Units.Amps
 import edu.wpi.first.wpilibj.Encoder
 import java.lang.Math.PI
 
@@ -29,6 +30,9 @@ object DifferentialConstants {
   const val DRIVE_FF_KV = 2.5406
   const val DRIVE_FF_KA = 0.44982
 
+  const val LEFT_INVERTED = false
+  const val RIGHT_INVERTED = true
+
   /** Encoder Characteristics */
   val DRIVE_ENC_RIGHT = Encoder(4, 5)
   val DRIVE_ENC_LEFT = Encoder(6, 7)
@@ -39,7 +43,7 @@ object DifferentialConstants {
   const val DRIVE_GEARING = 1.0
   val DRIVE_WHEEL_RADIUS = Units.inchesToMeters(2.0)
   val DRIVE_UPR = 2 * PI * DRIVE_WHEEL_RADIUS
-  const val DRIVE_CURRENT_LIM = 35
+  val DRIVE_CURRENT_LIM = Amps.of(35.0)
   const val DRIVE_ENC_VEL_THRESHOLD = 999999.0
   const val TRACK_WIDTH = .615 // m
 

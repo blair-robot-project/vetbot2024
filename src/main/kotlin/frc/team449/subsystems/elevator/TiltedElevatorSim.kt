@@ -18,7 +18,7 @@ class TiltedElevatorSim(
   private val minHeight: Double,
   private val maxHeight: Double,
   private val simulateGravity: Boolean = true,
-  noise: Matrix<N1, N1> = VecBuilder.fill(0.0015),
+  private val noise: Double = 0.0015,
   private val angle: Double
 ) : ElevatorSim(gearbox, gearing, carriageMass, drumRadius, minHeight, maxHeight, simulateGravity, 0.0, noise) {
 

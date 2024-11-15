@@ -31,7 +31,7 @@ open class Pivot(
 
   open val positionSupplier: Supplier<Angle> = motor.position.asSupplier()
   open val velocitySupplier: Supplier<AngularVelocity> = motor.velocity.asSupplier()
-  open var targetSupplier: Supplier<Angle> = Supplier {positionRequest.positionMeasure}
+  open var targetSupplier: Supplier<Angle> = Supplier { positionRequest.positionMeasure }
 
   // sim stuff
   private val mech = Mechanism2d(2.0, 2.0)

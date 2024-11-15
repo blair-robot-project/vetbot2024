@@ -2,16 +2,18 @@ package frc.team449.subsystems.drive.swerve
 
 import com.ctre.phoenix6.controls.VelocityVoltage
 import com.ctre.phoenix6.hardware.TalonFX
+import com.revrobotics.spark.SparkMax
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
-import edu.wpi.first.units.Units.*
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.Timer
+import frc.team449.system.encoder.AbsoluteEncoder
 import frc.team449.system.encoder.Encoder
-import frc.team449.system.motor.WrappedNEO
+import frc.team449.system.motor.createKraken
+import frc.team449.system.motor.createSparkMax
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.sign
@@ -28,7 +30,8 @@ import kotlin.math.sign
 open class SwerveModuleKraken(
   private val name: String,
   private val drivingMotor: TalonFX,
-  private val turningMotor: WrappedNEO,
+  private val turningMotor: SparkMax,
+  private val turnEncoder: Encoder,
   val turnController: PIDController,
   override val location: Translation2d
 ) : SwerveModule {
@@ -46,8 +49,8 @@ open class SwerveModuleKraken(
   override var state: SwerveModuleState
     get() {
       return SwerveModuleState(
-        drivingMotor.velocity.value,
-        Rotation2d(turningMotor.position)
+        drivingMotor.velocity.valueAsDouble,
+        Rotation2d(turnEncoder.position)
       )
     }
     set(desState) {
@@ -56,14 +59,11 @@ open class SwerveModuleKraken(
         return
       }
       /** Ensure the module doesn't turn more than 90 degrees. */
-      val optimizedState = SwerveModuleState.optimize(
-        desState,
-        Rotation2d(turningMotor.position)
-      )
+      desState.optimize(Rotation2d(turnEncoder.position))
 
-      turnController.setpoint = optimizedState.angle.radians
-      desiredState.speedMetersPerSecond = optimizedState.speedMetersPerSecond
-      desiredState.angle = optimizedState.angle
+      turnController.setpoint = desState.angle.radians
+      desiredState.speedMetersPerSecond = desState.speedMetersPerSecond
+      desiredState.angle = desState.angle
     }
 
   /** The module's [SwerveModulePosition], containing distance and angle. */
@@ -71,7 +71,7 @@ open class SwerveModuleKraken(
     get() {
       return SwerveModulePosition(
         drivingMotor.position.value.magnitude(),
-        Rotation2d(turningMotor.position)
+        Rotation2d(turnEncoder.position)
       )
     }
 
@@ -79,50 +79,92 @@ open class SwerveModuleKraken(
     desiredState.speedMetersPerSecond = 0.0
     turnController.setpoint = 0.0
 
-    turningMotor.set(turnController.calculate(turningMotor.position))
+    turningMotor.set(turnController.calculate(turnEncoder.position))
     drivingMotor.setVoltage(volts)
   }
 
   /** Set module speed to zero but keep module angle the same. */
   override fun stop() {
-    turnController.setpoint = turningMotor.position
+    turnController.setpoint = turnEncoder.position
     desiredState.speedMetersPerSecond = 0.0
   }
 
   override fun update() {
     /** CONTROL speed of module */
     drivingMotor.setControl(
-      VelocityVoltage(desiredState.speedMetersPerSecond / SwerveConstantsKraken.DRIVE_UPR)
+      VelocityVoltage(desiredState.speedMetersPerSecond / SwerveConstants.DRIVE_UPR)
         .withUpdateFreqHz(1000.0)
         .withEnableFOC(SwerveConstantsKraken.USE_FOC)
     )
 
     /** CONTROL direction of module */
     val turnPid = turnController.calculate(
-      turningMotor.position
+      turnEncoder.position
     )
 
     turningMotor.set(
       turnPid +
-        sign(desiredState.angle.radians - turningMotor.position) *
+        sign(desiredState.angle.radians - turnEncoder.position) *
           SwerveConstantsKraken.STEER_KS
     )
   }
 
   companion object {
     /** Create a real or simulated [SwerveModule] based on the simulation status of the robot. */
-    fun create(
+    fun createKrakenModule(
       name: String,
-      drivingMotor: TalonFX,
-      turningMotor: WrappedNEO,
-      turnController: PIDController,
+      driveID: Int,
+      driveInverted: Boolean,
+      turnID: Int,
+      turnInverted: Boolean,
+      turnEncoderChannel: Int,
+      turnEncoderOffset: Double,
+      turnEncoderInverted: Boolean,
       location: Translation2d
     ): SwerveModuleKraken {
+      val drivingMotor = createKraken(
+        driveID,
+        driveInverted,
+        true,
+        1 / SwerveConstants.DRIVE_GEARING,
+        SwerveConstantsKraken.DUTY_CYCLE_DEADBAND,
+        SwerveConstantsKraken.STATOR_LIMIT,
+        SwerveConstantsKraken.SUPPLY_BOOST,
+        SwerveConstantsKraken.SUPPLY_BOOST_TIME,
+        SwerveConstantsKraken.SUPPLY_LIMIT,
+        SwerveConstants.DRIVE_KS,
+        SwerveConstants.DRIVE_KV,
+        SwerveConstants.DRIVE_KA,
+        SwerveConstants.DRIVE_KP,
+        SwerveConstants.DRIVE_KI,
+        SwerveConstants.DRIVE_KD,
+      )
+      val turnMotor = createSparkMax(
+        turnID,
+        turnInverted,
+        false,
+        gearing = SwerveConstants.DRIVE_GEARING,
+        upr = SwerveConstants.DRIVE_UPR,
+        currentLimit = SwerveConstants.STEERING_CURRENT_LIM
+      )
+      val turnEncoder = AbsoluteEncoder.createAbsoluteEncoder(
+        "$name Turn Encoder",
+        turnEncoderChannel,
+        turnEncoderOffset,
+        SwerveConstants.TURN_UPR,
+        turnEncoderInverted
+      )
+      val turnController = PIDController(
+        SwerveConstants.TURN_KP,
+        SwerveConstants.TURN_KI,
+        SwerveConstants.TURN_KD
+      )
       if (RobotBase.isReal()) {
         return SwerveModuleKraken(
           name,
           drivingMotor,
-          turningMotor,
+          turnMotor,
+          turnEncoder,
           turnController,
           location
         )
@@ -130,7 +172,8 @@ open class SwerveModuleKraken(
         return SwerveModuleSimKraken(
           name,
           drivingMotor,
-          turningMotor,
+          turnMotor,
+          turnEncoder,
           turnController,
           location
         )
@@ -143,17 +186,19 @@ open class SwerveModuleKraken(
 class SwerveModuleSimKraken(
   name: String,
   drivingMotor: TalonFX,
-  turningMotor: WrappedNEO,
+  turningMotor: SparkMax,
+  turnEncoder: Encoder,
   turnController: PIDController,
   location: Translation2d
 ) : SwerveModuleKraken(
   name,
   drivingMotor,
   turningMotor,
+  turnEncoder,
   turnController,
   location
 ) {
-  private val turningMotorEncoder = Encoder.SimController(turningMotor.encoder)
+  private val turningMotorEncoder = Encoder.SimController(turnEncoder)
 
   private var drivePosition = 0.0
   private var driveVelocity = 0.0

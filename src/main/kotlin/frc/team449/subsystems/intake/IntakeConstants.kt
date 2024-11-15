@@ -1,14 +1,16 @@
 package frc.team449.subsystems.intake
 
-object IntakeConstants {
-  const val FRONT_ID = 13
-  const val BACK_ID = 14
+import edu.wpi.first.units.Units.Amps
 
-  const val FRONT_INVERTED = true
-  const val BACK_INVERTED_FROM_FRONT = false
+object IntakeConstants {
+  const val LEADER_ID = 13
+  const val FOLLOWER_ID = 14
+
+  const val LEADER_INVERTED = true
+  const val FOLLOWER_INVERTED_FROM_LEADER = false
 
   const val BRAKE_MODE = false
-  const val CURRENT_LIMIT = 40
+  val CURRENT_LIMIT = Amps.of(40.0)
 
   const val INTAKE_VOLTAGE = 6.0
   const val HOLD_VOLTAGE = 2.0

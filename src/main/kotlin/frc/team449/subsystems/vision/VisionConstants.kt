@@ -30,7 +30,6 @@ object VisionConstants {
 
   val TAG_LAYOUT: AprilTagFieldLayout = TEST_TAG_LAYOUT
 
-
   /** WPILib's AprilTagFieldLayout for the 2024 Crescendo Game */
 //  val TAG_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(
 //    AprilTagFields.k2024Crescendo.m_resourceFile
@@ -80,20 +79,6 @@ object VisionConstants {
   const val ENABLE_WIREFRAME = true
 
   /** List of cameras that we want to use */
-  val ESTIMATORS: ArrayList<VisionSubsystem> = arrayListOf(
-    VisionSubsystem(
-      "back_left",
-      TAG_LAYOUT,
-      backLeft,
-      VISION_SIM
-    ),
-    VisionSubsystem(
-      "back_right",
-      TAG_LAYOUT,
-      backRight,
-      VISION_SIM
-    )
-  )
 
   val ENCODER_TRUST: Matrix<N3, N1> = MatBuilder.fill(Nat.N3(), Nat.N1(), .125, .125, .0125)
   val SINGLE_TAG_TRUST: Matrix<N3, N1> = MatBuilder.fill(Nat.N3(), Nat.N1(), 0.75, 0.75, 1e+9)
