@@ -91,7 +91,7 @@ class SwerveOrthogonalCommand(
   }
 
   fun checkSnapToAngleTolerance(): Boolean {
-    return abs(rotCtrl.positionError) < RobotConstants.SNAP_TO_ANGLE_TOLERANCE_RAD
+    return abs(rotCtrl.error) < RobotConstants.SNAP_TO_ANGLE_TOLERANCE_RAD
   }
 
   /** Just a helper command factory to point at a given angle and stop the heading lock once you get into tolerance

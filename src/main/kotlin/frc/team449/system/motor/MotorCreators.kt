@@ -26,7 +26,6 @@ fun createSparkMax(
   upr: Double = 1.0,
   controlPeriod: Time = Milliseconds.of(0.0),
   currentLimit: Current = Amps.of(40.0),
-  secondaryCurrentLimit: Current = Amps.of(0.0)
 ): SparkMax {
   val motor = SparkMax(id, SparkLowLevel.MotorType.kBrushless)
   if (motor.lastError != REVLibError.kOk) {
@@ -40,7 +39,6 @@ fun createSparkMax(
     .idleMode(if (brakeMode) IdleMode.kBrake else IdleMode.kCoast)
     .smartCurrentLimit(
       currentLimit.`in`(Amps).toInt(),
-      secondaryCurrentLimit.`in`(Amps).toInt()
     )
     .voltageCompensation(RobotController.getBatteryVoltage())
 

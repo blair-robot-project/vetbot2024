@@ -94,7 +94,7 @@ open class SwerveModuleKraken(
     drivingMotor.setControl(
       VelocityVoltage(desiredState.speedMetersPerSecond / SwerveConstants.DRIVE_UPR)
         .withUpdateFreqHz(1000.0)
-        .withEnableFOC(SwerveConstantsKraken.USE_FOC)
+        .withEnableFOC(SwerveConstants.USE_FOC)
     )
 
     /** CONTROL direction of module */
@@ -105,7 +105,7 @@ open class SwerveModuleKraken(
     turningMotor.set(
       turnPid +
         sign(desiredState.angle.radians - turnEncoder.position) *
-          SwerveConstantsKraken.STEER_KS
+          SwerveConstants.STEER_KS
     )
   }
 
@@ -127,11 +127,11 @@ open class SwerveModuleKraken(
         driveInverted,
         true,
         1 / SwerveConstants.DRIVE_GEARING,
-        SwerveConstantsKraken.DUTY_CYCLE_DEADBAND,
-        SwerveConstantsKraken.STATOR_LIMIT,
-        SwerveConstantsKraken.SUPPLY_BOOST,
-        SwerveConstantsKraken.SUPPLY_BOOST_TIME,
-        SwerveConstantsKraken.SUPPLY_LIMIT,
+        SwerveConstants.DUTY_CYCLE_DEADBAND,
+        SwerveConstants.DRIVE_STATOR_LIMIT,
+        SwerveConstants.DRIVE_SUPPLY_BOOST,
+        SwerveConstants.DRIVE_SUPPLY_BOOST_TIME,
+        SwerveConstants.DRIVE_SUPPLY_LIMIT,
         SwerveConstants.DRIVE_KS,
         SwerveConstants.DRIVE_KV,
         SwerveConstants.DRIVE_KA,

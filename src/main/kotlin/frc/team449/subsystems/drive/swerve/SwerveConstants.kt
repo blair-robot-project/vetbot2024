@@ -2,9 +2,13 @@ package frc.team449.subsystems.drive.swerve
 
 import edu.wpi.first.math.util.Units
 import edu.wpi.first.units.Units.Amps
+import edu.wpi.first.units.Units.Seconds
 
 object SwerveConstants {
   const val EFFICIENCY = 0.95
+
+  const val USE_FOC = false
+  const val DUTY_CYCLE_DEADBAND = 0.001
 
   /** Drive motor ports */
   const val DRIVE_MOTOR_FL = 2
@@ -56,8 +60,13 @@ object SwerveConstants {
   const val DRIVE_UPR = 0.31818905832
   const val TURN_UPR = 2 * Math.PI
   val MAX_ATTAINABLE_MK4I_SPEED = Units.feetToMeters(15.85) // (12 - DRIVE_KS) / DRIVE_KV
-  val DRIVE_CURRENT_LIM = Amps.of(55.0)
+
+  val DRIVE_SUPPLY_LIMIT = Amps.of(50.0)
+  val DRIVE_SUPPLY_BOOST = Amps.of(65.0)
+  val DRIVE_SUPPLY_BOOST_TIME = Seconds.of(0.25)
+  val DRIVE_STATOR_LIMIT = Amps.of(120.0)
   val STEERING_CURRENT_LIM = Amps.of(40.0)
+
   const val JOYSTICK_FILTER_ORDER = 2
   const val ROT_FILTER_ORDER = 1.25
   const val SKEW_CONSTANT = 15.5

@@ -9,7 +9,7 @@ import frc.team449.util.simBooleanProp
 import frc.team449.util.simDoubleProp
 
 class AHRS(
-  val navx: com.studica.frc.AHRS
+  val navx: AHRS
 ) {
 
   var prevPos = Double.NaN

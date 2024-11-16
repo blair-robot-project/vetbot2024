@@ -11,7 +11,7 @@ import edu.wpi.first.units.Units.MetersPerSecond
 import edu.wpi.first.units.Units.Volts
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.Timer
-import frc.team449.system.encoder.AbsoluteEncoder
+import frc.team449.system.encoder.AbsoluteEncoder.Companion.createAbsoluteEncoder
 import frc.team449.system.encoder.Encoder
 import frc.team449.system.encoder.NEOEncoder
 import frc.team449.system.motor.createSparkMax
@@ -35,8 +35,8 @@ open class SwerveModuleNEO(
   private val drivingMotor: SparkMax,
   private val turningMotor: SparkMax,
   private val turnEncoder: Encoder,
-  val driveController: PIDController,
-  val turnController: PIDController,
+  private val driveController: PIDController,
+  private val turnController: PIDController,
   private val driveFeedforward: SimpleMotorFeedforward,
   override val location: Translation2d
 ) : SwerveModule {
@@ -140,7 +140,7 @@ open class SwerveModuleNEO(
         true,
         gearing = SwerveConstants.DRIVE_GEARING,
         upr = SwerveConstants.DRIVE_UPR,
-        currentLimit = SwerveConstants.DRIVE_CURRENT_LIM
+        currentLimit = SwerveConstants.DRIVE_SUPPLY_LIMIT
       )
       val turnMotor = createSparkMax(
         turnID,
@@ -150,7 +150,7 @@ open class SwerveModuleNEO(
         upr = SwerveConstants.DRIVE_UPR,
         currentLimit = SwerveConstants.STEERING_CURRENT_LIM
       )
-      val turnEncoder = AbsoluteEncoder.createAbsoluteEncoder(
+      val turnEncoder = createAbsoluteEncoder(
         "$name Turn Encoder",
         turnEncoderChannel,
         turnEncoderOffset,
