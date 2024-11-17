@@ -2,13 +2,11 @@ package frc.team449.subsystems.vision
 
 import edu.wpi.first.apriltag.AprilTag
 import edu.wpi.first.apriltag.AprilTagFieldLayout
-import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.Matrix
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.math.numbers.N1
 import edu.wpi.first.math.numbers.N3
 import edu.wpi.first.math.numbers.N5
-import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.DriverStation
 import org.photonvision.EstimatedRobotPose
 import org.photonvision.PhotonCamera
@@ -19,7 +17,6 @@ import org.photonvision.targeting.PhotonPipelineResult
 import org.photonvision.targeting.PhotonTrackedTarget
 import org.photonvision.targeting.TargetCorner
 import java.util.Optional
-import kotlin.jvm.optionals.getOrNull
 import kotlin.math.abs
 
 /**
@@ -94,24 +91,24 @@ class VisionEstimator(
 
       val visionPose = checkBest(lastPose, best, alternate) ?: best
 
-      if (abs(
-          MathUtil.angleModulus(
-              MathUtil.angleModulus(visionPose.rotation.z) -
-                MathUtil.angleModulus(driveHeading!!.radians)
-            )
-        )
-      > VisionConstants.TAG_HEADING_MAX_DEV_RAD
-      ) {
-        DriverStation.reportWarning("Tag Heading over Max Deviation, deviated by ${Units.radiansToDegrees(abs(visionPose.rotation.z - driveHeading!!.radians))}", false)
-        return Optional.empty()
-      }
+//      if (abs(
+//          MathUtil.angleModulus(
+//              MathUtil.angleModulus(visionPose.rotation.z) -
+//                MathUtil.angleModulus(driveHeading!!.radians) + if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) PI else 0.0
+//            )
+//        )
+//      > VisionConstants.TAG_HEADING_MAX_DEV_RAD
+//      ) {
+//        DriverStation.reportWarning("Tag Heading over Max Deviation, deviated by ${Units.radiansToDegrees(abs(visionPose.rotation.z - driveHeading!!.radians))}", false)
+//        return Optional.empty()
+//      }
 
-      if ((!result.multiTagResult.fiducialIDsUsed.containsAll(listOf(5)) && DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) ||
-        (!result.multiTagResult.fiducialIDsUsed.containsAll(listOf(6)) && DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Blue)
-      ) {
-        println("throwing away estimate, non speaker")
-        return Optional.empty()
-      }
+//      if ((!result.multiTagResult.fiducialIDsUsed.containsAll(listOf(5)) && DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) ||
+//        (!result.multiTagResult.fiducialIDsUsed.containsAll(listOf(6)) && DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Blue)
+//      ) {
+//        println("throwing away estimate, non speaker")
+//        return Optional.empty()
+//      }
 
       Optional.of(
         EstimatedRobotPose(
@@ -122,9 +119,7 @@ class VisionEstimator(
         )
       )
     } else {
-//      println("getting into single tag")
       lowestAmbiguityStrategy(result)
-      Optional.empty()
     }
   }
 
@@ -193,53 +188,6 @@ class VisionEstimator(
     return Optional.empty()
   }
 
-  private fun useCenter(result: PhotonPipelineResult): Optional<EstimatedRobotPose> {
-    var usedTarget: PhotonTrackedTarget? = null
-    for (target: PhotonTrackedTarget in result.targets) {
-      if (target.fiducialId == 4 && DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red ||
-        target.fiducialId == 7 && DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Blue
-      ) {
-        usedTarget = target
-      }
-    }
-
-    if (usedTarget == null) {
-      return Optional.empty()
-    }
-
-    // Although there are confirmed to be targets, none of them may be fiducial
-    // targets.
-    val targetPosition = tagLayout.getTagPose(usedTarget.fiducialId)
-
-    val bestPose = targetPosition
-      .get()
-      .transformBy(
-        usedTarget.bestCameraToTarget.inverse()
-      )
-      .transformBy(robotToCam.inverse())
-
-    if (abs(
-        MathUtil.angleModulus(
-            MathUtil.angleModulus(bestPose.rotation.z) -
-              MathUtil.angleModulus(driveHeading!!.radians)
-          )
-      )
-    > VisionConstants.TAG_HEADING_MAX_DEV_RAD
-    ) {
-      DriverStation.reportWarning("Best Single Tag Heading over Max Deviation, deviated by ${Units.radiansToDegrees(abs(bestPose.rotation.z - driveHeading!!.radians))}", false)
-      return Optional.empty()
-    }
-
-    return Optional.of(
-      EstimatedRobotPose(
-        bestPose,
-        result.timestampSeconds,
-        listOf(usedTarget),
-        PoseStrategy.LOWEST_AMBIGUITY
-      )
-    )
-  }
-
   /**
    * Return the estimated position of the robot with the lowest position ambiguity from a List of
    * pipeline results.
@@ -277,17 +225,17 @@ class VisionEstimator(
       )
       .transformBy(robotToCam.inverse())
 
-    if (abs(
-        MathUtil.angleModulus(
-            MathUtil.angleModulus(bestPose.rotation.z) -
-              MathUtil.angleModulus(driveHeading!!.radians)
-          )
-      )
-    > VisionConstants.TAG_HEADING_MAX_DEV_RAD
-    ) {
-      DriverStation.reportWarning("Best Single Tag Heading over Max Deviation, deviated by ${Units.radiansToDegrees(abs(bestPose.rotation.z - driveHeading!!.radians))}", false)
-      return Optional.empty()
-    }
+//    if (abs(
+//        MathUtil.angleModulus(
+//            MathUtil.angleModulus(bestPose.rotation.z) -
+//              MathUtil.angleModulus(driveHeading!!.radians) + if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) PI else 0.0
+//          )
+//      )
+//    > VisionConstants.TAG_HEADING_MAX_DEV_RAD
+//    ) {
+//      DriverStation.reportWarning("Best Single Tag Heading over Max Deviation, deviated by ${Units.radiansToDegrees(abs(bestPose.rotation.z - driveHeading!!.radians))}", false)
+//      return Optional.empty()
+//    }
 
     return Optional.of(
       EstimatedRobotPose(
