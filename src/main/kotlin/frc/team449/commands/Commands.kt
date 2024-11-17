@@ -6,10 +6,13 @@ import frc.team449.Robot
 object Commands {
 
   fun stow(robot: Robot): Command {
-    return ParallelCommandGroup(
-      robot.elevator.stow(),
-      robot.pivot.stow(),
-      robot.intake.stop()
+    return SequentialCommandGroup(
+      ParallelCommandGroup(
+        robot.elevator.stow(),
+        robot.pivot.stow(),
+        robot.intake.stop()
+      ),
+      WaitUntilCommand { robot.elevator.atSetpoint() && robot.pivot.atSetpoint() }
     )
   }
 
