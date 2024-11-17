@@ -49,7 +49,7 @@ class SwerveOrthogonalCommand(
     RobotConstants.SNAP_KD
   )
 
-  private var skewConstant = SwerveConstantsNEO.SKEW_CONSTANT
+  private var skewConstant = SwerveConstantsKraken.SKEW_CONSTANT
 
   private var desiredVel = doubleArrayOf(0.0, 0.0, 0.0)
 
@@ -115,7 +115,7 @@ class SwerveOrthogonalCommand(
       min(sqrt(ctrlX.pow(2) + ctrlY.pow(2)), 1.0),
       RobotConstants.DRIVE_RADIUS_DEADBAND,
       1.0
-    ).pow(SwerveConstantsNEO.JOYSTICK_FILTER_ORDER)
+    ).pow(SwerveConstantsKraken.JOYSTICK_FILTER_ORDER)
 
     val ctrlTheta = atan2(ctrlY, ctrlX)
 
@@ -157,7 +157,7 @@ class SwerveOrthogonalCommand(
       rotRamp.calculate(
         min(
           MathUtil.applyDeadband(
-            abs(controller.rightX).pow(SwerveConstantsNEO.ROT_FILTER_ORDER),
+            abs(controller.rightX).pow(SwerveConstantsKraken.ROT_FILTER_ORDER),
             RobotConstants.ROTATION_DEADBAND,
             1.0
           ),

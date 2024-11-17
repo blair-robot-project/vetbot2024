@@ -39,7 +39,7 @@ class Robot : RobotBase(), Logged {
   val elevator = createElevator()
 
   @Log.NT
-  override val drive = SwerveDrive.createSwerveNEO(ahrs, field)
+  override val drive = SwerveDrive.createSwerveKraken(ahrs, field)
 
   @Log.NT
   override val driveCommand = SwerveOrthogonalCommand(drive, driveController.hid)

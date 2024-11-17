@@ -87,6 +87,10 @@ open class Pivot(
     return setPosition(PivotConstants.STOW_ANGLE)
   }
 
+  fun stack(): Command {
+    return setPosition(PivotConstants.STACK_ANGLE)
+  }
+
   fun intakeAngle(): Command {
     return setPosition(PivotConstants.INTAKE_ANGLE)
   }

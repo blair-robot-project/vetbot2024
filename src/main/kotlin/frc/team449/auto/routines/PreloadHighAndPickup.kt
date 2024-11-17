@@ -10,7 +10,6 @@ import frc.team449.commands.Commands.pickup
 import frc.team449.commands.Commands.readyHigh
 import frc.team449.commands.Commands.scoreHigh
 import frc.team449.commands.Commands.stow
-import frc.team449.commands.Commands.stowAndHold
 
 class PreloadHighAndPickup(
   robot: Robot,

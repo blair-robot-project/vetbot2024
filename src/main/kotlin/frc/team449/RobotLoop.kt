@@ -98,7 +98,7 @@ class RobotLoop : TimedRobot(), Logged {
     this.autoCommand = routineMap[if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) "Red" + routineChooser.selected else "Blue" + routineChooser.selected]
     CommandScheduler.getInstance().schedule(this.autoCommand)
 
-    robot.drive.enableVisionFusion = false
+    robot.drive.enableVisionFusion = true
 
     if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) {
       BreatheHue(robot.light, 0).schedule()

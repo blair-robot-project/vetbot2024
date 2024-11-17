@@ -23,7 +23,7 @@ open class Elevator(
 
   open val positionSupplier = Supplier { motor.position.value }
   open val velocitySupplier = Supplier { motor.velocity.value }
-  open val targetSupplier = Supplier {request.Position}
+  open val targetSupplier = Supplier { request.Position }
 
   // simulation
   private val mech = Mechanism2d(1.5, 2.0)

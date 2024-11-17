@@ -387,7 +387,7 @@ open class SwerveDrive(
             SwerveConstantsKraken.DRIVE_MOTOR_FL,
             inverted = InvertedValue.CounterClockwise_Positive
           ),
-          makeNEOTurningMotor(
+          makeNEOTurningMotorKrakenConstants(
             "FL",
             SwerveConstantsKraken.TURN_MOTOR_FL,
             inverted = true,
@@ -404,7 +404,7 @@ open class SwerveDrive(
             SwerveConstantsKraken.DRIVE_MOTOR_FR,
             inverted = InvertedValue.CounterClockwise_Positive
           ),
-          makeNEOTurningMotor(
+          makeNEOTurningMotorKrakenConstants(
             "FR",
             SwerveConstantsKraken.TURN_MOTOR_FR,
             inverted = true,
@@ -421,7 +421,7 @@ open class SwerveDrive(
             SwerveConstantsKraken.DRIVE_MOTOR_BL,
             inverted = InvertedValue.CounterClockwise_Positive
           ),
-          makeNEOTurningMotor(
+          makeNEOTurningMotorKrakenConstants(
             "BL",
             SwerveConstantsKraken.TURN_MOTOR_BL,
             inverted = true,
@@ -438,7 +438,7 @@ open class SwerveDrive(
             SwerveConstantsKraken.DRIVE_MOTOR_BR,
             inverted = InvertedValue.CounterClockwise_Positive
           ),
-          makeNEOTurningMotor(
+          makeNEOTurningMotorKrakenConstants(
             "BR",
             SwerveConstantsKraken.TURN_MOTOR_BR,
             inverted = true,
@@ -607,7 +607,7 @@ open class SwerveDrive(
       config.MotorOutput.NeutralMode = SwerveConstantsKraken.NEUTRAL_MODE
       config.MotorOutput.DutyCycleNeutralDeadband = SwerveConstantsKraken.DUTY_CYCLE_DEADBAND
 
-      config.Feedback.SensorToMechanismRatio = 1 / SwerveConstantsKraken.DRIVE_GEARING
+      config.Feedback.SensorToMechanismRatio = 1 / (SwerveConstantsKraken.DRIVE_GEARING * SwerveConstantsKraken.DRIVE_UPR)
 
       config.Slot0.kP = SwerveConstantsKraken.DRIVE_KP
       config.Slot0.kI = SwerveConstantsKraken.DRIVE_KI
@@ -689,6 +689,29 @@ open class SwerveDrive(
           sensorPhase
         ),
         currentLimit = SwerveConstantsNEO.STEERING_CURRENT_LIM
+      )
+
+    /** Helper to make turning motors for swerve. */
+    private fun makeNEOTurningMotorKrakenConstants(
+      name: String,
+      motorId: Int,
+      inverted: Boolean,
+      sensorPhase: Boolean,
+      encoderChannel: Int,
+      offset: Double
+    ) =
+      createSparkMax(
+        name = name + "Turn",
+        id = motorId,
+        enableBrakeMode = false,
+        inverted = inverted,
+        encCreator = AbsoluteEncoder.creator(
+          encoderChannel,
+          offset,
+          SwerveConstantsKraken.TURN_UPR,
+          sensorPhase
+        ),
+        currentLimit = SwerveConstantsKraken.STEERING_CURRENT_LIM
       )
   }
 }
