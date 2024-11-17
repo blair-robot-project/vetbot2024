@@ -23,6 +23,7 @@ object PivotConstants {
   val STOW_ANGLE = Degrees.of(91.5)
   val INTAKE_ANGLE = Degrees.of(5.0)
   val HIGH_ANGLE = Degrees.of(75.0)
+  val STACK_ANGLE = Degrees.of(0.0)
 
   const val BURST_TIME_LIMIT = 0.25
   const val BURST_CURRENT_LIMIT = 60.0
@@ -51,7 +52,7 @@ object PivotConstants {
   val REAL_COLOR = Color8Bit(255, 0, 255)
   val TARGET_COLOR = Color8Bit(0, 255, 0)
 
-  const val ACCEL_DAMPING_FACTOR = 0.125
+  const val ACCEL_DAMPING_FACTOR = 0.075
 
   val CRUISE_VEL = RotationsPerSecond.of(1.0)
   val MAX_ACCEL = RadiansPerSecond.per(Second).of(

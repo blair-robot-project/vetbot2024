@@ -2,6 +2,7 @@ package frc.team449.subsystems.drive.swerve
 
 import com.ctre.phoenix6.signals.NeutralModeValue
 import edu.wpi.first.math.util.Units
+import kotlin.math.PI
 
 object SwerveConstantsKraken {
   const val EFFICIENCY = 0.95
@@ -61,9 +62,9 @@ object SwerveConstantsKraken {
 
   /** Drive configuration, Look through SwerveConstantsNEO for turning NEO */
   const val DRIVE_GEARING = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0)
-  const val DRIVE_UPR = 0.31818905832
+  val DRIVE_UPR = Units.inchesToMeters(4.0) * PI
   const val TURN_UPR = 2 * Math.PI
-  val MAX_ATTAINABLE_MK4I_SPEED = Units.feetToMeters(15.85) // (12 - DRIVE_KS) / DRIVE_KV
+  val MAX_ATTAINABLE_MK4I_SPEED = Units.feetToMeters(16.35) // (12 - DRIVE_KS) / DRIVE_KV
   const val STEERING_CURRENT_LIM = 40
   const val JOYSTICK_FILTER_ORDER = 2
   const val ROT_FILTER_ORDER = 1.25

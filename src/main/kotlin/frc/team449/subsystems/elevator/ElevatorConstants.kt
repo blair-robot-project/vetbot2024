@@ -2,6 +2,7 @@ package frc.team449.subsystems.elevator
 
 import com.ctre.phoenix6.signals.InvertedValue
 import com.ctre.phoenix6.signals.NeutralModeValue
+import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.wpilibj.util.Color8Bit
 import kotlin.math.PI
 
@@ -38,9 +39,20 @@ object ElevatorConstants {
   const val STOW_HEIGHT = 0.0 // m
   const val HIGH_HEIGHT = 0.5 // m
 
-  const val MM_JERK = 5.0 // m/s^3
-  const val MM_ACCEL = 1.75 // m/s^2
-  const val MM_VEL = 1.0 // m/s
+  const val ACCEL_DAMPING = 0.01
+
+  const val MM_JERK = 0.0 // m/s^3
+  val MM_ACCEL = ACCEL_DAMPING * (
+    DCMotor.getKrakenX60(1).getTorque(40.0) *
+      GEARING_MOTOR_TO_ELEVATOR / (GEAR_DIAMETER_M / 2)
+    ) / CARRIAGE_MASS_KG
+
+  init {
+    print("Elevator accel: ")
+    println(MM_ACCEL)
+  }
+
+  const val MM_VEL = (5800 / 60) / GEARING_MOTOR_TO_ELEVATOR
 
   // TODO replace with real sysid values
   const val KS = 0.0

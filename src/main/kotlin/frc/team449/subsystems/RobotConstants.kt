@@ -2,7 +2,6 @@ package frc.team449.subsystems
 
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.util.Units
 import frc.team449.subsystems.drive.swerve.SwerveConstantsNEO
 import kotlin.math.PI
@@ -28,10 +27,11 @@ object RobotConstants {
 
   const val USE_ACCEL_LIMIT = true
 
-  val MAX_ACCEL = 4 *
-    DCMotor.getNEO(1)
-      .getTorque(75.0) /
-    ((SwerveConstantsNEO.DRIVE_UPR / (2 * PI)) * ROBOT_WEIGHT * SwerveConstantsNEO.DRIVE_GEARING) // m/s/s
+  val MAX_ACCEL = 25.0
+//    4 *
+//    DCMotor.getNEO(1)
+//      .getTorque(75.0) /
+//    ((SwerveConstantsNEO.DRIVE_UPR / (2 * PI)) * ROBOT_WEIGHT * SwerveConstantsNEO.DRIVE_GEARING) // m/s/s
 
   val INITIAL_POSE = Pose2d(0.0, 0.0, Rotation2d())
 
