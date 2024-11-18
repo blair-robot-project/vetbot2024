@@ -25,7 +25,7 @@ fun createSparkMax(
   gearing: Double = 1.0,
   upr: Double = 1.0,
   controlPeriod: Time = Milliseconds.of(0.0),
-  currentLimit: Current = Amps.of(40.0),
+  currentLimit: Current = Amps.of(40.0)
 ): SparkMax {
   val motor = SparkMax(id, SparkLowLevel.MotorType.kBrushless)
   if (motor.lastError != REVLibError.kOk) {
