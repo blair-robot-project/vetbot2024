@@ -22,7 +22,7 @@ class Stack3(
     ChoreoRoutine(
       drive = robot.drive,
       parallelEventMap = hashMapOf(
-        0 to WaitCommand(1.28).andThen(pickup(robot)),
+        0 to pickup(robot),
         1 to stowAndHold(robot)
       ),
       stopEventMap = hashMapOf(
@@ -42,4 +42,3 @@ class Stack3(
       ChoreoTrajectory.createTrajectory(arrayListOf("S3-B1", "B1-S2"), "Stack3")
     }
 }
-
