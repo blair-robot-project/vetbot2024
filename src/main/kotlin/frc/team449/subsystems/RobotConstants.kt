@@ -17,14 +17,14 @@ object RobotConstants {
   const val NEG_ROT_RATE_LIM = -27.5 * PI
   const val DRIVE_RADIUS_DEADBAND = .125
   const val ROTATION_DEADBAND = .125
-  val SNAP_TO_ANGLE_TOLERANCE_RAD = Units.degreesToRadians(3.5)
+  val SNAP_TO_ANGLE_TOLERANCE_RAD = Units.degreesToRadians(1.0)
 
   /** In kilograms, include bumpers and battery and all */
   const val ROBOT_WEIGHT = 55.0 // TODO: find
 
   /** Drive configuration */
   val MAX_LINEAR_SPEED = SwerveConstantsNEO.MAX_ATTAINABLE_MK4I_SPEED // m/s
-  const val MAX_ROT_SPEED = 5.804 * PI / 4 // r ad/s
+  const val MAX_ROT_SPEED = 5.804 * PI / 4 // rad/s
 
   const val USE_ACCEL_LIMIT = true
 
@@ -39,7 +39,7 @@ object RobotConstants {
     println("Drive Max Accel: $MAX_ACCEL")
   }
 
-  const val LOOP_TIME = 0.020
+  const val LOOP_TIME = 0.020 //
 
   /** PID controller for snap to angle turning */
   val SNAP_KP = 5.85
@@ -47,9 +47,6 @@ object RobotConstants {
   val SNAP_KD = 0.0
 
   const val ALIGN_ROT_SPEED = 7 * PI / 2
-
-  val IR_CHANNEL = 3
-  val IR_CHANNEL2 = 4
 
   // Robot dimensions (INCLUDING BUMPERS)
   val ROBOT_WIDTH = Units.inchesToMeters(27.25 + 3.25 * 2)

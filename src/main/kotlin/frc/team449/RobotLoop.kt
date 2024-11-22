@@ -106,17 +106,6 @@ class RobotLoop : TimedRobot(), Logged {
       BreatheHue(robot.light, 95).schedule()
     }
 
-    if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) {
-      FieldConstants.SPEAKER_POSE = FieldConstants.RED_SPEAKER_POSE
-    } else if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Blue) {
-      FieldConstants.SPEAKER_POSE = FieldConstants.BLUE_SPEAKER_POSE
-    }
-
-    if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) {
-      FieldConstants.PASS_POSE = FieldConstants.RED_PASS_POSE
-    } else if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Blue) {
-      FieldConstants.PASS_POSE = FieldConstants.BLUE_PASS_POSE
-    }
   }
 
   override fun autonomousPeriodic() {}
@@ -132,17 +121,6 @@ class RobotLoop : TimedRobot(), Logged {
 
     robot.drive.defaultCommand = robot.driveCommand
 
-    if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) {
-      FieldConstants.SPEAKER_POSE = FieldConstants.RED_SPEAKER_POSE
-    } else if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Blue) {
-      FieldConstants.SPEAKER_POSE = FieldConstants.BLUE_SPEAKER_POSE
-    }
-
-    if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) {
-      FieldConstants.PASS_POSE = FieldConstants.RED_PASS_POSE
-    } else if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Blue) {
-      FieldConstants.PASS_POSE = FieldConstants.BLUE_PASS_POSE
-    }
   }
 
   override fun teleopPeriodic() {
