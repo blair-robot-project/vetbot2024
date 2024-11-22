@@ -51,4 +51,17 @@ object Commands {
       robot.intake.stop()
     )
   }
+
+  fun scoreStack(robot: Robot): Command {
+    return SequentialCommandGroup(
+      ParallelCommandGroup(
+        robot.elevator.stow(),
+        robot.pivot.high()
+      ),
+      WaitUntilCommand {robot.elevator.atSetpoint() && robot.pivot.atSetpoint()},
+      robot.intake.outtake(),
+      WaitCommand(0.5),
+      robot.intake.stop()
+    )
+  }
 }

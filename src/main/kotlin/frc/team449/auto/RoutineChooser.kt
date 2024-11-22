@@ -17,6 +17,8 @@ class RoutineChooser(private val robot: Robot) : SendableChooser<String>() {
       "BluePreload" to Preload(robot, false).createCommand(),
       "RedHighOne" to PreloadHighAndPickup(robot, true).createCommand(),
       "BlueHighOne" to PreloadHighAndPickup(robot, false).createCommand(),
+      "RedStack3" to Stack3(robot, true).createCommand(),
+      "BlueStack3" to Stack3(robot, false).createCommand()
     )
   }
 
@@ -26,5 +28,6 @@ class RoutineChooser(private val robot: Robot) : SendableChooser<String>() {
     this.addOption("Taxi", "Taxi")
     this.addOption("Drop pre-load", "Preload")
     this.addOption("Preload High and Pickup", "HighOne")
+    this.addOption("Score Stack at Pos 3 and pickup at bucket 1", "Stack3")
   }
 }
