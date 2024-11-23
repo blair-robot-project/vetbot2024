@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage
 import com.ctre.phoenix6.controls.VoltageOut
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
+import edu.wpi.first.math.MathUtil
 import edu.wpi.first.units.Angle
 import edu.wpi.first.units.Measure
 import edu.wpi.first.units.Units.*
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import frc.team449.subsystems.RobotConstants
 import java.util.function.Supplier
 import kotlin.math.abs
 
@@ -32,7 +34,7 @@ open class Pivot(
 
   open val positionSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(motor.position.value) }
   open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
-  open var targetSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(positionRequest.Position)}
+  open var targetSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(positionRequest.Position) }
 
   // sim stuff
   private val mech = Mechanism2d(2.0, 2.0)
@@ -58,7 +60,8 @@ open class Pivot(
     )
   )
 
-  fun setPosition(rotations: Measure<Angle>): Command {
+
+  fun setPosition(rotations: Measure<Angle> ): Command {
     return this.runOnce {
       motor.setControl(positionRequest.withPosition(rotations.`in`(Rotations)))
     }
@@ -95,6 +98,18 @@ open class Pivot(
   fun atSetpoint(): Boolean {
     return abs(positionSupplier.get().`in`(Rotations) - targetSupplier.get().`in`(Rotations)) <
       PivotConstants.TOLERANCE.`in`(Rotations)
+  }
+
+  fun pivotDownManual(): Double {
+
+    return targetSupplier.get().`in`(Rotations) - 0.005
+
+    }
+
+  fun pivotUpManual(): Double {
+
+    return targetSupplier.get().`in`(Rotations) + 0.005
+
   }
 
   override fun periodic() {
