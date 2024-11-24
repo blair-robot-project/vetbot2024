@@ -37,16 +37,17 @@ object Commands {
 
   fun readyHigh(robot: Robot): Command {
     return ParallelCommandGroup(
+      robot.intake.hold(),
       robot.elevator.high(),
-      robot.pivot.high()
+      robot.pivot.stow()
     )
   }
 
-  fun scoreHigh(robot: Robot): Command {
+  fun scoreHighAuto(robot: Robot): Command {
     return SequentialCommandGroup(
       ParallelCommandGroup(
         robot.elevator.high(),
-        robot.pivot.high()
+        robot.pivot.stow()
       ),
       WaitUntilCommand { robot.elevator.atSetpoint() && robot.pivot.atSetpoint() },
       robot.intake.outtake(),
@@ -55,13 +56,21 @@ object Commands {
     )
   }
 
+  fun readyStackTele(robot: Robot): Command {
+    return ParallelCommandGroup(
+      robot.intake.hold(),
+      robot.elevator.high(),
+      robot.pivot.intakeAngle()
+    )
+  }
+
   fun scoreStack(robot: Robot): Command {
     return SequentialCommandGroup(
       ParallelCommandGroup(
         robot.elevator.stow(),
-        robot.pivot.high()
+        robot.pivot.stow()
       ),
-      WaitUntilCommand {robot.elevator.atSetpoint() && robot.pivot.atSetpoint()},
+      WaitUntilCommand { robot.elevator.atSetpoint() && robot.pivot.atSetpoint() },
       robot.intake.outtake(),
       WaitCommand(0.5),
       robot.intake.stop()

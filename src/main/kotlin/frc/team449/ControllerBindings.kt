@@ -24,11 +24,15 @@ class ControllerBindings(
 ) {
 
   private fun robotBindings() {
-    /** Call robot functions you create below */
+    /** Call robot functions you create below
+     * Driver Layout: https://docs.google.com/drawings/d/1ct2gWfQvDZgJm0BomwIuQVwYyWBlEtnz4YY7oJUXoGU/edit */
     stow()
     pickup()
     readyHigh()
-    scoreHigh()
+    readyStack()
+    outtake()
+    manualUp()
+    manualDown()
   }
 
   private fun nonRobotBindings() {
@@ -77,27 +81,53 @@ class ControllerBindings(
     )
   }
 
+  private fun manualUp() {
+    mechanismController.povUp().onTrue(
+      robot.pivot.manualUp()
+    ).onFalse(
+      robot.pivot.hold()
+    )
+  }
+
+  private fun manualDown() {
+    mechanismController.povUp().onTrue(
+      robot.pivot.manualDown()
+    ).onFalse(
+      robot.pivot.hold()
+    )
+  }
+
   private fun stow() {
-    mechanismController.b().onTrue(
+    driveController.a().onTrue(
       Commands.stowAndHold(robot)
     )
   }
 
   private fun pickup() {
-    mechanismController.a().onTrue(
+    driveController.rightTrigger().onTrue(
       Commands.pickup(robot)
+    ).onFalse(
+      Commands.stowAndHold(robot)
     )
   }
 
   private fun readyHigh() {
-    mechanismController.x().onTrue(
+    mechanismController.rightBumper().onTrue(
       Commands.readyHigh(robot)
     )
   }
 
-  private fun scoreHigh() {
-    mechanismController.y().onTrue(
-      Commands.scoreHigh(robot)
+  private fun readyStack() {
+    mechanismController.leftBumper().onTrue(
+      Commands.readyStackTele(robot)
+    )
+  }
+
+  private fun outtake() {
+    mechanismController.leftTrigger().onTrue(
+      robot.intake.outtake()
+    ).onFalse(
+      robot.intake.stop()
     )
   }
 

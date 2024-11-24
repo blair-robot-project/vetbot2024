@@ -8,7 +8,7 @@ import frc.team449.auto.choreo.ChoreoRoutineStructure
 import frc.team449.auto.choreo.ChoreoTrajectory
 import frc.team449.commands.Commands.pickup
 import frc.team449.commands.Commands.readyHigh
-import frc.team449.commands.Commands.scoreHigh
+import frc.team449.commands.Commands.scoreHighAuto
 import frc.team449.commands.Commands.stow
 
 class PreloadHighAndPickup(
@@ -26,7 +26,7 @@ class PreloadHighAndPickup(
       ),
       stopEventMap = hashMapOf(
         0 to InstantCommand(),
-        1 to scoreHigh(robot),
+        1 to scoreHighAuto(robot),
         2 to pickup(robot)
       ),
       debug = false,
@@ -42,4 +42,3 @@ class PreloadHighAndPickup(
       ChoreoTrajectory.createTrajectory(arrayListOf("part1", "part2", "part3"), "high1")
     }
 }
-

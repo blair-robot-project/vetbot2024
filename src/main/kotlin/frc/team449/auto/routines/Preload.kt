@@ -7,7 +7,7 @@ import frc.team449.auto.AutoUtil
 import frc.team449.auto.choreo.ChoreoRoutine
 import frc.team449.auto.choreo.ChoreoRoutineStructure
 import frc.team449.auto.choreo.ChoreoTrajectory
-import frc.team449.commands.Commands.scoreHigh
+import frc.team449.commands.Commands.scoreHighAuto
 
 class Preload(
   robot: Robot,
@@ -21,7 +21,7 @@ class Preload(
         0 to InstantCommand()
       ),
       stopEventMap = hashMapOf(
-        0 to scoreHigh(robot),
+        0 to scoreHighAuto(robot),
         1 to PrintCommand("Finished the 1st trajectory!")
       ),
       debug = false,
