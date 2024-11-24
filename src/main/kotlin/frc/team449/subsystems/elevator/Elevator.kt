@@ -7,7 +7,6 @@ import com.ctre.phoenix6.controls.VoltageOut
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
 import edu.wpi.first.math.MathUtil
-import edu.wpi.first.units.Units
 import edu.wpi.first.units.Units.*
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.wpilibj.RobotBase
@@ -87,7 +86,8 @@ open class Elevator(
       {
         setVoltage(ElevatorConstants.HOMING_VOLTAGE.`in`(Volts))
         if (motor.statorCurrent.value > ElevatorConstants.HOMING_CURRENT_CUTOFF.`in`(Amps) &&
-          motor.velocity.value < ElevatorConstants.HOMING_MAX_VEL.`in`(MetersPerSecond)) {
+          motor.velocity.value < ElevatorConstants.HOMING_MAX_VEL.`in`(MetersPerSecond)
+        ) {
           timer.start()
         } else {
           timer.stop()
