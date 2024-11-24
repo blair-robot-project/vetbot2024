@@ -1,15 +1,11 @@
 package frc.team449.auto.routines
 
-import edu.wpi.first.wpilibj2.command.InstantCommand
-import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.team449.Robot
 import frc.team449.auto.AutoUtil
 import frc.team449.auto.choreo.ChoreoRoutine
 import frc.team449.auto.choreo.ChoreoRoutineStructure
 import frc.team449.auto.choreo.ChoreoTrajectory
 import frc.team449.commands.Commands.pickup
-import frc.team449.commands.Commands.readyHigh
-import frc.team449.commands.Commands.scoreHigh
 import frc.team449.commands.Commands.scoreStack
 import frc.team449.commands.Commands.stowAndHold
 

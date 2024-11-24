@@ -13,7 +13,6 @@ import frc.team449.auto.RoutineChooser
 import frc.team449.commands.light.BlairChasing
 import frc.team449.commands.light.BreatheHue
 import frc.team449.commands.light.Rainbow
-import frc.team449.subsystems.FieldConstants
 import frc.team449.subsystems.drive.swerve.SwerveSim
 import frc.team449.subsystems.vision.VisionConstants
 import monologue.Annotations.Log
@@ -105,7 +104,6 @@ class RobotLoop : TimedRobot(), Logged {
     } else {
       BreatheHue(robot.light, 95).schedule()
     }
-
   }
 
   override fun autonomousPeriodic() {}
@@ -120,7 +118,6 @@ class RobotLoop : TimedRobot(), Logged {
     (robot.light.currentCommand ?: InstantCommand()).cancel()
 
     robot.drive.defaultCommand = robot.driveCommand
-
   }
 
   override fun teleopPeriodic() {
