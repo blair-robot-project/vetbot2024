@@ -1,5 +1,6 @@
 package frc.team449.auto.routines
 
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.team449.Robot
 import frc.team449.auto.AutoUtil
 import frc.team449.auto.choreo.ChoreoRoutine
@@ -18,7 +19,7 @@ class Stack3(
     ChoreoRoutine(
       drive = robot.drive,
       parallelEventMap = hashMapOf(
-        0 to pickup(robot),
+        0 to WaitCommand(1.28).andThen(pickup(robot)),
         1 to stowAndHold(robot)
       ),
       stopEventMap = hashMapOf(
