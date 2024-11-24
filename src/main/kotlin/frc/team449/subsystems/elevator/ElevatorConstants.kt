@@ -3,6 +3,7 @@ package frc.team449.subsystems.elevator
 import com.ctre.phoenix6.signals.InvertedValue
 import com.ctre.phoenix6.signals.NeutralModeValue
 import edu.wpi.first.math.system.plant.DCMotor
+import edu.wpi.first.units.Units
 import edu.wpi.first.wpilibj.util.Color8Bit
 import kotlin.math.PI
 
@@ -17,6 +18,11 @@ object ElevatorConstants {
   val DESIRED_COLOR = Color8Bit(0, 255, 0)
   const val MAX_HEIGHT = 0.524383
   const val MIN_HEIGHT = 0.2054352
+
+  /** Current Homing constants */
+  val HOMING_VOLTAGE = Units.Volts.of(3.0)
+  val HOMING_TIME_CUTOFF = Units.Seconds.of(4.0)
+  val HOMING_CURRENT_CUTOFF = Units.Amps.of(20.0)
 
   const val UPDATE_FREQUENCY = 50.0 // hz
   const val DUTY_CYCLE_DEADBAND = 0.001

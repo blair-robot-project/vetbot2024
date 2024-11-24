@@ -14,16 +14,20 @@ object PivotConstants {
   val NEUTRAL_MODE = NeutralModeValue.Brake
   val ORIENTATION = InvertedValue.CounterClockwise_Positive
 
+  /** Current Homing constants */
+  val HOMING_VOLTAGE = Volts.of(2.0)
+  val HOMING_TIME_CUTOFF = Seconds.of(4.0)
+  val HOMING_CURRENT_CUTOFF = Amps.of(20.0)
+
   val MIN_ANGLE = Degrees.of(0.0)
   val MAX_ANGLE = Degrees.of(90.0)
 
   /** TODO: Figure out exact values for these, especially once hardstop is created
    * Note: 0 deg must  be defined as the inner 1x1 on the wrist is perfectly vertical
    */
-  val STOW_ANGLE = Degrees.of(91.5)
-  val INTAKE_ANGLE = Degrees.of(5.0)
-  val HIGH_ANGLE = Degrees.of(75.0)
-  val STACK_ANGLE = Degrees.of(0.0)
+  val TRUE_STOW_ANGLE = Degrees.of(91.233851)
+  val STOW_ANGLE = Degrees.of(92.5)
+  val INTAKE_ANGLE = Degrees.of(12.618689)
 
   const val BURST_TIME_LIMIT = 0.25
   const val BURST_CURRENT_LIMIT = 60.0

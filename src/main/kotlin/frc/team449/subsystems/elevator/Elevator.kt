@@ -6,14 +6,20 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage
 import com.ctre.phoenix6.controls.VoltageOut
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
+import edu.wpi.first.math.MathUtil
+import edu.wpi.first.units.Units
+import edu.wpi.first.units.Units.Volts
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.wpilibj.RobotBase
+import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.FunctionalCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import frc.team449.subsystems.RobotConstants
 import java.util.function.Supplier
 import kotlin.math.abs
 
@@ -24,6 +30,8 @@ open class Elevator(
   open val positionSupplier = Supplier { motor.position.value }
   open val velocitySupplier = Supplier { motor.velocity.value }
   open val targetSupplier = Supplier { request.Position }
+
+  private val timer = Timer()
 
   // simulation
   private val mech = Mechanism2d(1.5, 2.0)
@@ -68,6 +76,57 @@ open class Elevator(
         false
       )
     )
+  }
+
+  fun currentHoming(): Command {
+    return FunctionalCommand(
+      {
+        timer.stop()
+        timer.reset()
+      },
+      {
+        setVoltage(ElevatorConstants.HOMING_VOLTAGE.`in`(Volts))
+        if (motor.statorCurrent.value > ElevatorConstants.HOMING_CURRENT_CUTOFF.`in`(Units.Amps)) {
+          timer.start()
+        } else {
+          timer.stop()
+          timer.reset()
+        }
+      },
+      {
+        motor.setPosition(ElevatorConstants.STOW_HEIGHT)
+        println("COMPLETED ELEVATOR CURRENT HOMING, SET TO STOW ANGLE")
+      },
+      {
+        motor.statorCurrent.value > ElevatorConstants.HOMING_CURRENT_CUTOFF.`in`(Units.Amps) &&
+          timer.hasElapsed(ElevatorConstants.HOMING_TIME_CUTOFF.`in`(Units.Seconds))
+      }
+    )
+      .andThen(stow())
+  }
+
+  fun manualDown(): Command {
+    return setPosition(
+      MathUtil.clamp(
+        targetSupplier.get() - ElevatorConstants.MM_VEL * RobotConstants.LOOP_TIME / 5,
+        ElevatorConstants.STOW_HEIGHT,
+        ElevatorConstants.HIGH_HEIGHT
+      )
+    )
+  }
+
+  fun manualUp(): Command {
+    return setPosition(
+      MathUtil.clamp(
+        targetSupplier.get() + ElevatorConstants.MM_VEL * RobotConstants.LOOP_TIME / 5,
+        ElevatorConstants.STOW_HEIGHT,
+        ElevatorConstants.HIGH_HEIGHT
+      )
+    )
+  }
+
+  fun hold(): Command {
+    return setPosition(targetSupplier.get())
   }
 
   fun stop(): Command {

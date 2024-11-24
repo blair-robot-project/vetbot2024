@@ -14,10 +14,12 @@ import edu.wpi.first.units.Velocity
 import edu.wpi.first.units.Voltage
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.wpilibj.RobotBase
+import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.FunctionalCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.team449.subsystems.RobotConstants
 import java.util.function.Supplier
@@ -35,6 +37,8 @@ open class Pivot(
   open val positionSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(motor.position.value) }
   open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
   open var targetSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(positionRequest.Position) }
+
+  private val timer = Timer()
 
   // sim stuff
   private val mech = Mechanism2d(2.0, 2.0)
@@ -60,8 +64,7 @@ open class Pivot(
     )
   )
 
-
-  fun setPosition(rotations: Measure<Angle> ): Command {
+  fun setPosition(rotations: Measure<Angle>): Command {
     return this.runOnce {
       motor.setControl(positionRequest.withPosition(rotations.`in`(Rotations)))
     }
@@ -83,20 +86,43 @@ open class Pivot(
     motor.setPosition(PivotConstants.STOW_ANGLE.`in`(Rotations))
   }
 
+  fun currentHoming(): Command {
+    return FunctionalCommand(
+      {
+        timer.stop()
+        timer.reset()
+      },
+      {
+        setVoltage(PivotConstants.HOMING_VOLTAGE)
+        if (motor.statorCurrent.value > PivotConstants.HOMING_CURRENT_CUTOFF.`in`(Amps)) {
+          timer.start()
+        } else {
+          timer.stop()
+          timer.reset()
+        }
+      },
+      {
+        motor.setPosition(PivotConstants.TRUE_STOW_ANGLE.`in`(Rotations))
+        println("COMPLETED PIVOT CURRENT HOMING, SET TO STOW ANGLE")
+      },
+      {
+        motor.statorCurrent.value > PivotConstants.HOMING_CURRENT_CUTOFF.`in`(Amps) &&
+          timer.hasElapsed(PivotConstants.HOMING_TIME_CUTOFF.`in`(Seconds))
+      }
+    )
+      .andThen(stow())
+  }
+
+  fun hold(): Command {
+    return setPosition(targetSupplier.get())
+  }
+
   fun stow(): Command {
     return setPosition(PivotConstants.STOW_ANGLE)
   }
 
-  fun stack(): Command {
-    return setPosition(PivotConstants.STACK_ANGLE)
-  }
-
   fun intakeAngle(): Command {
     return setPosition(PivotConstants.INTAKE_ANGLE)
-  }
-
-  fun high(): Command {
-    return setPosition(PivotConstants.HIGH_ANGLE)
   }
 
   fun atSetpoint(): Boolean {
@@ -104,16 +130,28 @@ open class Pivot(
       PivotConstants.TOLERANCE.`in`(Rotations)
   }
 
-  fun pivotDownManual(): Double {
+  fun manualDown(): Command {
+    return setPosition(
+      Rotations.of(
+        MathUtil.clamp(
+          targetSupplier.get().`in`(Rotations) - PivotConstants.CRUISE_VEL.`in`(RotationsPerSecond) * RobotConstants.LOOP_TIME / 5,
+          PivotConstants.MIN_ANGLE.`in`(Rotations),
+          PivotConstants.MAX_ANGLE.`in`(Rotations)
+        )
+      )
+    )
+  }
 
-    return targetSupplier.get().`in`(Rotations) - 0.005
-
-    }
-
-  fun pivotUpManual(): Double {
-
-    return targetSupplier.get().`in`(Rotations) + 0.005
-
+  fun manualUp(): Command {
+    return setPosition(
+      Rotations.of(
+        MathUtil.clamp(
+          targetSupplier.get().`in`(Rotations) + PivotConstants.CRUISE_VEL.`in`(RotationsPerSecond) * RobotConstants.LOOP_TIME / 5,
+          PivotConstants.MIN_ANGLE.`in`(Rotations),
+          PivotConstants.MAX_ANGLE.`in`(Rotations)
+        )
+      )
+    )
   }
 
   override fun periodic() {
@@ -173,12 +211,12 @@ open class Pivot(
         motor.velocity,
         motor.motorVoltage,
         motor.supplyCurrent,
-        motor.torqueCurrent,
+        motor.statorCurrent,
         motor.deviceTemp
       )
       motor.optimizeBusUtilization()
 
-      if (RobotBase.isReal()) motor.setPosition(PivotConstants.STOW_ANGLE.`in`(Rotations))
+      if (RobotBase.isReal()) motor.setPosition(PivotConstants.TRUE_STOW_ANGLE.`in`(Rotations))
 
       return if (RobotBase.isReal()) Pivot(motor) else PivotSim(motor)
     }

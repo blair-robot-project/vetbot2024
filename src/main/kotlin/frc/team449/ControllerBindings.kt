@@ -24,15 +24,22 @@ class ControllerBindings(
 ) {
 
   private fun robotBindings() {
-    /** Call robot functions you create below
-     * Driver Layout: https://docs.google.com/drawings/d/1ct2gWfQvDZgJm0BomwIuQVwYyWBlEtnz4YY7oJUXoGU/edit */
+    /** Call robot functions you create below */
+
+    /** Driver Layout: https://docs.google.com/drawings/d/1ct2gWfQvDZgJm0BomwIuQVwYyWBlEtnz4YY7oJUXoGU/edit */
     stow()
     pickup()
     readyHigh()
     readyStack()
     outtake()
-    manualUp()
-    manualDown()
+
+    /** Operator Layout: https://docs.google.com/drawings/d/1b8tngmzBPXh1vmAdhs1xD-INomqgjZql8-FNzGo-1Z4/edit */
+    elevatorManualUp()
+    elevatorManualDown()
+    pivotManualUp()
+    pivotManualDown()
+    elevatorHoming()
+    pivotHoming()
   }
 
   private fun nonRobotBindings() {
@@ -81,16 +88,44 @@ class ControllerBindings(
     )
   }
 
-  private fun manualUp() {
-    mechanismController.povUp().onTrue(
+  private fun elevatorHoming() {
+    mechanismController.a().onTrue(
+      robot.elevator.currentHoming()
+    )
+  }
+
+  private fun pivotHoming() {
+    mechanismController.b().onTrue(
+      robot.pivot.currentHoming()
+    )
+  }
+
+  private fun pivotManualUp() {
+    mechanismController.rightBumper().onTrue(
       robot.pivot.manualUp()
     ).onFalse(
       robot.pivot.hold()
     )
   }
 
-  private fun manualDown() {
+  private fun elevatorManualDown() {
+    mechanismController.povDown().onTrue(
+      robot.elevator.manualDown()
+    ).onFalse(
+      robot.elevator.hold()
+    )
+  }
+
+  private fun elevatorManualUp() {
     mechanismController.povUp().onTrue(
+      robot.elevator.manualUp()
+    ).onFalse(
+      robot.elevator.hold()
+    )
+  }
+
+  private fun pivotManualDown() {
+    mechanismController.leftBumper().onTrue(
       robot.pivot.manualDown()
     ).onFalse(
       robot.pivot.hold()
