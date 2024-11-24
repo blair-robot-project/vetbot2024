@@ -8,7 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.units.Units
-import edu.wpi.first.units.Units.Volts
+import edu.wpi.first.units.Units.*
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.Timer
@@ -86,7 +86,8 @@ open class Elevator(
       },
       {
         setVoltage(ElevatorConstants.HOMING_VOLTAGE.`in`(Volts))
-        if (motor.statorCurrent.value > ElevatorConstants.HOMING_CURRENT_CUTOFF.`in`(Units.Amps)) {
+        if (motor.statorCurrent.value > ElevatorConstants.HOMING_CURRENT_CUTOFF.`in`(Amps) &&
+          motor.velocity.value < ElevatorConstants.HOMING_MAX_VEL.`in`(MetersPerSecond)) {
           timer.start()
         } else {
           timer.stop()
@@ -95,11 +96,11 @@ open class Elevator(
       },
       {
         motor.setPosition(ElevatorConstants.STOW_HEIGHT)
-        println("COMPLETED ELEVATOR CURRENT HOMING, SET TO STOW ANGLE")
+        println("COMPLETED ELEVATOR CURRENT HOMING, SET TO STOW POSITION")
       },
       {
-        motor.statorCurrent.value > ElevatorConstants.HOMING_CURRENT_CUTOFF.`in`(Units.Amps) &&
-          timer.hasElapsed(ElevatorConstants.HOMING_TIME_CUTOFF.`in`(Units.Seconds))
+        motor.statorCurrent.value > ElevatorConstants.HOMING_CURRENT_CUTOFF.`in`(Amps) &&
+          timer.hasElapsed(ElevatorConstants.HOMING_TIME_CUTOFF.`in`(Seconds))
       }
     )
       .andThen(stow())
@@ -200,7 +201,7 @@ open class Elevator(
         motor.velocity,
         motor.motorVoltage,
         motor.supplyCurrent,
-        motor.torqueCurrent,
+        motor.statorCurrent,
         motor.deviceTemp
       )
 

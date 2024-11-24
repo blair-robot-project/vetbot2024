@@ -18,6 +18,7 @@ object PivotConstants {
   val HOMING_VOLTAGE = Volts.of(2.0)
   val HOMING_TIME_CUTOFF = Seconds.of(4.0)
   val HOMING_CURRENT_CUTOFF = Amps.of(20.0)
+  val HOMING_MAX_VEL = RotationsPerSecond.of(0.05)
 
   val MIN_ANGLE = Degrees.of(0.0)
   val MAX_ANGLE = Degrees.of(90.0)

@@ -23,6 +23,7 @@ object ElevatorConstants {
   val HOMING_VOLTAGE = Units.Volts.of(3.0)
   val HOMING_TIME_CUTOFF = Units.Seconds.of(4.0)
   val HOMING_CURRENT_CUTOFF = Units.Amps.of(20.0)
+  val HOMING_MAX_VEL = Units.MetersPerSecond.of(0.05)
 
   const val UPDATE_FREQUENCY = 50.0 // hz
   const val DUTY_CYCLE_DEADBAND = 0.001

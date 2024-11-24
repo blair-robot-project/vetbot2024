@@ -94,7 +94,8 @@ open class Pivot(
       },
       {
         setVoltage(PivotConstants.HOMING_VOLTAGE)
-        if (motor.statorCurrent.value > PivotConstants.HOMING_CURRENT_CUTOFF.`in`(Amps)) {
+        if (motor.statorCurrent.value > PivotConstants.HOMING_CURRENT_CUTOFF.`in`(Amps) &&
+          motor.velocity.value < PivotConstants.HOMING_MAX_VEL.`in`(RotationsPerSecond)) {
           timer.start()
         } else {
           timer.stop()
