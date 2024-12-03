@@ -51,7 +51,7 @@ class ControllerBindings(
     // slowDrive()
 
     resetGyro()
-    addNoiseToSimulatedPose()
+    //addNoiseToSimulatedPose()
   }
 
   private fun slowDrive() {

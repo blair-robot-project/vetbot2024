@@ -39,7 +39,7 @@ object ElevatorConstants {
 
   const val CARRIAGE_MASS_KG = 9.3811974
 
-  const val GEARING_MOTOR_TO_GEAR = 10.0 / 1.0
+  const val GEARING_MOTOR_TO_GEAR = 25.0 / 1.0 // 03-12-2024
   const val GEAR_DIAMETER_M = 0.048824388
   const val GEARING_MOTOR_TO_ELEVATOR = GEARING_MOTOR_TO_GEAR / (GEAR_DIAMETER_M * PI)
 
