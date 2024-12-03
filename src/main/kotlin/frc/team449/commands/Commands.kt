@@ -72,7 +72,7 @@ object Commands {
       ),
       WaitUntilCommand { robot.elevator.atSetpoint() && robot.pivot.atSetpoint() },
       robot.intake.outtake(),
-      WaitCommand(0.5),
+      WaitCommand(1.0),
       robot.intake.stop()
     )
   }

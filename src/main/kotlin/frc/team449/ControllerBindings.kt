@@ -40,6 +40,11 @@ class ControllerBindings(
     pivotManualDown()
     elevatorHoming()
     pivotHoming()
+
+    /** Characterization Routines (must do one at a time, all binded to driver ABXY) */
+//    pivotChar()
+//    elevatorChar()
+//    driveChar()
   }
 
   private fun nonRobotBindings() {
@@ -133,13 +138,13 @@ class ControllerBindings(
   }
 
   private fun stow() {
-    driveController.a().onTrue(
+    driveController.leftBumper().onTrue(
       Commands.stowAndHold(robot)
     )
   }
 
   private fun pickup() {
-    driveController.rightTrigger().onTrue(
+    driveController.leftTrigger().onTrue(
       Commands.pickup(robot)
     ).onFalse(
       Commands.stowAndHold(robot)
@@ -153,13 +158,13 @@ class ControllerBindings(
   }
 
   private fun readyStack() {
-    mechanismController.leftBumper().onTrue(
+    mechanismController.b().onTrue(
       Commands.readyStackTele(robot)
     )
   }
 
   private fun outtake() {
-    mechanismController.leftTrigger().onTrue(
+    mechanismController.rightTrigger().onTrue(
       robot.intake.outtake()
     ).onFalse(
       robot.intake.stop()
@@ -169,8 +174,8 @@ class ControllerBindings(
   private fun pivotChar() {
     val pivotRoutine = SysIdRoutine(
       SysIdRoutine.Config(
-        Volts.of(0.5).per(Seconds.of(1.0)),
-        Volts.of(4.0),
+        Volts.of(0.5).per(Second),
+        Volts.of(2.5),
         Seconds.of(10.0)
       ) { state -> SignalLogger.writeString("state", state.toString()) },
       SysIdRoutine.Mechanism(
@@ -206,7 +211,7 @@ class ControllerBindings(
     val elevatorRoutine = SysIdRoutine(
       SysIdRoutine.Config(
         Volts.of(0.5).per(Seconds.of(1.0)),
-        Volts.of(12.0),
+        Volts.of(3.0),
         Seconds.of(10.0)
       ) { state -> SignalLogger.writeString("state", state.toString()) },
       SysIdRoutine.Mechanism(
@@ -235,6 +240,42 @@ class ControllerBindings(
     // Dynamic Reverse
     driveController.y().onTrue(
       elevatorRoutine.dynamic(SysIdRoutine.Direction.kReverse)
+    )
+  }
+
+  private fun driveChar() {
+    val driveRoutine = SysIdRoutine(
+      SysIdRoutine.Config(
+        Volts.of(0.5).per(Seconds.of(1.0)),
+        Volts.of(6.0),
+        Seconds.of(15.0)
+      ) { state -> SignalLogger.writeString("state", state.toString()) },
+      SysIdRoutine.Mechanism(
+        { voltage: Measure<Voltage> -> run { robot.drive.setVoltage(voltage.`in`(Volts)) } },
+        null,
+        robot.drive,
+        "drive"
+      )
+    )
+
+    // Quasistatic Forwards
+    driveController.a().onTrue(
+      driveRoutine.quasistatic(SysIdRoutine.Direction.kForward)
+    )
+
+    // Quasistatic Reverse
+    driveController.b().onTrue(
+      driveRoutine.quasistatic(SysIdRoutine.Direction.kReverse)
+    )
+
+    // Dynamic Forwards
+    driveController.x().onTrue(
+      driveRoutine.dynamic(SysIdRoutine.Direction.kForward)
+    )
+
+    // Dynamic Reverse
+    driveController.y().onTrue(
+      driveRoutine.dynamic(SysIdRoutine.Direction.kReverse)
     )
   }
 

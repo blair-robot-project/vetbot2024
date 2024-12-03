@@ -20,7 +20,7 @@ object ElevatorConstants {
   const val MIN_HEIGHT = 0.2054352
 
   /** Current Homing constants */
-  val HOMING_VOLTAGE = Units.Volts.of(3.0)
+  val HOMING_VOLTAGE = Units.Volts.of(-2.0)
   val HOMING_TIME_CUTOFF = Units.Seconds.of(4.0)
   val HOMING_CURRENT_CUTOFF = Units.Amps.of(20.0)
   val HOMING_MAX_VEL = Units.MetersPerSecond.of(0.05)
@@ -46,12 +46,12 @@ object ElevatorConstants {
   const val STOW_HEIGHT = 0.0 // m
   const val HIGH_HEIGHT = 0.5 // m
 
-  const val ACCEL_DAMPING = 0.01
+  const val ACCEL_DAMPING = 0.05
 
   const val MM_JERK = 0.0 // m/s^3
   val MM_ACCEL = ACCEL_DAMPING * (
     DCMotor.getKrakenX60(1).getTorque(40.0) *
-      GEARING_MOTOR_TO_ELEVATOR / (GEAR_DIAMETER_M / 2)
+      GEARING_MOTOR_TO_GEAR / (GEAR_DIAMETER_M / 2)
     ) / CARRIAGE_MASS_KG
 
   init {
