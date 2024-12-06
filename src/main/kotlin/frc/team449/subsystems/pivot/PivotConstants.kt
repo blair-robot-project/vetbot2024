@@ -7,7 +7,7 @@ import edu.wpi.first.units.Units.*
 import edu.wpi.first.wpilibj.util.Color8Bit
 
 object PivotConstants {
-  const val MOTOR_ID = 10
+  const val MOTOR_ID = 3
 
   const val UPDATE_FREQUENCY = 50.0
   const val DUTY_CYCLE_DEADBAND = 0.001
@@ -39,17 +39,17 @@ object PivotConstants {
 
   const val MOMENT_OF_INERTIA = 0.5253
 
-  const val GEARING_MOTOR_TO_GEARBOX = 15.0 / 1.0
+  const val GEARING_MOTOR_TO_GEARBOX = 20.0 / 1.0
   const val GEARING_GEARBOX_TO_MECHANISM = 4.0 / 1.0
   const val GEARING_MOTOR_TO_MECHANISM = GEARING_MOTOR_TO_GEARBOX * GEARING_GEARBOX_TO_MECHANISM
 
-  const val KS = 0.010968
-  const val KV = 7.1249
-  const val KA = 0.072661
-  const val KP = 7.537
+  const val KS = 0.0
+  const val KV = 0.0
+  const val KA = 0.0
+  const val KP = 1.0
   const val KI = 0.0
   const val KD = 0.0
-  const val KG = 0.21875
+  const val KG = 0.0
 
   const val PIVOT_LENGTH = 1.0
   const val WIDTH = 7.0
