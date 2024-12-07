@@ -26,11 +26,11 @@ class RoutineChooser(private val robot: Robot) : SendableChooser<String>() {
 
   fun createOptions() {
     /** Add auto options here */
-    this.setDefaultOption("Do Nothing", "DoNothing")
+    this.addOption("Do Nothing", "DoNothing")
     this.addOption("Taxi", "Taxi")
     this.addOption("Drop pre-load", "Preload")
     this.addOption("Preload High and Pickup", "HighOne")
-    this.addOption("Score Stack at Pos 3 and pickup at bucket 1", "Stack3")
+    this.setDefaultOption("Score Stack at Pos 3 and pickup at bucket 1", "Stack3")
     this.addOption("Do all of the Stacks, FullPath", "FullPath")
   }
 }

@@ -639,8 +639,8 @@ open class SwerveDrive(
       }
 
       motor.position.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
-      motor.velocity.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
-      motor.motorVoltage.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
+      motor.velocity.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQ_2)
+      motor.motorVoltage.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQ_2)
       motor.optimizeBusUtilization()
 
       return motor

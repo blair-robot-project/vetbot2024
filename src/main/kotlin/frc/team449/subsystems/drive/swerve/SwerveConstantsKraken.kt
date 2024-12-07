@@ -9,7 +9,8 @@ object SwerveConstantsKraken {
   const val USE_FOC = false
   val NEUTRAL_MODE = NeutralModeValue.Brake
   const val DUTY_CYCLE_DEADBAND = 0.001
-  const val UPDATE_FREQUENCY = 10.0
+  const val UPDATE_FREQUENCY = 100.0
+  const val UPDATE_FREQ_2 = 50.0
 
   const val SUPPLY_LIMIT = 50.0
   const val SUPPLY_BOOST = 65.0
@@ -75,7 +76,7 @@ object SwerveConstantsKraken {
   const val DRIVE_GEARING = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0)
   val DRIVE_UPR = Units.inchesToMeters(4.0) * PI
   const val TURN_UPR = 2 * Math.PI
-  val MAX_ATTAINABLE_MK4I_SPEED = Units.feetToMeters(3.0) // (12 - DRIVE_KS) / DRIVE_KV
+  val MAX_ATTAINABLE_MK4I_SPEED = Units.feetToMeters(15.0) // (12 - DRIVE_KS) / DRIVE_KV
   const val STEERING_CURRENT_LIM = 40
   const val JOYSTICK_FILTER_ORDER = 2
   const val ROT_FILTER_ORDER = 1.25

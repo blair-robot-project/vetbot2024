@@ -1,6 +1,8 @@
 package frc.team449.system.motor
 
 import com.revrobotics.*
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame
+import com.revrobotics.CANSparkLowLevel.PeriodicStatus0
 import edu.wpi.first.wpilibj.RobotController
 import frc.team449.system.encoder.EncoderCreator
 
@@ -23,7 +25,16 @@ fun createSparkMax(
   enableVoltageComp: Boolean = false,
   slaveSparks: Map<Int, Boolean> = mapOf(),
   controlFrameRateMillis: Int = -1,
-  statusFrameRatesMillis: Map<CANSparkLowLevel.PeriodicFrame, Int> = mapOf()
+  statusFrameRatesMillis: Map<CANSparkLowLevel.PeriodicFrame, Int> = mapOf(
+    PeriodicFrame.kStatus0 to 50,
+    PeriodicFrame.kStatus1 to 1000,
+    PeriodicFrame.kStatus2 to 1000,
+    PeriodicFrame.kStatus3 to 1000,
+    PeriodicFrame.kStatus4 to 1000,
+    PeriodicFrame.kStatus5 to 1000,
+    PeriodicFrame.kStatus6 to 1000,
+    PeriodicFrame.kStatus7 to 1000,
+    )
 ): WrappedNEO {
   val motor = CANSparkMax(
     id,

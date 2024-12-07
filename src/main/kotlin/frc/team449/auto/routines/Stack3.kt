@@ -23,8 +23,8 @@ class Stack3(
         1 to stowAndHold(robot)
       ),
       stopEventMap = hashMapOf(
-        0 to scoreStack(robot),
-        2 to scoreStack(robot)
+        0 to scoreStack(robot).withTimeout(0.5),
+        2 to scoreStack(robot).withTimeout(0.5)
       ),
       debug = false,
       timeout = 0.25

@@ -32,7 +32,7 @@ open class Pivot(
   private val positionRequest = MotionMagicVoltage(PivotConstants.STOW_ANGLE.`in`(Rotations))
     .withSlot(0)
     .withEnableFOC(false)
-    .withUpdateFreqHz(10.0)
+    .withUpdateFreqHz(100.0)
 
   open val positionSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(motor.position.value) }
   open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }

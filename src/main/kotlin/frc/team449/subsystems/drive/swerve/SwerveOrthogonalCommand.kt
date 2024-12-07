@@ -162,7 +162,7 @@ class SwerveOrthogonalCommand(
             1.0
           ),
           1.0
-        ) * -sign(controller.rightX) * drive.maxRotSpeed
+        ) * sign(controller.rightX) * drive.maxRotSpeed
       )
     } else {
       MathUtil.clamp(

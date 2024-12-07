@@ -24,7 +24,7 @@ class Intake(
   }
 
   fun outtake(): Command {
-    return this.runOnce {
+    return this.run {
       motor.setVoltage(IntakeConstants.OUTTAKE_VOLTAGE)
     }
   }

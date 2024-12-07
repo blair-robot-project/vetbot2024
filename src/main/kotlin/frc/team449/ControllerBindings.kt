@@ -55,7 +55,7 @@ class ControllerBindings(
   }
 
   private fun slowDrive() {
-    driveController.rightBumper().onTrue(
+    driveController.leftBumper().onTrue(
       InstantCommand({ robot.drive.maxLinearSpeed = 1.0 })
         .andThen(InstantCommand({ robot.drive.maxRotSpeed = PI / 2 }))
     ).onFalse(
@@ -164,7 +164,7 @@ class ControllerBindings(
   }
 
   private fun outtake() {
-    mechanismController.rightTrigger().onTrue(
+    driveController.rightTrigger().whileTrue(
       robot.intake.outtake()
     ).onFalse(
       robot.intake.stop()
@@ -174,9 +174,9 @@ class ControllerBindings(
   private fun pivotChar() {
     val pivotRoutine = SysIdRoutine(
       SysIdRoutine.Config(
-        Volts.of(1.0).per(Second),
+        Volts.of(0.5).per(Second),
         Volts.of(4.0),
-        Seconds.of(4.0)
+        Seconds.of(6.0)
       ) { state -> SignalLogger.writeString("state", state.toString()) },
       SysIdRoutine.Mechanism(
         { voltage: Measure<Voltage> -> run { robot.pivot.setVoltage(voltage) } },
@@ -210,9 +210,9 @@ class ControllerBindings(
   private fun elevatorChar() {
     val elevatorRoutine = SysIdRoutine(
       SysIdRoutine.Config(
-        Volts.of(1.0).per(Seconds.of(1.0)),
-        Volts.of(4.0),
-        Seconds.of(4.0)
+        Volts.of(0.5).per(Seconds.of(1.0)),
+        Volts.of(2.0),
+        Seconds.of(6.0)
       ) { state -> SignalLogger.writeString("state", state.toString()) },
       SysIdRoutine.Mechanism(
         { voltage: Measure<Voltage> -> run { robot.elevator.setVoltage(voltage.`in`(Volts)) } },

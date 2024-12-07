@@ -92,7 +92,7 @@ open class SwerveModuleKraken(
     /** CONTROL speed of module */
     drivingMotor.setControl(
       VelocityVoltage(desiredState.speedMetersPerSecond / SwerveConstantsKraken.DRIVE_UPR)
-        .withUpdateFreqHz(1000.0)
+        .withUpdateFreqHz(50.0)
         .withEnableFOC(SwerveConstantsKraken.USE_FOC)
     )
 

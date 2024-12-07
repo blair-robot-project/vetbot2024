@@ -62,7 +62,7 @@ open class Elevator(
   private val request = MotionMagicVoltage(ElevatorConstants.STOW_HEIGHT)
     .withSlot(0)
     .withEnableFOC(false)
-    .withUpdateFreqHz(10.0)
+    .withUpdateFreqHz(100.0)
 
   fun setPosition(position: Double): Command {
     return this.runOnce { motor.setControl(request.withPosition(position)) }
