@@ -185,11 +185,11 @@ open class SwerveDrive(
 
     val visionPoseCopy = visionPose.clone()
 
-    if (cameras.isNotEmpty()) localize()
+//    if (cameras.isNotEmpty()) localize()
 
-    visionRunning = visionPose[0] != visionPoseCopy[0] ||
-      visionPose[1] != visionPoseCopy[1] ||
-      visionPose[2] != visionPoseCopy[2]
+//    visionRunning = visionPose[0] != visionPoseCopy[0] ||
+//      visionPose[1] != visionPoseCopy[1] ||
+//      visionPose[2] != visionPoseCopy[2]
 
     // Sets the robot's pose and individual module rotations on the SmartDashboard [Field 2d] widget.
     setRobotPose()
@@ -638,12 +638,9 @@ open class SwerveDrive(
         println("Could not apply configs, error code: $status")
       }
 
-      motor.position.setUpdateFrequency(SwerveConstantsKraken.POS_UPDATE_FREQUENCY)
-      motor.statorCurrent.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
-      motor.supplyCurrent.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
+      motor.position.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
       motor.velocity.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
       motor.motorVoltage.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
-      motor.closedLoopError.setUpdateFrequency(SwerveConstantsKraken.UPDATE_FREQUENCY)
       motor.optimizeBusUtilization()
 
       return motor

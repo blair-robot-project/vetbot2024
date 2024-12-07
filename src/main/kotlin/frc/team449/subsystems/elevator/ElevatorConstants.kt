@@ -21,19 +21,19 @@ object ElevatorConstants {
 
   /** Current Homing constants */
   val HOMING_VOLTAGE = Units.Volts.of(-2.0)
-  val HOMING_TIME_CUTOFF = Units.Seconds.of(4.0)
-  val HOMING_CURRENT_CUTOFF = Units.Amps.of(20.0)
+  val HOMING_TIME_CUTOFF = Units.Seconds.of(2.0)
+  val HOMING_CURRENT_CUTOFF = Units.Amps.of(10.0)
   val HOMING_MAX_VEL = Units.MetersPerSecond.of(0.05)
 
-  const val UPDATE_FREQUENCY = 50.0 // hz
+  const val UPDATE_FREQUENCY = 4.0 // hz
   const val DUTY_CYCLE_DEADBAND = 0.001
   val NEUTRAL_MODE = NeutralModeValue.Brake
-  val ORIENTATION = InvertedValue.CounterClockwise_Positive
+  val ORIENTATION = InvertedValue.Clockwise_Positive
 
-  const val BURST_TIME_LIMIT = 0.25
+  const val BURST_TIME_LIMIT = 0.0
   const val BURST_CURRENT_LIMIT = 60.0
-  const val SUPPLY_CURRENT_LIMIT = 30.0
-  const val STATOR_CURRENT_LIMIT = 80.0
+  const val SUPPLY_CURRENT_LIMIT = 60.0
+  const val STATOR_CURRENT_LIMIT = 150.0
 
   const val TOLERANCE = 0.025
 
@@ -43,13 +43,10 @@ object ElevatorConstants {
   const val GEAR_DIAMETER_M = 0.048824388
   const val GEARING_MOTOR_TO_ELEVATOR = GEARING_MOTOR_TO_GEAR / (GEAR_DIAMETER_M * PI)
 
-  const val STOW_HEIGHT = 0.0 // m
+  const val STOW_HEIGHT = 0.1 // m
   const val HIGH_HEIGHT = 0.5 // m
 
-  const val ACCEL_DAMPING = 0.05
-
-  const val MM_JERK = 0.0 // m/s^3
-  val MM_ACCEL = ACCEL_DAMPING * (
+  val MM_ACCEL = (
     DCMotor.getKrakenX60(1).getTorque(40.0) *
       GEARING_MOTOR_TO_GEAR / (GEAR_DIAMETER_M / 2)
     ) / CARRIAGE_MASS_KG
@@ -59,14 +56,14 @@ object ElevatorConstants {
     println(MM_ACCEL)
   }
 
-  const val MM_VEL = (5800 / 60) / GEARING_MOTOR_TO_ELEVATOR
+  const val MM_VEL = 3.0 //(5800 / 60) / GEARING_MOTOR_TO_ELEVATOR
 
   // TODO replace with real sysid values
   const val KS = 0.0
-  const val KV = 12.0 / ((5800 / 60) / GEARING_MOTOR_TO_ELEVATOR)
+  const val KV = 12.0 / MM_VEL
   const val KA = 0.0
-  const val KG = 0.0
-  const val KP = 6.0
+  const val KG = 0.2
+  const val KP = 5.0
   const val KI = 0.0
-  const val KD = 0.0
+  const val KD = 0.2
 }

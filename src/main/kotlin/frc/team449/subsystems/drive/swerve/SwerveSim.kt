@@ -154,7 +154,7 @@ class SwerveSim(
 
     val visionPoseCopy = visionPose.clone()
 
-    if (cameras.isNotEmpty()) localize()
+    //if (cameras.isNotEmpty()) localize()
 
     visionRunning = visionPose[0] != visionPoseCopy[0] ||
       visionPose[1] != visionPoseCopy[1] ||

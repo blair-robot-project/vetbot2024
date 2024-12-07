@@ -80,12 +80,6 @@ object VisionConstants {
 
   /** List of cameras that we want to use */
   val ESTIMATORS: ArrayList<VisionSubsystem> = arrayListOf(
-    VisionSubsystem(
-      "driveFront",
-      TAG_LAYOUT,
-      driveFront,
-      VISION_SIM
-    ),
   )
 
   val ENCODER_TRUST: Matrix<N3, N1> = MatBuilder.fill(Nat.N3(), Nat.N1(), .125, .125, .0125)

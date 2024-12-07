@@ -3,6 +3,8 @@ package frc.team449.subsystems.elevator
 import com.ctre.phoenix6.BaseStatusSignal
 import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.controls.MotionMagicVoltage
+import com.ctre.phoenix6.controls.PositionVoltage
+import com.ctre.phoenix6.controls.VelocityVoltage
 import com.ctre.phoenix6.controls.VoltageOut
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.FunctionalCommand
+import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.team449.subsystems.RobotConstants
 import java.util.function.Supplier
@@ -59,7 +62,7 @@ open class Elevator(
   private val request = MotionMagicVoltage(ElevatorConstants.STOW_HEIGHT)
     .withSlot(0)
     .withEnableFOC(false)
-    .withUpdateFreqHz(1000.0)
+    .withUpdateFreqHz(10.0)
 
   fun setPosition(position: Double): Command {
     return this.runOnce { motor.setControl(request.withPosition(position)) }
@@ -107,23 +110,11 @@ open class Elevator(
   }
 
   fun manualDown(): Command {
-    return setPosition(
-      MathUtil.clamp(
-        targetSupplier.get() - ElevatorConstants.MM_VEL * RobotConstants.LOOP_TIME / 5,
-        ElevatorConstants.STOW_HEIGHT,
-        ElevatorConstants.HIGH_HEIGHT
-      )
-    )
+    return runOnce{setVoltage(-3.0)}
   }
 
   fun manualUp(): Command {
-    return setPosition(
-      MathUtil.clamp(
-        targetSupplier.get() + ElevatorConstants.MM_VEL * RobotConstants.LOOP_TIME / 5,
-        ElevatorConstants.STOW_HEIGHT,
-        ElevatorConstants.HIGH_HEIGHT
-      )
-    )
+    return runOnce{setVoltage(3.0)}
   }
 
   fun hold(): Command {
@@ -131,7 +122,7 @@ open class Elevator(
   }
 
   fun stop(): Command {
-    return this.runOnce { motor.stopMotor() }
+    return this.run { motor.stopMotor() }
   }
 
   fun stow(): Command {
@@ -161,6 +152,7 @@ open class Elevator(
     builder.addDoubleProperty("1.4 Desired Position", { request.Position }, null)
     builder.addDoubleProperty("1.5 Closed-loop Error", { motor.closedLoopError.value }, null)
     builder.addBooleanProperty("1.6 At Tolerance", { atSetpoint() }, null)
+    //builder.addStringProperty("1.7 Command", {this.currentCommand.name}, null)
   }
 
   companion object {
@@ -184,7 +176,6 @@ open class Elevator(
       config.Slot0.kG = ElevatorConstants.KG
       config.Slot0.GravityType = GravityTypeValue.Elevator_Static
 
-      config.MotionMagic.MotionMagicJerk = ElevatorConstants.MM_JERK
       config.MotionMagic.MotionMagicAcceleration = ElevatorConstants.MM_ACCEL
       config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.MM_VEL
 
@@ -200,9 +191,6 @@ open class Elevator(
         motor.position,
         motor.velocity,
         motor.motorVoltage,
-        motor.supplyCurrent,
-        motor.statorCurrent,
-        motor.deviceTemp
       )
 
       motor.optimizeBusUtilization()

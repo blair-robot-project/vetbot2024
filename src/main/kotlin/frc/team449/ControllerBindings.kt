@@ -106,10 +106,10 @@ class ControllerBindings(
   }
 
   private fun pivotManualUp() {
-    mechanismController.rightBumper().onTrue(
+    mechanismController.povLeft().onTrue(
       robot.pivot.manualUp()
     ).onFalse(
-      robot.pivot.hold()
+      robot.pivot.stop()
     )
   }
 
@@ -117,7 +117,7 @@ class ControllerBindings(
     mechanismController.povDown().onTrue(
       robot.elevator.manualDown()
     ).onFalse(
-      robot.elevator.hold()
+      robot.elevator.stop()
     )
   }
 
@@ -125,12 +125,12 @@ class ControllerBindings(
     mechanismController.povUp().onTrue(
       robot.elevator.manualUp()
     ).onFalse(
-      robot.elevator.hold()
+      robot.elevator.stop()
     )
   }
 
   private fun pivotManualDown() {
-    mechanismController.leftBumper().onTrue(
+    mechanismController.povLeft().onTrue(
       robot.pivot.manualDown()
     ).onFalse(
       robot.pivot.hold()
@@ -152,7 +152,7 @@ class ControllerBindings(
   }
 
   private fun readyHigh() {
-    mechanismController.rightBumper().onTrue(
+    driveController.rightBumper().onTrue(
       Commands.readyHigh(robot)
     )
   }
@@ -174,9 +174,9 @@ class ControllerBindings(
   private fun pivotChar() {
     val pivotRoutine = SysIdRoutine(
       SysIdRoutine.Config(
-        Volts.of(0.5).per(Second),
-        Volts.of(2.5),
-        Seconds.of(10.0)
+        Volts.of(1.0).per(Second),
+        Volts.of(4.0),
+        Seconds.of(4.0)
       ) { state -> SignalLogger.writeString("state", state.toString()) },
       SysIdRoutine.Mechanism(
         { voltage: Measure<Voltage> -> run { robot.pivot.setVoltage(voltage) } },
@@ -210,9 +210,9 @@ class ControllerBindings(
   private fun elevatorChar() {
     val elevatorRoutine = SysIdRoutine(
       SysIdRoutine.Config(
-        Volts.of(0.5).per(Seconds.of(1.0)),
-        Volts.of(3.0),
-        Seconds.of(10.0)
+        Volts.of(1.0).per(Seconds.of(1.0)),
+        Volts.of(4.0),
+        Seconds.of(4.0)
       ) { state -> SignalLogger.writeString("state", state.toString()) },
       SysIdRoutine.Mechanism(
         { voltage: Measure<Voltage> -> run { robot.elevator.setVoltage(voltage.`in`(Volts)) } },

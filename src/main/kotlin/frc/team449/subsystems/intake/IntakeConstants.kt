@@ -4,7 +4,7 @@ object IntakeConstants {
   const val FRONT_ID = 10
   const val BACK_ID = 11
 
-  const val FRONT_INVERTED = true
+  const val FRONT_INVERTED = false
   const val BACK_INVERTED_FROM_FRONT = false
 
   const val BRAKE_MODE = false

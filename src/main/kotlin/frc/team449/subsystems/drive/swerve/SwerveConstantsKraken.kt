@@ -9,8 +9,7 @@ object SwerveConstantsKraken {
   const val USE_FOC = false
   val NEUTRAL_MODE = NeutralModeValue.Brake
   const val DUTY_CYCLE_DEADBAND = 0.001
-  const val POS_UPDATE_FREQUENCY = 100.0
-  const val UPDATE_FREQUENCY = 50.0
+  const val UPDATE_FREQUENCY = 10.0
 
   const val SUPPLY_LIMIT = 50.0
   const val SUPPLY_BOOST = 65.0
@@ -55,7 +54,7 @@ object SwerveConstantsKraken {
   const val TURN_ENC_OFFSET_BR = 0.391 - 0.436 - 0.067 + 0.5
 
   /** PID gains for turning each module */
-  const val TURN_KP = 0.1
+  const val TURN_KP = 0.5
   const val TURN_KI = 0.0
   const val TURN_KD = 0.0
 
@@ -85,7 +84,7 @@ object SwerveConstantsKraken {
   /** Wheelbase = wheel-to-wheel distance from front to back of the robot */
   /** Trackwidth = wheel-to-wheel distance from side to side of the robot */
   /** X_SHIFT is a relic from our 2024 robot, where the frame perimeter extends beyond the wheels in the X direction */
-  val WHEELBASE = Units.inchesToMeters(16.75) // ex. FL to BL
-  val TRACKWIDTH = Units.inchesToMeters(21.75) // ex. BL to BR
+  val WHEELBASE = Units.inchesToMeters(20.75) // ex. FL to BL
+  val TRACKWIDTH = Units.inchesToMeters(20.75) // ex. BL to BR
   val X_SHIFT = 0.0
 }

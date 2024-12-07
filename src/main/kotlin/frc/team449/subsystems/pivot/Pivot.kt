@@ -32,7 +32,7 @@ open class Pivot(
   private val positionRequest = MotionMagicVoltage(PivotConstants.STOW_ANGLE.`in`(Rotations))
     .withSlot(0)
     .withEnableFOC(false)
-    .withUpdateFreqHz(1000.0)
+    .withUpdateFreqHz(10.0)
 
   open val positionSupplier: Supplier<Measure<Angle>> = Supplier { Rotations.of(motor.position.value) }
   open val velocitySupplier: Supplier<Measure<Velocity<Angle>>> = Supplier { RotationsPerSecond.of(motor.velocity.value) }
@@ -133,27 +133,24 @@ open class Pivot(
   }
 
   fun manualDown(): Command {
-    return setPosition(
-      Rotations.of(
-        MathUtil.clamp(
-          targetSupplier.get().`in`(Rotations) - PivotConstants.CRUISE_VEL.`in`(RotationsPerSecond) * RobotConstants.LOOP_TIME / 5,
-          PivotConstants.MIN_ANGLE.`in`(Rotations),
-          PivotConstants.MAX_ANGLE.`in`(Rotations)
-        )
-      )
-    )
+    return runOnce{setVoltage(Volts.of(-3.0))}
   }
 
   fun manualUp(): Command {
-    return setPosition(
-      Rotations.of(
-        MathUtil.clamp(
-          targetSupplier.get().`in`(Rotations) + PivotConstants.CRUISE_VEL.`in`(RotationsPerSecond) * RobotConstants.LOOP_TIME / 5,
-          PivotConstants.MIN_ANGLE.`in`(Rotations),
-          PivotConstants.MAX_ANGLE.`in`(Rotations)
-        )
-      )
-    )
+//    return setPosition(
+//      Rotations.of(
+//        MathUtil.clamp(
+//          targetSupplier.get().`in`(Rotations) + PivotConstants.CRUISE_VEL.`in`(RotationsPerSecond) * RobotConstants.LOOP_TIME / 5,
+//          PivotConstants.MIN_ANGLE.`in`(Rotations),
+//          PivotConstants.MAX_ANGLE.`in`(Rotations)
+//        )
+//      )
+//    )
+    return runOnce{setVoltage(Volts.of(3.0))}
+  }
+
+  fun stop(): Command {
+    return this.run { motor.stopMotor() }
   }
 
   override fun periodic() {
@@ -170,7 +167,6 @@ open class Pivot(
     builder.addDoubleProperty("1.2 Velocity RPS", { velocitySupplier.get().`in`(RotationsPerSecond) }, null)
     builder.addDoubleProperty("1.3 Current Position Rot", { positionSupplier.get().`in`(Rotations) }, null)
     builder.addDoubleProperty("1.4 Desired Position Rot", { positionRequest.Position }, null)
-    builder.addDoubleProperty("1.5 Stator Current A", { motor.statorCurrent.value }, null)
     builder.publishConstString("2.0", "Model info")
     builder.addDoubleProperty("2.1 Closed Loop Error Rot", { motor.closedLoopError.value }, null)
     builder.addBooleanProperty("2.2 At Setpoint", { atSetpoint() }, null)
@@ -205,16 +201,16 @@ open class Pivot(
       config.MotorOutput.DutyCycleNeutralDeadband = PivotConstants.DUTY_CYCLE_DEADBAND
       config.Feedback.SensorToMechanismRatio = PivotConstants.GEARING_MOTOR_TO_MECHANISM
 
+      config.FutureProofConfigs = true
+
       motor.configurator.apply(config)
+
 
       BaseStatusSignal.setUpdateFrequencyForAll(
         PivotConstants.UPDATE_FREQUENCY,
         motor.position,
         motor.velocity,
         motor.motorVoltage,
-        motor.supplyCurrent,
-        motor.statorCurrent,
-        motor.deviceTemp
       )
       motor.optimizeBusUtilization()
 
