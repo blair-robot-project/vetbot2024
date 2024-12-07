@@ -37,9 +37,9 @@ class FullPath(
   override val trajectory: MutableList<ChoreoTrajectory> =
     if (isRed) {
       AutoUtil.transformForRed(
-        ChoreoTrajectory.createTrajectory(arrayListOf("S3 - B4", "B4 - S2", "S2 - B3", "B3 - S1", "S1 - B2"), "FullPath")
+        ChoreoTrajectory.createTrajectory(arrayListOf("S3-B4", "B4 - S2", "S2 - B3", "B3 - S1", "S1 - B2"), "FullPath")
       )
     } else {
-      ChoreoTrajectory.createTrajectory(arrayListOf("S3 - B4", "B4 - S2", "S2 - B3", "B3 - S1", "S1 - B2"), "FullPath")
+      ChoreoTrajectory.createTrajectory(arrayListOf("S3-B4", "B4 - S2", "S2 - B3", "B3 - S1", "S1 - B2"), "FullPath")
     }
 }
