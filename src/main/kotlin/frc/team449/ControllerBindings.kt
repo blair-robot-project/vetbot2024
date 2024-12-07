@@ -30,7 +30,6 @@ class ControllerBindings(
     stow()
     pickup()
     readyHigh()
-    readyStack()
     outtake()
 
     /** Operator Layout: https://docs.google.com/drawings/d/1b8tngmzBPXh1vmAdhs1xD-INomqgjZql8-FNzGo-1Z4/edit */
@@ -154,12 +153,6 @@ class ControllerBindings(
   private fun readyHigh() {
     driveController.rightBumper().onTrue(
       Commands.readyHigh(robot)
-    )
-  }
-
-  private fun readyStack() {
-    mechanismController.b().onTrue(
-      Commands.readyStackTele(robot)
     )
   }
 

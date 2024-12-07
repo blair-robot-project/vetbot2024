@@ -56,14 +56,6 @@ object Commands {
     )
   }
 
-  fun readyStackTele(robot: Robot): Command {
-    return ParallelCommandGroup(
-      robot.intake.hold(),
-      robot.elevator.high(),
-      robot.pivot.intakeAngle()
-    )
-  }
-
   fun scoreStack(robot: Robot): Command {
     return SequentialCommandGroup(
       ParallelCommandGroup(

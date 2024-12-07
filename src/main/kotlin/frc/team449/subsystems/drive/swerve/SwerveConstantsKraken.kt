@@ -60,15 +60,15 @@ object SwerveConstantsKraken {
   const val TURN_KD = 0.0
 
   /** Feed forward values for driving each module */
-  const val DRIVE_KS = 0.0
-  const val DRIVE_KV = 0.0
-  const val DRIVE_KA = 0.0
+  const val DRIVE_KS = 0.25
+  const val DRIVE_KV = 2.30
+  const val DRIVE_KA = 0.4
 
   // TODO: Figure out this value
   const val STEER_KS = 0.0
 
   /** PID gains for driving each module*/
-  const val DRIVE_KP = 0.475
+  const val DRIVE_KP = 0.5
   const val DRIVE_KI = 0.0
   const val DRIVE_KD = 0.0
 
