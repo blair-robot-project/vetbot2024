@@ -2,7 +2,6 @@ package frc.team449.system.motor
 
 import com.revrobotics.*
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame
-import com.revrobotics.CANSparkLowLevel.PeriodicStatus0
 import edu.wpi.first.wpilibj.RobotController
 import frc.team449.system.encoder.EncoderCreator
 
@@ -34,7 +33,7 @@ fun createSparkMax(
     PeriodicFrame.kStatus5 to 1000,
     PeriodicFrame.kStatus6 to 1000,
     PeriodicFrame.kStatus7 to 1000,
-    )
+  )
 ): WrappedNEO {
   val motor = CANSparkMax(
     id,

@@ -26,12 +26,12 @@ class FullPath(
         4 to WaitCommand(1.28).andThen(pickup(robot))
       ),
       stopEventMap = hashMapOf(
-        0 to scoreStack(robot),
-        2 to scoreStack(robot),
-        4 to scoreStack(robot)
+        0 to scoreStack(robot).withTimeout(0.25),
+        2 to scoreStack(robot).withTimeout(0.25),
+        4 to scoreStack(robot).withTimeout(0.25),
       ),
       debug = false,
-      timeout = 0.25
+      timeout = 0.75
     )
 
   override val trajectory: MutableList<ChoreoTrajectory> =

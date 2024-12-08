@@ -10,7 +10,7 @@ object IntakeConstants {
   const val BRAKE_MODE = false
   const val CURRENT_LIMIT = 40
 
-  const val INTAKE_VOLTAGE = 6.0
-  const val HOLD_VOLTAGE = 2.0
-  const val OUTTAKE_VOLTAGE = -6.0
+  const val INTAKE_VOLTAGE = 7.0
+  const val HOLD_VOLTAGE = 4.22 / 2.0
+  const val OUTTAKE_VOLTAGE = -5.804
 }

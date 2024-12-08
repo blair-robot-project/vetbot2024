@@ -27,15 +27,15 @@ object PivotConstants {
    * Note: 0 deg must  be defined as the inner 1x1 on the wrist is perfectly vertical
    */
   val TRUE_STOW_ANGLE = Degrees.of(91.233851)
-  val STOW_ANGLE = Degrees.of(92.5)
-  val INTAKE_ANGLE = Degrees.of(12.618689)
+  val STOW_ANGLE = Degrees.of(97.5)
+  val INTAKE_ANGLE = Degrees.of(21.0)
 
   const val BURST_TIME_LIMIT = 0.25
-  const val BURST_CURRENT_LIMIT = 60.0
+  const val BURST_CURRENT_LIMIT = 50.0
   const val SUPPLY_CURRENT_LIMIT = 40.0
   const val STATOR_CURRENT_LIMIT = 150.0
 
-  val TOLERANCE = Degrees.of(1.75)
+  val TOLERANCE = Degrees.of(5.0)
 
   const val MOMENT_OF_INERTIA = 0.5253
 
@@ -57,11 +57,16 @@ object PivotConstants {
   val REAL_COLOR = Color8Bit(255, 0, 255)
   val TARGET_COLOR = Color8Bit(0, 255, 0)
 
-  const val ACCEL_DAMPING_FACTOR = 0.075
+  const val ACCEL_DAMPING_FACTOR = 0.25
 
   val CRUISE_VEL = RotationsPerSecond.of(1.0)
   val MAX_ACCEL = RadiansPerSecond.per(Second).of(
     ACCEL_DAMPING_FACTOR * DCMotor.getKrakenX60(1).getTorque(40.0) * GEARING_MOTOR_TO_MECHANISM /
       MOMENT_OF_INERTIA
   )
+
+  init {
+    print("Pivot accel: ")
+    println(MAX_ACCEL)
+  }
 }

@@ -79,8 +79,7 @@ object VisionConstants {
   const val ENABLE_WIREFRAME = true
 
   /** List of cameras that we want to use */
-  val ESTIMATORS: ArrayList<VisionSubsystem> = arrayListOf(
-  )
+  val ESTIMATORS: ArrayList<VisionSubsystem> = arrayListOf()
 
   val ENCODER_TRUST: Matrix<N3, N1> = MatBuilder.fill(Nat.N3(), Nat.N1(), .125, .125, .0125)
   val SINGLE_TAG_TRUST: Matrix<N3, N1> = MatBuilder.fill(Nat.N3(), Nat.N1(), 0.15, 0.15, 15.0)

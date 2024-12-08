@@ -3,7 +3,7 @@ package frc.team449.subsystems
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.util.Units
-import frc.team449.subsystems.drive.swerve.SwerveConstantsNEO
+import frc.team449.subsystems.drive.swerve.SwerveConstantsKraken
 import kotlin.math.PI
 
 object RobotConstants {
@@ -22,7 +22,7 @@ object RobotConstants {
   const val ROBOT_WEIGHT = 55.0 // TODO: find
 
   /** Drive configuration */
-  val MAX_LINEAR_SPEED = SwerveConstantsNEO.MAX_ATTAINABLE_MK4I_SPEED // m/s
+  val MAX_LINEAR_SPEED = SwerveConstantsKraken.MAX_ATTAINABLE_MK4I_SPEED // m/s
   const val MAX_ROT_SPEED = 5.804 * PI / 4 // rad/s
 
   const val USE_ACCEL_LIMIT = true

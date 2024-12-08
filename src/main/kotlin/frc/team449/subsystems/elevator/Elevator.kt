@@ -3,12 +3,9 @@ package frc.team449.subsystems.elevator
 import com.ctre.phoenix6.BaseStatusSignal
 import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.controls.MotionMagicVoltage
-import com.ctre.phoenix6.controls.PositionVoltage
-import com.ctre.phoenix6.controls.VelocityVoltage
 import com.ctre.phoenix6.controls.VoltageOut
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
-import edu.wpi.first.math.MathUtil
 import edu.wpi.first.units.Units.*
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.wpilibj.RobotBase
@@ -19,9 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.FunctionalCommand
-import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
-import frc.team449.subsystems.RobotConstants
 import java.util.function.Supplier
 import kotlin.math.abs
 
@@ -110,11 +105,11 @@ open class Elevator(
   }
 
   fun manualDown(): Command {
-    return runOnce{setVoltage(-3.0)}
+    return runOnce { setVoltage(-3.0) }
   }
 
   fun manualUp(): Command {
-    return runOnce{setVoltage(3.0)}
+    return runOnce { setVoltage(3.0) }
   }
 
   fun hold(): Command {
@@ -150,9 +145,8 @@ open class Elevator(
     builder.addDoubleProperty("1.2 Position", { positionSupplier.get() }, null)
     builder.addDoubleProperty("1.3 Velocity", { velocitySupplier.get() }, null)
     builder.addDoubleProperty("1.4 Desired Position", { request.Position }, null)
-    builder.addDoubleProperty("1.5 Closed-loop Error", { motor.closedLoopError.value }, null)
     builder.addBooleanProperty("1.6 At Tolerance", { atSetpoint() }, null)
-    //builder.addStringProperty("1.7 Command", {this.currentCommand.name}, null)
+    // builder.addStringProperty("1.7 Command", {this.currentCommand.name}, null)
   }
 
   companion object {
@@ -191,6 +185,7 @@ open class Elevator(
         motor.position,
         motor.velocity,
         motor.motorVoltage,
+        motor.statorCurrent
       )
 
       motor.optimizeBusUtilization()

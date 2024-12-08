@@ -25,14 +25,14 @@ object ElevatorConstants {
   val HOMING_CURRENT_CUTOFF = Units.Amps.of(10.0)
   val HOMING_MAX_VEL = Units.MetersPerSecond.of(0.05)
 
-  const val UPDATE_FREQUENCY = 250.0 // hz
+  const val UPDATE_FREQUENCY = 50.0 // hz
   const val DUTY_CYCLE_DEADBAND = 0.001
   val NEUTRAL_MODE = NeutralModeValue.Brake
   val ORIENTATION = InvertedValue.Clockwise_Positive
 
   const val BURST_TIME_LIMIT = 0.0
   const val BURST_CURRENT_LIMIT = 60.0
-  const val SUPPLY_CURRENT_LIMIT = 60.0
+  const val SUPPLY_CURRENT_LIMIT = 40.0
   const val STATOR_CURRENT_LIMIT = 150.0
 
   const val TOLERANCE = 0.025

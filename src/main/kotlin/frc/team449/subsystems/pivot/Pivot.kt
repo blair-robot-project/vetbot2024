@@ -6,7 +6,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage
 import com.ctre.phoenix6.controls.VoltageOut
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.GravityTypeValue
-import edu.wpi.first.math.MathUtil
 import edu.wpi.first.units.Angle
 import edu.wpi.first.units.Measure
 import edu.wpi.first.units.Units.*
@@ -21,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.FunctionalCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
-import frc.team449.subsystems.RobotConstants
 import java.util.function.Supplier
 import kotlin.math.abs
 
@@ -133,7 +131,7 @@ open class Pivot(
   }
 
   fun manualDown(): Command {
-    return runOnce{setVoltage(Volts.of(-3.0))}
+    return runOnce { setVoltage(Volts.of(-3.0)) }
   }
 
   fun manualUp(): Command {
@@ -146,7 +144,7 @@ open class Pivot(
 //        )
 //      )
 //    )
-    return runOnce{setVoltage(Volts.of(3.0))}
+    return runOnce { setVoltage(Volts.of(3.0)) }
   }
 
   fun stop(): Command {
@@ -164,11 +162,12 @@ open class Pivot(
   override fun initSendable(builder: SendableBuilder) {
     builder.publishConstString("1.0", "Motor Stuff")
     builder.addDoubleProperty("1.1 Voltage V", { motor.motorVoltage.value }, null)
+    builder.addDoubleProperty("1.9 Pos", { motor.position.value }, null)
+
     builder.addDoubleProperty("1.2 Velocity RPS", { velocitySupplier.get().`in`(RotationsPerSecond) }, null)
     builder.addDoubleProperty("1.3 Current Position Rot", { positionSupplier.get().`in`(Rotations) }, null)
     builder.addDoubleProperty("1.4 Desired Position Rot", { positionRequest.Position }, null)
     builder.publishConstString("2.0", "Model info")
-    builder.addDoubleProperty("2.1 Closed Loop Error Rot", { motor.closedLoopError.value }, null)
     builder.addBooleanProperty("2.2 At Setpoint", { atSetpoint() }, null)
   }
 
@@ -205,12 +204,12 @@ open class Pivot(
 
       motor.configurator.apply(config)
 
-
       BaseStatusSignal.setUpdateFrequencyForAll(
         PivotConstants.UPDATE_FREQUENCY,
         motor.position,
         motor.velocity,
         motor.motorVoltage,
+        motor.statorCurrent
       )
       motor.optimizeBusUtilization()
 
