@@ -1,5 +1,5 @@
 {
-    "fileName": "REVLib-2025.0.0-beta-3.json",
+    "fileName": "REVLib.json",
     "name": "REVLib",
     "version": "2025.0.0-beta-3",
     "frcYear": "2025",
@@ -12,7 +12,7 @@
         {
             "groupId": "com.revrobotics.frc",
             "artifactId": "REVLib-java",
-            "version": "2025.0.0-beta-2"
+            "version": "2025.0.0-beta-3"
         }
     ],
     "jniDependencies": [
