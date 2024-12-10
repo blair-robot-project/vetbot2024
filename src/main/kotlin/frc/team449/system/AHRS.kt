@@ -1,15 +1,15 @@
 package frc.team449.system
 
+import com.studica.frc.AHRS
 import edu.wpi.first.math.filter.LinearFilter
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.simulation.SimDeviceSim
 import frc.team449.util.simBooleanProp
 import frc.team449.util.simDoubleProp
 
 class AHRS(
-  val navx: com.kauailabs.navx.frc.AHRS
+  val navx: AHRS
 ) {
 
   var prevPos = Double.NaN
@@ -49,10 +49,8 @@ class AHRS(
     return filter.calculate(vel)
   }
 
-  constructor(
-    port: SPI.Port = SPI.Port.kMXP
-  ) : this(
-    com.kauailabs.navx.frc.AHRS(port)
+  constructor() : this(
+    AHRS(AHRS.NavXComType.kMXP_SPI)
   )
 
   fun calibrated(): Boolean {

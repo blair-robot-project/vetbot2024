@@ -317,7 +317,9 @@
             },
             "int[]##v_/Monologuing/robot/drive/2.7 Total Rejected Vision Sights": {
               "open": true
-            },
+            }
+          },
+          "driveCommand": {
             "open": true
           },
           "intake": {

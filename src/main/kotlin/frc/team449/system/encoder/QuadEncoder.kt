@@ -35,5 +35,18 @@ class QuadEncoder(
         encoder.setReverseDirection(inverted)
         QuadEncoder(name, encoder, encoderCPR, unitPerRotation, gearing, samplesToAverage = samplesAverage)
       }
+
+    fun createQuadEncoder(
+      name: String,
+      encoder: edu.wpi.first.wpilibj.Encoder,
+      encoderCPR: Int,
+      unitPerRotation: Double,
+      gearing: Double,
+      inverted: Boolean,
+      samplesAverage: Int = 5
+    ): QuadEncoder {
+      encoder.setReverseDirection(inverted)
+      return QuadEncoder(name, encoder, encoderCPR, unitPerRotation, gearing, samplesToAverage = samplesAverage)
+    }
   }
 }

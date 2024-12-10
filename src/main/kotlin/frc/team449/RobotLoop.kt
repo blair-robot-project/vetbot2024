@@ -9,15 +9,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.InstantCommand
-import frc.team449.control.holonomic.swerve.SwerveSim
-import frc.team449.robot2024.Robot
-import frc.team449.robot2024.auto.routines.RoutineChooser
-import frc.team449.robot2024.commands.light.BlairChasing
-import frc.team449.robot2024.commands.light.BreatheHue
-import frc.team449.robot2024.commands.light.Rainbow
-import frc.team449.robot2024.constants.field.FieldConstants
-import frc.team449.robot2024.constants.vision.VisionConstants
-import frc.team449.robot2024.subsystems.NewControllerBindings
+import frc.team449.auto.RoutineChooser
+import frc.team449.commands.light.BlairChasing
+import frc.team449.commands.light.BreatheHue
+import frc.team449.commands.light.Rainbow
+import frc.team449.subsystems.FieldConstants
+import frc.team449.subsystems.drive.swerve.SwerveSim
+import frc.team449.subsystems.vision.VisionConstants
 import monologue.Annotations.Log
 import monologue.Logged
 import monologue.Monologue
@@ -37,7 +35,7 @@ class RobotLoop : TimedRobot(), Logged {
   private val field = robot.field
   private var autoCommand: Command? = null
   private var routineMap = hashMapOf<String, Command>()
-  private val controllerBinder = NewControllerBindings(robot.driveController, robot.mechController, robot)
+  private val controllerBinder = ControllerBindings(robot.driveController, robot.mechController, robot)
 
   override fun robotInit() {
     // Yes this should be a print statement, it's useful to know that robotInit started.
@@ -86,9 +84,9 @@ class RobotLoop : TimedRobot(), Logged {
   override fun robotPeriodic() {
     CommandScheduler.getInstance().run()
 
-    robot.field.robotPose = robot.drive.pose
+    robot.field.robotPose = robot.poseSubsystem.pose
 
-    robot.field.getObject("bumpers").pose = robot.drive.pose
+    robot.field.getObject("bumpers").pose = robot.poseSubsystem.pose
 
     Monologue.updateAll()
   }
@@ -97,8 +95,6 @@ class RobotLoop : TimedRobot(), Logged {
     /** Every time auto starts, we update the chosen auto command. */
     this.autoCommand = routineMap[if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) "Red" + routineChooser.selected else "Blue" + routineChooser.selected]
     CommandScheduler.getInstance().schedule(this.autoCommand)
-
-    robot.drive.enableVisionFusion = false
 
     if (DriverStation.getAlliance().getOrNull() == DriverStation.Alliance.Red) {
       BreatheHue(robot.light, 0).schedule()
@@ -126,8 +122,6 @@ class RobotLoop : TimedRobot(), Logged {
       CommandScheduler.getInstance().cancel(autoCommand)
     }
 
-    robot.drive.enableVisionFusion = true
-
     (robot.light.currentCommand ?: InstantCommand()).cancel()
 
     robot.drive.defaultCommand = robot.driveCommand
@@ -151,8 +145,6 @@ class RobotLoop : TimedRobot(), Logged {
   override fun disabledInit() {
     robot.drive.stop()
 
-    robot.drive.enableVisionFusion = true
-
     (robot.light.currentCommand ?: InstantCommand()).cancel()
     Rainbow(robot.light).schedule()
   }
@@ -172,10 +164,6 @@ class RobotLoop : TimedRobot(), Logged {
   override fun simulationPeriodic() {
     robot.drive as SwerveSim
 
-    VisionConstants.ESTIMATORS.forEach {
-      it.simulationPeriodic(robot.drive.odoPose)
-    }
-
-    VisionConstants.VISION_SIM.debugField.getObject("EstimatedRobot").pose = robot.drive.pose
+    VisionConstants.VISION_SIM.debugField.getObject("EstimatedRobot").pose = robot.poseSubsystem.pose
   }
 }

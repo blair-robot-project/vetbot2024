@@ -33,7 +33,7 @@ open class AbsoluteEncoder(
     return if (inverted) {
       filter.calculate(
         MathUtil.inputModulus(
-          1 - (enc.absolutePosition - offset),
+          1 - (enc.get() - offset),
           min,
           max
         )
@@ -41,7 +41,7 @@ open class AbsoluteEncoder(
     } else {
       filter.calculate(
         MathUtil.inputModulus(
-          (enc.absolutePosition - offset),
+          (enc.get() - offset),
           min,
           max
         )
@@ -58,9 +58,9 @@ open class AbsoluteEncoder(
   override fun pollVelocityNative(): Double {
     val currPos =
       if (inverted) {
-        -enc.distance
+        -enc.get()
       } else {
-        enc.distance
+        enc.get()
       }
 
     val currTime = Timer.getFPGATimestamp()
@@ -107,5 +107,25 @@ open class AbsoluteEncoder(
         )
         enc
       }
+
+    fun createAbsoluteEncoder(
+      name: String,
+      channel: Int,
+      offset: Double,
+      unitPerRotation: Double,
+      inverted: Boolean,
+      max: Double = 0.5,
+      min: Double = -0.5
+    ): AbsoluteEncoder {
+      return AbsoluteEncoder(
+        name,
+        DutyCycleEncoder(channel),
+        unitPerRotation,
+        inverted,
+        offset,
+        max = max,
+        min = min
+      )
+    }
   }
 }
