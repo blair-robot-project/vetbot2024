@@ -25,10 +25,6 @@ class ControllerBindings(
 
   private fun robotBindings() {
     /** Call robot functions you create below */
-    stow()
-    pickup()
-    readyHigh()
-    scoreHigh()
   }
 
   private fun nonRobotBindings() {
@@ -74,102 +70,6 @@ class ControllerBindings(
   private fun pointToRight() {
     driveController.a().onTrue(
       robot.driveCommand.pointAtAngleCommand(Rotation2d.fromDegrees(90.0))
-    )
-  }
-
-  private fun stow() {
-    mechanismController.b().onTrue(
-      Commands.stowAndHold(robot)
-    )
-  }
-
-  private fun pickup() {
-    mechanismController.a().onTrue(
-      Commands.pickup(robot)
-    )
-  }
-
-  private fun readyHigh() {
-    mechanismController.x().onTrue(
-      Commands.readyHigh(robot)
-    )
-  }
-
-  private fun scoreHigh() {
-    mechanismController.y().onTrue(
-      Commands.scoreHigh(robot)
-    )
-  }
-
-  private fun pivotChar() {
-    val pivotRoutine = SysIdRoutine(
-      SysIdRoutine.Config(
-        Volts.of(0.5).per(Seconds),
-        Volts.of(4.0),
-        Seconds.of(10.0)
-      ) { state -> SignalLogger.writeString("state", state.toString()) },
-      SysIdRoutine.Mechanism(
-        { voltage: Voltage -> run { robot.pivot.setVoltage(voltage) } },
-        null,
-        robot.pivot,
-        "pivot"
-      )
-    )
-
-    // Quasistatic Forwards
-    driveController.a().onTrue(
-      pivotRoutine.quasistatic(SysIdRoutine.Direction.kForward)
-    )
-
-    // Quasistatic Reverse
-    driveController.b().onTrue(
-      pivotRoutine.quasistatic(SysIdRoutine.Direction.kReverse)
-    )
-
-    // Dynamic Forwards
-    driveController.x().onTrue(
-      pivotRoutine.dynamic(SysIdRoutine.Direction.kForward)
-    )
-
-    // Dynamic Reverse
-    driveController.y().onTrue(
-      pivotRoutine.dynamic(SysIdRoutine.Direction.kReverse)
-    )
-  }
-
-  private fun elevatorChar() {
-    val elevatorRoutine = SysIdRoutine(
-      SysIdRoutine.Config(
-        Volts.of(0.5).per(Seconds),
-        Volts.of(12.0),
-        Seconds.of(10.0)
-      ) { state -> SignalLogger.writeString("state", state.toString()) },
-      SysIdRoutine.Mechanism(
-        { voltage: Voltage -> run { robot.elevator.setVoltage(voltage) } },
-        null,
-        robot.elevator,
-        "elevator"
-      )
-    )
-
-    // Quasistatic Forwards
-    driveController.a().onTrue(
-      elevatorRoutine.quasistatic(SysIdRoutine.Direction.kForward)
-    )
-
-    // Quasistatic Reverse
-    driveController.b().onTrue(
-      elevatorRoutine.quasistatic(SysIdRoutine.Direction.kReverse)
-    )
-
-    // Dynamic Forwards
-    driveController.x().onTrue(
-      elevatorRoutine.dynamic(SysIdRoutine.Direction.kForward)
-    )
-
-    // Dynamic Reverse
-    driveController.y().onTrue(
-      elevatorRoutine.dynamic(SysIdRoutine.Direction.kReverse)
     )
   }
 

@@ -175,6 +175,5 @@ simgui-ds.json
 
 *.wpilog
 *.hoot
-/.run/
 
 ctre_sim/

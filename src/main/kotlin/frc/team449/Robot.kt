@@ -5,10 +5,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.team449.subsystems.RobotConstants
 import frc.team449.subsystems.drive.swerve.SwerveDrive
 import frc.team449.subsystems.drive.swerve.SwerveOrthogonalCommand
-import frc.team449.subsystems.elevator.Elevator.Companion.createElevator
-import frc.team449.subsystems.intake.Intake.Companion.createIntake
 import frc.team449.subsystems.light.Light.Companion.createLight
-import frc.team449.subsystems.pivot.Pivot.Companion.createPivot
 import frc.team449.system.AHRS
 import monologue.Annotations.Log
 import monologue.Logged
@@ -28,14 +25,6 @@ class Robot : RobotBase(), Logged {
     RobotConstants.PDH_CAN,
     PowerDistribution.ModuleType.kRev
   )
-
-  val intake = createIntake()
-
-  @Log.NT
-  val pivot = createPivot()
-
-  @Log.NT
-  val elevator = createElevator()
 
   @Log.NT
   override val drive = SwerveDrive.createSwerveNEO(ahrs, field)
